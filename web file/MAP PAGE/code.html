@@ -1,0 +1,334 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Smart Ride OS - Motion</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;600;700&amp;family=Epilogue:wght@400;450&amp;family=Libre+Caslon+Text:wght@400;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@100..900&amp;family=Epilogue:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#f1e0cf",
+                        "surface-tint": "#ffb596",
+                        "surface-dim": "#151313",
+                        "surface-container-low": "#1d1b1b",
+                        "tertiary-container": "#9d8e80",
+                        "on-tertiary-fixed-variant": "#504539",
+                        "on-error": "#690005",
+                        "inverse-on-surface": "#323030",
+                        "on-secondary-fixed-variant": "#5c4205",
+                        "on-surface": "#e7e1e1",
+                        "tertiary-fixed-dim": "#d4c4b4",
+                        "surface-container": "#211f1f",
+                        "surface-container-highest": "#373434",
+                        "outline-variant": "#42474c",
+                        "surface": "#151313",
+                        "on-tertiary-fixed": "#231a10",
+                        "on-background": "#e7e1e1",
+                        "primary": "#ffb596",
+                        "surface-container-high": "#2c292a",
+                        "surface-container-lowest": "#0f0e0e",
+                        "background": "#151313",
+                        "surface-bright": "#3b3839",
+                        "on-primary-fixed": "#360f00",
+                        "inverse-surface": "#e7e1e1",
+                        "error-container": "#93000a",
+                        "secondary": "#e7c17a",
+                        "on-tertiary": "#392f24",
+                        "on-primary": "#581e00",
+                        "on-secondary": "#412d00",
+                        "secondary-fixed-dim": "#e7c17a",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#7d2d00",
+                        "on-surface-variant": "#c2c7cd",
+                        "tertiary": "#d4c4b4",
+                        "outline": "#8c9197",
+                        "secondary-container": "#5f4507",
+                        "on-tertiary-container": "#32281d",
+                        "inverse-primary": "#a14007",
+                        "surface-variant": "#373434",
+                        "on-primary-container": "#4d1900",
+                        "on-secondary-fixed": "#261900",
+                        "primary-container": "#e37038",
+                        "secondary-fixed": "#ffdea4",
+                        "primary-fixed": "#ffdbcd",
+                        "on-secondary-container": "#d8b36d",
+                        "primary-fixed-dim": "#ffb596",
+                        "on-error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter-desktop": "16px",
+                        "sm": "8px",
+                        "3xl": "56px",
+                        "lg": "20px",
+                        "6xl": "128px",
+                        "xl": "28px",
+                        "5xl": "96px",
+                        "md": "12px",
+                        "xs": "4px",
+                        "margin-desktop": "48px",
+                        "4xl": "72px",
+                        "2xl": "40px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "display-md": ["Chivo"],
+                        "headline-lg": ["Chivo"],
+                        "body-sm": ["Epilogue"],
+                        "display-xl-mobile": ["Chivo"],
+                        "display-xl": ["Chivo"],
+                        "body-lg": ["Epilogue"],
+                        "technical": ["Libre Caslon Text"]
+                    },
+                    "fontSize": {
+                        "display-md": ["76px", { "lineHeight": "1.1", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["42px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.55", "fontWeight": "450" }],
+                        "display-xl-mobile": ["64px", { "lineHeight": "1.1", "fontWeight": "700" }],
+                        "display-xl": ["132px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.65", "fontWeight": "400" }],
+                        "technical": ["12px", { "letterSpacing": "0.05em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .blueprint-grid {
+            background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .tech-border {
+            border: 1px solid theme('colors.outline-variant');
+        }
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(227, 112, 56, 0.15);
+        }
+        .nav-active {
+            position: relative;
+        }
+        .nav-active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: theme('colors.primary');
+            border-radius: 0 4px 4px 0;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex antialiased blueprint-grid relative">
+<!-- SideNavBar -->
+<nav class="h-screen w-64 border-r border-outline-variant/20 bg-surface-container-low dark:bg-surface-container-low flex flex-col h-full py-xl shrink-0 z-40 sticky top-0 hidden md:flex lg:hidden">
+<div class="px-lg mb-2xl">
+<h1 class="font-display-xl-mobile text-display-xl-mobile text-on-surface text-2xl">Smart Ride OS</h1>
+<p class="font-technical text-technical text-on-surface-variant mt-sm">MedTech v4.2.1</p>
+</div>
+<div class="flex-1 flex flex-col gap-sm px-sm">
+<a class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">analytics</span>
+<span class="font-technical text-technical">Telemetry</span>
+</a>
+<a class="flex items-center gap-md px-md py-md rounded-lg bg-primary-container/10 text-primary border-r-4 border-primary opacity-80 hover:opacity-100 nav-active" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">explore</span>
+<span class="font-technical text-technical">Motion</span>
+</a>
+<a class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">precision_manufacturing</span>
+<span class="font-technical text-technical">Diagnostics</span>
+</a>
+<a class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">security</span>
+<span class="font-technical text-technical">Safety Log</span>
+</a>
+<a class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">hub</span>
+<span class="font-technical text-technical">Network</span>
+</a>
+<a class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">settings</span>
+<span class="font-technical text-technical">System Config</span>
+</a>
+<a class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300;">person</span>
+<span class="font-technical text-technical">User Profile</span>
+</a>
+</div>
+<div class="px-lg mt-auto flex flex-col gap-md">
+<button class="w-full py-md px-lg bg-error-container text-on-error rounded-lg font-technical text-technical border border-error/30 hover:bg-error transition-colors uppercase tracking-widest flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined">warning</span>
+                Emergency Stop
+            </button>
+<div class="flex flex-col gap-xs mt-md">
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-primary transition-colors font-technical text-technical" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+                    Support
+                </a>
+<a class="flex items-center gap-md px-md py-sm text-on-surface-variant hover:text-primary transition-colors font-technical text-technical" href="#">
+<span class="material-symbols-outlined text-[18px]">menu_book</span>
+                    Manual
+                </a>
+</div>
+<div class="flex items-center gap-md mt-sm pt-md border-t border-outline-variant/20 px-md">
+<div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center overflow-hidden border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-technical text-technical text-on-surface">System Operator</span>
+<span class="text-[10px] text-on-surface-variant font-mono">ID: AX-992</span>
+</div>
+</div>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<aside class="h-screen w-64 border-r border-outline-variant/20 bg-surface-container-low flex flex-col py-xl shrink-0 z-40 sticky top-0 hidden lg:flex">
+  <div class="px-lg mb-2xl">
+    <h2 class="font-technical text-technical text-on-surface-variant uppercase tracking-widest">Core Features</h2>
+  </div>
+  <div class="flex-1 flex flex-col gap-sm px-sm">
+    <a href="#" class="flex items-center gap-md px-md py-md rounded-lg bg-primary-container/10 text-primary border-r-4 border-primary nav-active">
+      <span class="material-symbols-outlined">directions_car</span>
+      <span class="font-technical text-technical">Drive Control</span>
+    </a>
+    <a href="#" class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all">
+      <span class="material-symbols-outlined">mic</span>
+      <span class="font-technical text-technical">Voice Control</span>
+    </a>
+    <a href="#" class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all">
+      <span class="material-symbols-outlined">videocam</span>
+      <span class="font-technical text-technical">Camera Views</span>
+    </a>
+    <a href="#" class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all">
+      <span class="material-symbols-outlined">radar</span>
+      <span class="font-technical text-technical">Safety Radar</span>
+    </a>
+    <a href="#" class="flex items-center gap-md px-md py-md rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all">
+      <span class="material-symbols-outlined">help</span>
+      <span class="font-technical text-technical">Help</span>
+    </a>
+  </div>
+</aside><main class="flex-1 flex flex-col min-w-0 relative">
+<!-- TopAppBar (Mobile) -->
+<header class="md:hidden fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center px-lg py-md">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface text-xl">Motion</h1>
+<button class="text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Motion Viewport -->
+<div class="flex-1 p-lg md:p-margin-desktop grid grid-cols-4 md:grid-cols-12 gap-lg md:gap-gutter-desktop h-full pt-2xl md:pt-margin-desktop relative">
+<!-- Map Container -->
+<div class="col-span-4 md:col-span-12 lg:col-span-9 h-[60vh] md:h-full relative rounded-2xl overflow-hidden tech-border shadow-2xl bg-surface-container-lowest glow-effect group">
+<img alt="GPS Map View" class="absolute inset-0 w-full h-full object-cover opacity-90 transition-opacity duration-500 group-hover:opacity-100" src="https://lh3.googleusercontent.com/aida/AP1WRLtYIb7NurTV_ak9BkVX2dtEpPFK9AeXZsu803zggDoY9XjuGWFtf3L1L6o7taznJFAymXhxuN7o7azyLegAd0NOeog_1r8-oSRaCshvscT3HKS8UwZI2BqnC_Ry0qXv5zcPeP0UqavmOVi9W2-8nX4oXayfuU0z2gCFg_fsjWIzyFNhgKBAK1qxFGSvVn1PQI7dWH0UNS9lNROiagtXjx42y3GLz1F2IBqI4Js6OoBDuxAEzIwCwO0yVQhD">
+<!-- Overlay HUD -->
+<div class="absolute inset-0 pointer-events-none p-lg flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="bg-surface-container/80 backdrop-blur-sm tech-border rounded-lg p-md flex items-center gap-sm">
+<span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+<span class="font-technical text-technical text-[#10B981]">GPS LOCKED</span>
+</div>
+<div class="bg-surface-container/80 backdrop-blur-sm tech-border rounded-lg p-md">
+<span class="font-technical text-technical text-on-surface-variant block mb-xs">HEADING</span>
+<div class="flex items-center gap-xs text-primary">
+<span class="font-display-md text-3xl">NE</span>
+<span class="material-symbols-outlined text-sm">explore</span>
+</div>
+</div>
+</div>
+<div class="flex justify-center mb-xl">
+<div class="bg-surface-container-high/90 backdrop-blur-md tech-border rounded-full px-xl py-md flex items-center gap-lg shadow-xl">
+<div class="flex flex-col items-center">
+<span class="font-technical text-technical text-on-surface-variant">SPEED</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-md text-2xl text-on-surface">3.2</span>
+<span class="font-technical text-technical text-on-surface-variant">MPH</span>
+</div>
+</div>
+<div class="w-px h-8 bg-outline-variant/50"></div>
+<div class="flex flex-col items-center">
+<span class="font-technical text-technical text-on-surface-variant">EST. ARRIVAL</span>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-md text-2xl text-on-surface">14:22</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Telemetry -->
+<div class="col-span-4 md:col-span-12 lg:col-span-3 flex flex-col gap-lg">
+<!-- Route Info -->
+<div class="bg-surface-container tech-border rounded-xl p-lg flex flex-col gap-md">
+<div class="flex items-center gap-sm mb-sm border-b border-outline-variant/30 pb-sm">
+<span class="material-symbols-outlined text-primary">route</span>
+<h2 class="font-technical text-technical text-on-surface uppercase tracking-widest">Active Route</h2>
+</div>
+<div class="relative pl-lg border-l-2 border-outline-variant/30 flex flex-col gap-xl">
+<div class="relative">
+<div class="absolute -left-[29px] top-1 w-4 h-4 rounded-full bg-surface border-2 border-primary"></div>
+<span class="font-technical text-technical text-on-surface-variant block mb-xs">ORIGIN</span>
+<p class="font-body-sm text-body-sm text-on-surface">1420 Promenade Sq.</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[29px] top-1 w-4 h-4 rounded-full bg-primary border-2 border-surface glow-effect"></div>
+<span class="font-technical text-technical text-on-surface-variant block mb-xs">DESTINATION</span>
+<p class="font-body-sm text-body-sm text-on-surface">Medical Center Atrium</p>
+<p class="font-technical text-technical text-primary mt-xs">1.2 miles remaining</p>
+</div>
+</div>
+</div>
+<!-- Environmental Sensor -->
+<div class="bg-surface-container tech-border rounded-xl p-lg flex flex-col gap-md">
+<div class="flex items-center gap-sm mb-sm border-b border-outline-variant/30 pb-sm">
+<span class="material-symbols-outlined text-secondary">radar</span>
+<h2 class="font-technical text-technical text-on-surface uppercase tracking-widest">Proximity Sensors</h2>
+</div>
+<div class="grid grid-cols-2 gap-md">
+<div class="bg-surface-container-low border border-outline-variant/50 rounded-lg p-md text-center">
+<span class="font-technical text-[10px] text-on-surface-variant block mb-xs">FRONT</span>
+<span class="font-display-md text-xl text-[#10B981]">CLEAR</span>
+</div>
+<div class="bg-surface-container-low border border-outline-variant/50 rounded-lg p-md text-center">
+<span class="font-technical text-[10px] text-on-surface-variant block mb-xs">REAR</span>
+<span class="font-display-md text-xl text-[#10B981]">CLEAR</span>
+</div>
+<div class="bg-surface-container-low border border-outline-variant/50 rounded-lg p-md text-center">
+<span class="font-technical text-[10px] text-on-surface-variant block mb-xs">LEFT</span>
+<span class="font-display-md text-xl text-secondary">1.5m</span>
+</div>
+<div class="bg-surface-container-low border border-outline-variant/50 rounded-lg p-md text-center">
+<span class="font-technical text-[10px] text-on-surface-variant block mb-xs">RIGHT</span>
+<span class="font-display-md text-xl text-[#10B981]">CLEAR</span>
+</div>
+</div>
+</div>
+<!-- System Controls -->
+<div class="mt-auto grid grid-cols-2 gap-md">
+<button class="bg-[#A58443] text-[#FFFFFF] py-md rounded-lg font-technical text-technical hover:opacity-90 transition-opacity flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-sm">pause</span>
+                        PAUSE
+                    </button>
+<button class="border border-[#B2ADAD] text-[#74675A] py-md rounded-lg font-technical text-technical hover:bg-surface-container-high transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-sm">refresh</span>
+                        REROUTE
+                    </button>
+</div>
+</div>
+</div>
+</main>
+
+
+</body></html>

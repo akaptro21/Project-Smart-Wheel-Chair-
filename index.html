@@ -1,0 +1,2075 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Smart Ride | Future Mobility OS</title>
+
+  <!-- Google Fonts & Material Symbols -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Chivo:wght@300;400;600;700;900&family=Epilogue:wght@300;400;500;600;700&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#ffb596",
+            "primary-container": "#e37038",
+            "inverse-primary": "#a14007",
+            "secondary": "#e7c17a",
+            "secondary-container": "#5f4507",
+            "background": "#151313",
+            "surface": "#1d1b1b",
+            "surface-container": "#211f1f",
+            "surface-container-high": "#2c292a",
+            "surface-container-highest": "#373434",
+            "surface-container-lowest": "#0f0e0e",
+            "outline": "#8c9197",
+            "outline-variant": "#42474c",
+            "on-surface": "#e7e1e1",
+            "on-surface-variant": "#c2c7cd",
+            "error": "#ffb4ab",
+            "error-container": "#93000a"
+          },
+          fontFamily: {
+            display: ["Chivo", "sans-serif"],
+            body: ["Epilogue", "sans-serif"],
+            technical: ["Libre Caslon Text", "serif"],
+            mono: ["JetBrains Mono", "monospace"]
+          }
+        }
+      }
+    };
+  </script>
+
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/modules.css" />
+</head>
+
+<body
+  class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-white min-h-screen relative pb-10">
+
+  <!-- ================= TOP HEADER NAVIGATION ================= -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-background/80 backdrop-blur-lg border-b border-outline-variant/30">
+    <div class="max-w-[1500px] mx-auto px-6 py-3 flex items-center justify-between">
+
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-4 cursor-pointer" data-nav-target="home">
+        <div
+          class="w-9 h-9 rounded-xl bg-primary-container/20 border border-primary/40 flex items-center justify-center glow-effect">
+          <span class="material-symbols-outlined text-primary text-[22px]">smart_toy</span>
+        </div>
+        <div>
+          <div class="font-display font-bold text-xl text-primary tracking-wide">Smart Ride</div>
+          <div class="text-[10px] font-mono text-outline uppercase tracking-widest">Future Mobility OS v2.4</div>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Items -->
+      <nav
+        class="hidden lg:flex items-center gap-1 bg-surface-container/60 border border-outline-variant/30 rounded-full px-3 py-1.5 backdrop-blur">
+        <button data-nav-target="home"
+          class="px-4 py-1.5 rounded-full text-sm font-semibold transition-all hover:text-primary active-nav">Showcase</button>
+        <button data-nav-target="features"
+          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Engineering</button>
+        <button data-nav-target="dashboard"
+          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Telemetry</button>
+        <button data-nav-target="map"
+          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Live
+          Map</button>
+        <button data-nav-target="detection"
+          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">AI
+          Vision</button>
+        <button data-nav-target="voice"
+          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Voice
+          Core</button>
+        <button data-nav-target="camera"
+          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Cameras</button>
+        <button data-nav-target="profile"
+          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Profile</button>
+        <button data-nav-target="auth"
+          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Sign
+          In</button>
+      </nav>
+
+      <!-- System Status Bar & Profile Button -->
+      <div class="flex items-center gap-3">
+        <div
+          class="hidden sm:flex items-center gap-3 bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/20 font-mono text-xs">
+          <div class="flex items-center gap-1.5">
+            <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+            <span class="text-emerald-400 font-semibold">SYS.ONLINE</span>
+          </div>
+          <span class="text-outline">|</span>
+          <span id="global-status-clock" class="text-on-surface-variant font-bold">12:00:00</span>
+          <span class="text-outline">|</span>
+          <span class="text-primary font-bold">87% BATT</span>
+        </div>
+
+        <!-- Profile Direct Button -->
+        <button id="nav-auth-btn" data-nav-target="profile"
+          class="flex items-center gap-2 bg-primary-container text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-inverse-primary transition-all shadow-lg glow-effect">
+          <span class="material-symbols-outlined text-[18px]">account_circle</span>
+          <span id="nav-user-name">Alex Mercer</span>
+        </button>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobile-menu-btn"
+          class="lg:hidden p-2 rounded-xl bg-surface-container border border-outline-variant/30 text-on-surface hover:text-primary transition-colors">
+          <span class="material-symbols-outlined text-[24px]">menu</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Dropdown Navigation Drawer -->
+    <div id="mobile-nav-menu"
+      class="hidden lg:hidden border-t border-outline-variant/20 bg-surface-container-high/95 backdrop-blur-xl px-6 py-4 space-y-2">
+      <div class="grid grid-cols-2 gap-2 text-sm font-semibold">
+        <button data-nav-target="home"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
+            class="material-symbols-outlined text-[18px] text-primary">3d_rotation</span> Showcase</button>
+        <button data-nav-target="features"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
+            class="material-symbols-outlined text-[18px] text-primary">tune</span> Engineering</button>
+        <button data-nav-target="dashboard"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
+            class="material-symbols-outlined text-[18px] text-primary">speed</span> Telemetry</button>
+        <button data-nav-target="map"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
+            class="material-symbols-outlined text-[18px] text-primary">map</span> Live Map</button>
+        <button data-nav-target="detection"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
+            class="material-symbols-outlined text-[18px] text-primary">view_in_ar</span> AI Vision</button>
+        <button data-nav-target="voice"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
+            class="material-symbols-outlined text-[18px] text-primary">mic</span> Voice Core</button>
+        <button data-nav-target="camera"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
+            class="material-symbols-outlined text-[18px] text-primary">videocam</span> Cameras</button>
+        <button data-nav-target="profile"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
+            class="material-symbols-outlined text-[18px] text-primary">person</span> Profile</button>
+        <button data-nav-target="auth"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary sm:col-span-2"><span
+            class="material-symbols-outlined text-[18px] text-primary">lock</span> Sign In / Access</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= VIEW 1: HOME & 90-FRAME 3D SCROLL SHOWCASE ================= -->
+  <main id="view-home" class="module-view block pt-16">
+
+    <!-- Hero Section with Interactive WebGL Fluid Gesture Canvas -->
+    <section class="relative min-h-[92vh] flex items-center justify-center blueprint-grid overflow-hidden">
+
+      <!-- Fluid Gesture Effect Canvas (Responds to Pointer & Touch) -->
+      <canvas id="fluid-gesture-canvas"
+        class="absolute inset-0 w-full h-full pointer-events-auto z-0 cursor-crosshair opacity-85"></canvas>
+
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background z-10 pointer-events-none">
+      </div>
+
+      <div
+        class="max-w-[1400px] mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-20 w-full items-center">
+
+        <!-- Hero Text -->
+        <div class="lg:col-span-6 space-y-6">
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-container/15 border border-primary/30 text-primary text-xs font-mono tracking-widest uppercase">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+            SYS.01 // MOBILITY KERNEL ACTIVE
+          </div>
+
+          <h1 class="font-display font-black text-5xl md:text-7xl leading-none text-on-surface tracking-tight">
+            Smart<span class="text-primary">Ride</span>
+          </h1>
+
+          <p class="font-display text-2xl md:text-3xl text-on-surface-variant font-semibold">
+            Your Voice. Your Control. Your Mobility.
+          </p>
+
+          <p class="text-on-surface-variant/90 text-lg leading-relaxed max-w-xl">
+            An autonomous, AI-guided mobility system combining continuous 360° LiDAR spatial awareness, natural language
+            voice intent, and precision vector drive engineering.
+          </p>
+
+          <!-- Interactive Quick Gestures Hint -->
+          <div
+            class="p-3 bg-surface-container/80 border border-outline-variant/30 rounded-xl flex items-center gap-3 backdrop-blur max-w-md">
+            <span class="material-symbols-outlined text-primary text-[24px]">touch_app</span>
+            <div class="text-xs text-on-surface-variant">
+              <strong class="text-on-surface">Interactive Fluid Field:</strong> Move your mouse or drag your finger
+              across the canvas to interact with the ambient neural energy field.
+            </div>
+          </div>
+
+          <!-- CTAs -->
+          <div class="flex flex-wrap gap-4 pt-2">
+            <button data-nav-target="dashboard"
+              class="bg-primary-container text-white px-7 py-3 rounded-full font-semibold hover:bg-inverse-primary transition-all flex items-center gap-2 shadow-xl glow-effect">
+              <span class="material-symbols-outlined">speed</span>
+              Launch Telemetry OS
+            </button>
+            <button data-nav-target="voice"
+              class="border border-outline-variant text-on-surface px-6 py-3 rounded-full font-semibold hover:bg-surface-container transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">mic</span>
+              Test Voice Command
+            </button>
+          </div>
+        </div>
+
+        <!-- Hero Interactive Preview Widget -->
+        <div class="lg:col-span-6 relative">
+          <div
+            class="p-6 rounded-2xl bg-surface-container-high/90 border border-outline-variant/30 backdrop-blur-xl shadow-2xl space-y-4">
+
+            <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                <span class="font-mono text-xs text-on-surface font-bold">COGNITIVE KERNEL REALTIME HUD</span>
+              </div>
+              <span class="font-mono text-xs text-primary font-bold">FREQ: 2.4 GHz</span>
+            </div>
+
+            <!-- Simulated Conversational Dialog -->
+            <div class="space-y-3 font-body text-sm">
+              <div class="flex justify-end">
+                <div
+                  class="bg-surface text-on-surface px-4 py-2.5 rounded-2xl rounded-tr-sm border border-outline-variant/30 max-w-[85%]">
+                  "Smart Ride, navigate to Kitchen counter."
+                </div>
+              </div>
+
+              <div class="flex items-start gap-3">
+                <div
+                  class="w-8 h-8 rounded-full bg-primary-container/20 border border-primary/40 flex items-center justify-center shrink-0">
+                  <span class="material-symbols-outlined text-primary text-[18px]">psychology</span>
+                </div>
+                <div
+                  class="bg-primary-container/10 border border-primary/20 text-on-surface px-4 py-2.5 rounded-2xl rounded-tl-sm max-w-[85%] space-y-1">
+                  <div>Plotting dynamic trajectory to Kitchen counter.</div>
+                  <div class="text-primary font-mono text-[11px]">360° LIDAR: 0 OBSTACLES IN CORRIDOR • SPEED: 4.2 KM/H
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Telemetry Mini Bar -->
+            <div class="grid grid-cols-3 gap-3 pt-2 text-center font-mono">
+              <div class="p-2.5 bg-surface rounded-xl border border-outline-variant/20">
+                <div class="text-[10px] text-outline">SPEED</div>
+                <div class="text-lg font-bold text-primary">4.2 <span class="text-xs">km/h</span></div>
+              </div>
+              <div class="p-2.5 bg-surface rounded-xl border border-outline-variant/20">
+                <div class="text-[10px] text-outline">RANGE</div>
+                <div class="text-lg font-bold text-emerald-400">35.4 <span class="text-xs">km</span></div>
+              </div>
+              <div class="p-2.5 bg-surface rounded-xl border border-outline-variant/20">
+                <div class="text-[10px] text-outline">LATENCY</div>
+                <div class="text-lg font-bold text-secondary">12 <span class="text-xs">ms</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= STICKY 90-FRAME 3D SCROLL SEQUENCE SHOWCASE ================= -->
+    <section id="scroll-showcase" class="relative w-full h-[450vh] bg-background">
+
+      <!-- Sticky Viewport Window -->
+      <div id="sticky-frame-viewport"
+        class="sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-between p-6 z-30 pointer-events-none">
+
+        <!-- Header Overlay -->
+        <div class="max-w-[1400px] w-full mx-auto flex items-center justify-between z-40 pointer-events-auto">
+          <div>
+            <span class="text-xs font-mono text-primary tracking-widest uppercase">INTERACTIVE 3D BLUEPRINT
+              ROTATION</span>
+            <h2 class="font-display text-2xl md:text-3xl font-bold text-on-surface">360° Vehicle Architecture</h2>
+          </div>
+
+          <div
+            class="flex items-center gap-4 bg-surface-container/90 px-4 py-2 rounded-xl border border-outline-variant/30 backdrop-blur font-mono text-xs">
+            <span id="telemetry-angle-text" class="text-primary font-bold text-base">0°</span>
+            <span class="text-outline">|</span>
+            <span id="telemetry-progress-text" class="text-on-surface">0% ROTATION</span>
+          </div>
+        </div>
+
+        <!-- Center 3D Frame Render Canvas -->
+        <div
+          class="relative flex-1 w-full max-w-[1300px] mx-auto flex items-center justify-center my-auto pointer-events-auto">
+
+          <!-- Preloader spinner -->
+          <div id="scroll-preloader"
+            class="absolute inset-0 flex flex-col items-center justify-center bg-background/90 z-50 transition-opacity duration-500">
+            <div class="w-12 h-12 rounded-full border-4 border-outline-variant border-t-primary animate-spin mb-4">
+            </div>
+            <div class="text-sm font-mono text-primary font-semibold">CACHING 90 HIGH-DPI SPATIAL FRAMES...</div>
+            <div class="w-48 h-1.5 bg-surface-container rounded-full overflow-hidden mt-3">
+              <div id="preloader-fill" class="h-full bg-primary-container w-0 transition-all duration-100"></div>
+            </div>
+          </div>
+
+          <!-- HTML5 Canvas for high performance smooth lerped rendering -->
+          <canvas id="frame-canvas" class="w-full h-full max-h-[70vh] object-contain drop-shadow-2xl"></canvas>
+
+          <!-- Stage Telemetry Cards (Positioned dynamically) -->
+          <div class="absolute top-4 left-4 max-w-sm space-y-3 pointer-events-none hidden md:block">
+            <div id="stage-card-1"
+              class="p-4 bg-surface-container-high/90 border border-outline-variant/30 rounded-2xl backdrop-blur transition-all duration-300">
+              <div class="text-xs font-mono text-primary">FRONT CAMERA</div>
+              <div class="font-bold text-sm text-on-surface"></div>
+              <div class="text-xs text-on-surface-variant mt-1"></div>
+            </div>
+
+            <div id="stage-card-2"
+              class="p-4 bg-surface-container-high/90 border border-outline-variant/30 rounded-2xl backdrop-blur transition-all duration-300 opacity-20 scale-95">
+              <div class="text-xs font-mono text-primary">SPATIAL PERCEPTION</div>
+              <div class="font-bold text-sm text-on-surface"> LiDAR</div>
+              <div class="text-xs text-on-surface-variant mt-1"></div>
+            </div>
+          </div>
+
+          <div class="absolute bottom-4 right-4 max-w-sm space-y-3 pointer-events-none hidden md:block text-right">
+            <div id="stage-card-3"
+              class="p-4 bg-surface-container-high/90 border border-outline-variant/30 rounded-2xl backdrop-blur transition-all duration-300 opacity-20 scale-95">
+              <div class="text-xs font-mono text-primary">REAR CAMERA</div>
+              <div class="font-bold text-sm text-on-surface"></div>
+              <div class="text-xs text-on-surface-variant mt-1"></div>
+            </div>
+
+            <div id="stage-card-4"
+              class="p-4 bg-surface-container-high/90 border border-outline-variant/30 rounded-2xl backdrop-blur transition-all duration-300 opacity-20 scale-95">
+              <div class="text-xs font-mono text-primary">LIVE ASSISTANT</div>
+              <div class="font-bold text-sm text-on-surface"></div>
+              <div class="text-xs text-on-surface-variant mt-1"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Scrubber Bar & Scroll Prompt -->
+        <div class="max-w-[800px] w-full mx-auto flex flex-col items-center gap-2 z-40 pointer-events-auto">
+          <div class="flex items-center gap-3 w-full">
+            <span class="text-[10px] font-mono text-outline">0°</span>
+            <input id="manual-scrubber" type="range" min="0" max="1" step="0.001" value="0"
+              class="w-full accent-primary-container cursor-pointer h-1.5 bg-surface-container-highest rounded-lg" />
+            <span class="text-[10px] font-mono text-outline">360°</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs font-mono text-on-surface-variant">
+            <span class="material-symbols-outlined text-[16px] animate-bounce">south</span>
+            Scroll down to rotate vehicle assembly in 3D
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Problem & Solution Comparison Section -->
+    <section class="py-24 bg-surface-container-low border-t border-outline-variant/20 blueprint-grid">
+      <div class="max-w-[1400px] mx-auto px-6">
+        <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
+          <span class="text-xs font-mono text-primary tracking-widest uppercase">ENGINEERING INDEPENDENCE</span>
+          <h2 class="font-display text-3xl md:text-5xl font-bold text-on-surface">The Paradigm Shift</h2>
+          <p class="text-on-surface-variant text-base">Moving from manual physical limitations to effortless natural
+            autonomy.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+          <!-- Challenge Card -->
+          <div class="p-8 rounded-2xl bg-surface border border-outline-variant/20 relative overflow-hidden space-y-4">
+            <div class="text-xs font-mono text-outline">TRADITIONAL MOBILITY</div>
+            <h3 class="font-display text-2xl font-bold text-on-surface">Physical Limitations Restrict Freedom</h3>
+            <p class="text-on-surface-variant text-sm leading-relaxed">
+              Standard powered chairs require continuous manual grip, dexterity, and fatigue-inducing joystick
+              operation. Users with severe tremors, ALS, spinal injuries, or quad-paresis are often left dependent on
+              others.
+            </p>
+            <ul class="space-y-2 text-sm text-on-surface-variant pt-2">
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-error text-[18px]">close</span> High physical strain on wrists &
+                joints</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-error text-[18px]">close</span> Zero proactive collision
+                avoidance</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-error text-[18px]">close</span> No spatial room mapping or
+                memory</li>
+            </ul>
+          </div>
+
+          <!-- Solution Card -->
+          <div
+            class="p-8 rounded-2xl bg-surface-container border border-primary/40 relative overflow-hidden space-y-4 glow-effect">
+            <div class="text-xs font-mono text-primary">SMART RIDE AUTONOMY</div>
+            <h3 class="font-display text-2xl font-bold text-on-surface">Natural Voice & Spatial Intelligence</h3>
+            <p class="text-on-surface-variant text-sm leading-relaxed">
+              Simply speak your destination. Smart Ride's multi-layered neural processor converts conversational
+              language into optimized, collision-free movement across any indoor or outdoor environment.
+            </p>
+            <ul class="space-y-2 text-sm text-on-surface pt-2">
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-[18px]">check_circle</span> 100% hands-free
+                conversational voice commands</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-[18px]">check_circle</span> Real-time LiDAR dynamic
+                rerouting around obstacles</li>
+              <li class="flex items-center gap-2"><span
+                  class="material-symbols-outlined text-primary text-[18px]">check_circle</span> Automatic indoor room
+                localization & docking</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= VIEW 2: ENGINEERING & TECHNOLOGY DEEP DIVE ================= -->
+  <section id="view-features" class="module-view hidden pt-24 pb-20">
+    <div class="max-w-[1400px] mx-auto px-6 space-y-12">
+
+      <div class="text-center max-w-3xl mx-auto space-y-3">
+        <span class="text-xs font-mono text-primary tracking-widest uppercase">TECHNICAL SPECIFICATIONS //
+          ARCHITECTURE</span>
+        <h1 class="font-display text-4xl md:text-6xl font-bold text-on-surface">Mobility Hardware & Software Core</h1>
+        <p class="text-on-surface-variant text-lg">Engineered with clinical-grade reliability and aerospace composite
+          materials.</p>
+      </div>
+
+      <!-- Feature Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <div
+          class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 hover:border-primary transition-all">
+          <div
+            class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary/30 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-[28px]">radar</span>
+          </div>
+          <h3 class="font-display text-xl font-bold text-on-surface">360° Solid-State LiDAR</h3>
+          <p class="text-on-surface-variant text-sm">Tri-wavelength pulsed laser emitter scanning 200,000 spatial points
+            per second with 20m indoor radius.</p>
+          <div class="text-xs font-mono text-primary pt-2">RANGE: 0.05m - 25m • REFRESH: 50 Hz</div>
+        </div>
+
+        <div
+          class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 hover:border-primary transition-all">
+          <div
+            class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary/30 flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-[28px]">record_voice_over</span>
+          </div>
+          <h3 class="font-display text-xl font-bold text-on-surface">Voice Command</h3>
+          <p class="text-on-surface-variant text-sm">4-channel MEMS microphone array with active noise cancellation
+            isolating user commands up to 92 dB ambient noise.</p>
+          <div class="text-xs font-mono text-primary pt-2">DSP LATENCY: < 18ms • INTENT CONF: 99.4%</div>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 hover:border-primary transition-all">
+            <div
+              class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary/30 flex items-center justify-center">
+              <img src="image.png" alt="camera-sytem" class="material-symbols-outlined text-primary text-[28px]">
+            </div>
+            <h3 class="font-display text-xl font-bold text-on-surface">Front and Rear Cameras</h3>
+            <p class="text-on-surface-variant text-sm">AI VISION — Real-Time Object Detection. ESP32-CAM identifies
+              relevant objects and obstacles for safer wheelchair navigation.</p>
+            <div class="text-xs font-mono text-primary pt-2">CAMERA: ESP32-CAM • RESOLUTION: 640x480 • FRAME RATE: 30
+              FPS</div>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 hover:border-primary transition-all">
+            <div
+              class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary/30 flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary text-[28px]">battery_charging_full</span>
+            </div>
+            <h3 class="font-display text-xl font-bold text-on-surface">Solid-State Lithium LiFePO4</h3>
+            <p class="text-on-surface-variant text-sm">Thermal runaway proof 48V battery pack supporting 1,500+ charge
+              cycles and 45-minute rapid recharge.</p>
+            <div class="text-xs font-mono text-primary pt-2">CAPACITY: 1.2 kWh • 35 KM RANGE</div>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 hover:border-primary transition-all">
+            <div
+              class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary/30 flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary text-[28px]">security</span>
+            </div>
+            <h3 class="font-display text-xl font-bold text-on-surface">Emergency Stop Button</h3>
+            <p class="text-on-surface-variant text-sm">Hardware electromagnetic emergency brake, redundant optical drop
+              sensors, and instant capacitive operator kill-switch.</p>
+            <div class="text-xs font-mono text-primary pt-2">BRAKE DISTANCE: 0.18m @ 6 KM/H</div>
+          </div>
+
+          <div
+            class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 hover:border-primary transition-all">
+            <div
+              class="w-12 h-12 rounded-xl bg-primary-container/20 border border-primary/30 flex items-center justify-center">
+              <span class="material-symbols-outlined text-primary text-[28px]">hub</span>
+            </div>
+            <h3 class="font-display text-xl font-bold text-on-surface">Accessibility Navigation</h3>
+            <p class="text-on-surface-variant text-sm">Prioritizes accessible paths, avoiding inclines, stairs, and
+              tight spaces to ensure safe and comfortable navigation for all users.</p>
+            <div class="text-xs font-mono text-primary pt-2">MAX INCLINE: 12° • RAMP DETECTION</div>
+          </div>
+
+        </div>
+
+      </div>
+  </section>
+
+  <!-- ================= VIEW 3: LIVE TELEMETRY DASHBOARD (CONTROL COLONY) ================= -->
+  <section id="view-dashboard" class="module-view hidden pt-20 pb-16">
+    <div class="max-w-[1580px] mx-auto px-4 sm:px-6 space-y-6">
+
+      <!-- Telemetry Top HUD Bar (Matches Image Top Header) -->
+      <div
+        class="p-3.5 rounded-2xl bg-surface-container/90 border border-outline-variant/30 backdrop-blur flex flex-wrap items-center justify-between gap-3 shadow-lg">
+
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-3">
+          <div
+            class="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-400 shadow">
+            <span class="material-symbols-outlined text-[22px]">visibility</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-display font-black text-lg text-on-surface tracking-wide">Drishti</span>
+              <span
+                class="px-1.5 py-0.2 rounded bg-sky-500/20 border border-sky-400/40 text-sky-400 font-mono text-[10px] font-bold">AI
+                v2.4</span>
+            </div>
+            <div class="text-[11px] font-mono text-outline">Smart AI Assistive Mobility</div>
+          </div>
+        </div>
+
+        <!-- System Status Pills -->
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono">
+
+          <!-- Status Warning Pill -->
+          <div id="telemetry-status-pill"
+            class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 font-bold shadow-sm">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+            <span id="telemetry-status-text">STATUS: WARNING</span>
+          </div>
+
+          <!-- Speed Pill -->
+          <div
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant/30 text-sky-400 font-bold">
+            <span class="material-symbols-outlined text-[16px]">speed</span>
+            <span id="pill-speed-val">4.2 km/h</span>
+          </div>
+
+          <!-- Battery Pill -->
+          <div
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant/30 text-emerald-400 font-bold">
+            <span class="material-symbols-outlined text-[16px]">battery_charging_full</span>
+            <span id="pill-battery-val">88%</span>
+          </div>
+
+          <!-- Network ROS Bridge Pill -->
+          <div
+            class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant/30 text-on-surface-variant font-bold">
+            <span class="material-symbols-outlined text-[16px] text-primary">wifi</span>
+            <span>5G / ROS Bridge</span>
+          </div>
+
+        </div>
+
+        <!-- Quick Top Actions -->
+        <div class="flex items-center gap-2">
+          <button data-nav-target="voice"
+            class="p-2 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface hover:text-primary transition-colors"
+            title="Voice Controller">
+            <span class="material-symbols-outlined text-[20px]">mic</span>
+          </button>
+          <button id="header-estop-btn"
+            class="px-4 py-1.5 rounded-full bg-error text-white font-bold text-xs flex items-center gap-1.5 shadow-lg hover:bg-error-container transition-all animate-pulse">
+            <span class="material-symbols-outlined text-[16px]">pan_tool</span>
+            E-STOP
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Main Layout: Sidebar Colony + Central Telemetry Dashboard -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Column: Colony Subsystem Sidebar Navigation -->
+        <div class="lg:col-span-3 space-y-5">
+          <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-5 shadow-xl">
+
+            <!-- Primary Navigation Section -->
+            <div class="space-y-1.5">
+              <div class="text-[11px] font-mono text-outline uppercase tracking-wider px-2 font-bold">PRIMARY NAVIGATION
+              </div>
+              <div class="space-y-1">
+                <button data-nav-target="home"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px] text-outline">home</span>
+                    <span>Home / Intro</span>
+                  </div>
+                </button>
+
+                <button data-nav-target="dashboard"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-sky-500/15 border border-sky-400/40 text-left flex items-center justify-between text-sm font-bold text-sky-400 transition-all shadow-sm">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px]">query_stats</span>
+                    <span>Dashboard</span>
+                  </div>
+                  <span
+                    class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 text-[10px] font-mono font-bold">LIVE</span>
+                </button>
+
+                <button id="side-joystick-btn"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px] text-outline">sports_esports</span>
+                    <span>Wheelchair Control</span>
+                  </div>
+                </button>
+
+                <button data-nav-target="detection"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px] text-outline">photo_camera</span>
+                    <span>AI Camera</span>
+                  </div>
+                  <span
+                    class="px-1.5 py-0.2 rounded bg-surface-container-highest text-outline text-[10px] font-mono">YOLO</span>
+                </button>
+
+                <button data-nav-target="camera"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px] text-outline">sensors</span>
+                    <span>Sensors / Obstacles</span>
+                  </div>
+                </button>
+
+                <button data-nav-target="voice"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px] text-outline">smart_toy</span>
+                    <span>AI Assistant</span>
+                  </div>
+                  <span
+                    class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-mono font-bold">VOICE</span>
+                </button>
+
+                <button data-nav-target="map"
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px] text-outline">map</span>
+                    <span>Navigation</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Safety & Hardware Section -->
+            <div class="space-y-1.5 pt-2 border-t border-outline-variant/20">
+              <div class="text-[11px] font-mono text-outline uppercase tracking-wider px-2 font-bold">SAFETY & HARDWARE
+              </div>
+              <div class="space-y-1">
+                <button id="side-sos-btn"
+                  class="w-full px-3.5 py-2 rounded-xl bg-transparent hover:bg-error-container/20 text-left flex items-center justify-between text-sm font-semibold text-error transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px]">warning</span>
+                    <span>Emergency & SOS</span>
+                  </div>
+                  <span class="px-1.5 py-0.2 rounded bg-error/20 text-error text-[10px] font-mono font-bold">SOS</span>
+                </button>
+
+                <button data-nav-target="features"
+                  class="w-full px-3.5 py-2 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px] text-outline">battery_charging_full</span>
+                    <span>Battery & BMS</span>
+                  </div>
+                </button>
+
+                <button data-nav-target="profile"
+                  class="w-full px-3.5 py-2 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px] text-outline">tune</span>
+                    <span>Settings</span>
+                  </div>
+                </button>
+
+                <button data-nav-target="profile"
+                  class="w-full px-3.5 py-2 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-[18px] text-outline">account_circle</span>
+                    <span>Profile & Help</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Caregiver / Doctor Footer Box -->
+            <div class="p-3.5 rounded-xl bg-surface border border-outline-variant/20 flex items-center gap-3">
+              <div
+                class="w-9 h-9 rounded-full bg-primary-container/20 border border-primary/40 flex items-center justify-center text-primary font-bold text-xs">
+                MD
+              </div>
+              <div class="space-y-0.5 leading-tight overflow-hidden">
+                <div id="side-doctor-name" class="font-bold text-xs text-on-surface truncate">Dr. Arthur Bennett, MD
+                </div>
+                <div class="text-[10px] font-mono text-emerald-400">Caregiver Link Online</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right Column: Central Telemetry Dashboard (9 Cols) -->
+        <div class="lg:col-span-9 space-y-6">
+
+          <!-- Dashboard Title & Main Action Buttons -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-sky-400 text-[26px]">show_chart</span>
+                <h1 class="font-display text-2xl sm:text-3xl font-black text-on-surface">Central Telemetry Dashboard
+                </h1>
+              </div>
+              <p class="text-on-surface-variant text-sm mt-0.5">Real-time vehicle diagnostics, kinematics, environmental
+                sensors, and quick actuators.</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button id="btn-test-hazard"
+                class="px-4 py-2 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-xs font-mono font-bold text-on-surface hover:text-amber-300 flex items-center gap-2 transition-all shadow">
+                <span class="material-symbols-outlined text-amber-400 text-[18px]">build</span>
+                Test Hazard Simulation
+              </button>
+
+              <button id="btn-open-joystick"
+                class="px-4 py-2 rounded-xl bg-sky-500 text-white font-mono font-bold text-xs flex items-center gap-2 hover:bg-sky-600 transition-all shadow-lg glow-effect">
+                <span class="material-symbols-outlined text-[18px]">sports_esports</span>
+                Open Joystick
+              </button>
+            </div>
+          </div>
+
+          <!-- Top 4 KPI Telemetry Cards (Matches Image Layout) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+
+            <!-- Card 1: Speed & Heading -->
+            <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2 shadow-md">
+              <div class="text-xs font-mono text-outline uppercase tracking-wider font-bold">SPEED & HEADING</div>
+              <div class="flex items-baseline gap-2">
+                <div id="kpi-speed" class="text-3xl sm:text-4xl font-display font-black text-sky-400">4.2 km/h</div>
+              </div>
+              <div id="kpi-heading" class="text-xs font-mono text-on-surface-variant">0° N • Forward Vector</div>
+            </div>
+
+            <!-- Card 2: Battery Capacity -->
+            <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2 shadow-md">
+              <div class="text-xs font-mono text-outline uppercase tracking-wider font-bold">BATTERY CAPACITY</div>
+              <div class="flex items-baseline gap-2">
+                <div id="kpi-battery" class="text-3xl sm:text-4xl font-display font-black text-emerald-400">88%</div>
+              </div>
+              <div id="kpi-range" class="text-xs font-mono text-on-surface-variant">24.5 km Estimated Range</div>
+            </div>
+
+            <!-- Card 3: Nearest Obstacle -->
+            <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2 shadow-md">
+              <div class="text-xs font-mono text-outline uppercase tracking-wider font-bold">NEAREST OBSTACLE</div>
+              <div class="flex items-baseline gap-2">
+                <div id="kpi-obstacle" class="text-3xl sm:text-4xl font-display font-black text-amber-400">1.90 m</div>
+              </div>
+              <div id="kpi-objects-count" class="text-xs font-mono text-on-surface-variant">4 Objects in 360° Envelope
+              </div>
+            </div>
+
+            <!-- Card 4: Safety State -->
+            <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2 shadow-md">
+              <div class="text-xs font-mono text-outline uppercase tracking-wider font-bold">SAFETY STATE</div>
+              <div class="flex items-baseline gap-2">
+                <div id="kpi-safety-state"
+                  class="text-3xl sm:text-4xl font-display font-black text-amber-400 uppercase">WARNING</div>
+              </div>
+              <div id="kpi-safety-sub" class="text-xs font-mono text-on-surface-variant">Auto-Brake: Active (0.5m)</div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Colony Grid: Kinematics/Compass Gyro + Quick Actuators -->
+          <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+            <!-- Left Box: Kinematics & Compass Gyro (8 Cols) -->
+            <div
+              class="xl:col-span-8 p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-6 shadow-xl">
+
+              <div class="flex flex-wrap items-center justify-between border-b border-outline-variant/20 pb-4 gap-3">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sky-400 text-[22px]">explore</span>
+                  <h3 class="font-display text-lg font-bold text-on-surface">Kinematics & Compass Gyro</h3>
+                </div>
+                <div class="text-xs font-mono text-outline">
+                  Odometry: <strong class="text-sky-400 font-bold">1.42 km</strong>
+                </div>
+              </div>
+
+              <!-- Dials Row: Speedometer + Compass Gyro -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center justify-center py-2">
+
+                <!-- Speedometer Dial -->
+                <div
+                  class="flex flex-col items-center justify-center p-6 rounded-2xl bg-surface border border-outline-variant/20 space-y-3">
+                  <div
+                    class="relative w-44 h-44 rounded-full border-4 border-outline-variant/30 flex flex-col items-center justify-center shadow-inner">
+                    <!-- Glow ring effect -->
+                    <div class="absolute inset-2 rounded-full border-2 border-dashed border-sky-400/40 animate-spin"
+                      style="animation-duration: 20s;"></div>
+                    <div class="text-4xl font-display font-black text-on-surface tracking-tight" id="speed-readout">4.2
+                    </div>
+                    <div class="text-[11px] font-mono text-outline uppercase tracking-widest mt-1">KM / H</div>
+                    <div class="text-[10px] font-mono text-sky-400 font-bold mt-1">FORWARD VECTOR</div>
+                  </div>
+                  <div class="w-full text-center">
+                    <span class="text-xs font-mono text-outline">PRIMARY VELOCITY // LERP ACTIVE</span>
+                  </div>
+                </div>
+
+                <!-- Compass Gyro Dial -->
+                <div
+                  class="flex flex-col items-center justify-center p-6 rounded-2xl bg-surface border border-outline-variant/20 space-y-3">
+                  <div
+                    class="relative w-44 h-44 rounded-full border-4 border-outline-variant/30 flex flex-col items-center justify-center shadow-inner">
+
+                    <!-- Direction Labels -->
+                    <span class="absolute top-2 font-mono text-xs font-bold text-rose-400">N</span>
+                    <span class="absolute bottom-2 font-mono text-xs font-bold text-sky-400">S</span>
+                    <span class="absolute right-2 font-mono text-xs font-bold text-outline">E</span>
+                    <span class="absolute left-2 font-mono text-xs font-bold text-outline">W</span>
+
+                    <!-- Rotating Compass Needle -->
+                    <div id="compass-needle"
+                      class="w-2 h-28 relative flex flex-col items-center justify-between transition-transform duration-300">
+                      <div class="w-0 h-0 border-x-4 border-x-transparent border-b-[38px] border-b-rose-500"></div>
+                      <div class="w-3 h-3 rounded-full bg-white border-2 border-surface shadow z-10"></div>
+                      <div class="w-0 h-0 border-x-4 border-x-transparent border-t-[38px] border-t-sky-400"></div>
+                    </div>
+                  </div>
+                  <div class="w-full text-center font-mono text-xs">
+                    <span id="compass-deg-text" class="text-rose-400 font-bold">004° NORTH-NORTH-EAST</span>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Secondary Diagnostics: Real-Time Radar Sweep & Stream -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-outline-variant/20">
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between text-xs font-mono">
+                    <span class="text-outline">360° LIDAR PERCEPTION</span>
+                    <span class="text-emerald-400 font-bold">50 Hz</span>
+                  </div>
+                  <canvas id="radar-canvas" width="300" height="150"
+                    class="w-full h-[150px] rounded-xl bg-surface border border-outline-variant/20"></canvas>
+                </div>
+
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between text-xs font-mono">
+                    <span class="text-outline">TORQUE & VELOCITY STREAM</span>
+                    <span class="text-sky-400 font-bold">REALTIME</span>
+                  </div>
+                  <canvas id="telemetry-chart" width="300" height="150"
+                    class="w-full h-[150px] rounded-xl bg-surface border border-outline-variant/20"></canvas>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Box: Quick Actuators (4 Cols) -->
+            <div
+              class="xl:col-span-4 p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-6 shadow-xl flex flex-col justify-between">
+
+              <div class="space-y-4">
+
+                <!-- Quick Actuators Header & Toggle -->
+                <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+                  <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sky-400 text-[22px]">toggle_on</span>
+                    <h3 class="font-display text-lg font-bold text-on-surface">Quick Actuators</h3>
+                  </div>
+                  <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
+                </div>
+
+                <!-- Actuators 2-Column Buttons -->
+                <div class="grid grid-cols-2 gap-3">
+                  <button id="actuator-headlights"
+                    class="p-3.5 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow">
+                    <span class="material-symbols-outlined text-amber-300 text-[20px]">lightbulb</span>
+                    Headlights
+                  </button>
+
+                  <button id="actuator-hazards"
+                    class="p-3.5 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow">
+                    <span class="material-symbols-outlined text-amber-400 text-[20px]">warning</span>
+                    Hazards
+                  </button>
+                </div>
+
+                <!-- Sound Horn Chime Button -->
+                <button id="actuator-horn"
+                  class="w-full py-3.5 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow">
+                  <span class="material-symbols-outlined text-sky-400 text-[20px]">campaign</span>
+                  Sound Horn Chime
+                </button>
+
+                <!-- Seat Tilt Angle Slider -->
+                <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-2">
+                  <div class="flex items-center justify-between text-xs font-mono">
+                    <span class="text-outline">Seat Tilt Angle</span>
+                    <span id="seat-tilt-val" class="text-sky-400 font-bold">0°</span>
+                  </div>
+                  <input id="seat-tilt-slider" type="range" min="0" max="45" value="0" step="1"
+                    class="w-full accent-sky-400 cursor-pointer h-1.5 bg-surface-container-highest rounded-lg" />
+                </div>
+
+                <!-- Mode Selector -->
+                <div class="p-3 bg-surface rounded-xl border border-outline-variant/20 space-y-2">
+                  <div class="text-[11px] font-mono text-outline uppercase font-bold">DRIVING AUTONOMY MODE</div>
+                  <div class="grid grid-cols-3 gap-1.5 text-xs font-mono font-bold">
+                    <button data-mode="AUTONOMOUS"
+                      class="mode-btn py-2 rounded-lg bg-sky-500 text-white text-center transition-all">AUTO</button>
+                    <button data-mode="ASSISTED"
+                      class="mode-btn py-2 rounded-lg bg-surface-container text-on-surface-variant text-center transition-all">ASSIST</button>
+                    <button data-mode="MANUAL"
+                      class="mode-btn py-2 rounded-lg bg-surface-container text-on-surface-variant text-center transition-all">MANUAL</button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- Instant Emergency Stop Prominent Button -->
+              <button id="btn-instant-estop"
+                class="w-full py-4 rounded-2xl bg-error/90 hover:bg-error text-white font-display font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-xl glow-effect">
+                <span class="material-symbols-outlined text-[22px]">pan_tool</span>
+                Instant Emergency Stop
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= VIEW 4: INTERACTIVE NAVIGATION MAP ================= -->
+  <section id="view-map" class="module-view hidden pt-24 pb-20">
+    <div class="max-w-[1500px] mx-auto px-6 space-y-8">
+
+      <div
+        class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
+        <div>
+          <span class="text-xs font-mono text-primary tracking-widest uppercase">INDOOR & OUTDOOR LOCALIZATION</span>
+          <h1 class="font-display text-3xl md:text-4xl font-bold text-on-surface">Interactive Navigation Blueprint</h1>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="bg-surface-container px-4 py-2 rounded-xl border border-outline-variant/30 font-mono text-xs">
+            <span class="text-outline">TARGET: </span>
+            <strong id="map-destination-label" class="text-primary">Living Room Hub</strong>
+          </div>
+          <div id="map-eta-label"
+            class="bg-surface-container px-4 py-2 rounded-xl border border-outline-variant/30 font-mono text-xs text-emerald-400 font-bold">
+            ETA: 0s (0.0m)
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left: Floorplan Canvas -->
+        <div class="lg:col-span-8 p-4 rounded-2xl bg-surface-container border border-outline-variant/30">
+          <div class="flex items-center justify-between px-2 pb-3 text-xs font-mono">
+            <span class="text-outline">CLICK ANY POINT OR WAYPOINT TO PLOT AUTONOMOUS PATH</span>
+            <span id="map-status-label" class="text-emerald-400 font-bold">AUTONOMOUS TRANSIT ACTIVE</span>
+          </div>
+          <canvas id="map-canvas" width="760" height="500"
+            class="w-full h-auto aspect-[76/50] rounded-xl border border-outline-variant/30 cursor-crosshair"></canvas>
+        </div>
+
+        <!-- Right: Quick Waypoints & Controls -->
+        <div class="lg:col-span-4 space-y-4">
+          <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
+            <h3 class="font-display font-bold text-lg text-on-surface">Predefined Waypoints</h3>
+
+            <div class="grid grid-cols-1 gap-2.5">
+              <button data-wp="wp-living"
+                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-primary">chair</span>
+                  <div>
+                    <div class="font-bold text-sm text-on-surface">Living Room Hub</div>
+                    <div class="text-[11px] font-mono text-outline">Central seating zone</div>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+              </button>
+
+              <button data-wp="wp-kitchen"
+                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-primary">restaurant</span>
+                  <div>
+                    <div class="font-bold text-sm text-on-surface">Kitchen & Dining</div>
+                    <div class="text-[11px] font-mono text-outline">Prep counter station</div>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+              </button>
+
+              <button data-wp="wp-bedroom"
+                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-primary">bed</span>
+                  <div>
+                    <div class="font-bold text-sm text-on-surface">Master Bedroom</div>
+                    <div class="text-[11px] font-mono text-outline">Bedside transfer dock</div>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+              </button>
+
+              <button data-wp="wp-office"
+                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-primary">computer</span>
+                  <div>
+                    <div class="font-bold text-sm text-on-surface">Work Office / Study</div>
+                    <div class="text-[11px] font-mono text-outline">Height-adjusted desk</div>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+              </button>
+
+              <button data-wp="wp-dock"
+                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-primary">electrical_services</span>
+                  <div>
+                    <div class="font-bold text-sm text-on-surface">Autonomous Charging Bay</div>
+                    <div class="text-[11px] font-mono text-outline">Inductive fast charger</div>
+                  </div>
+                </div>
+                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= VIEW 5: AI OBJECT DETECTION HUD ================= -->
+  <section id="view-detection" class="module-view hidden pt-24 pb-20">
+    <div class="max-w-[1500px] mx-auto px-6 space-y-8">
+
+      <div
+        class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
+        <div>
+          <span class="text-xs font-mono text-primary tracking-widest uppercase">COMPUTER VISION & EDGE INFERENCE</span>
+          <h1 class="font-display text-3xl md:text-4xl font-bold text-on-surface">AI Object Detection & Spatial HUD</h1>
+        </div>
+
+        <div id="proximity-alert-banner"
+          class="px-4 py-2 rounded-xl bg-surface-container border border-primary/30 text-primary font-mono text-xs font-bold">
+          PATH CLEAR • SAFE CLEARANCE
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Live AI HUD Feed -->
+        <div class="lg:col-span-8 p-4 rounded-2xl bg-surface-container border border-outline-variant/30">
+          <canvas id="detection-canvas" width="760" height="460"
+            class="w-full h-auto aspect-[76/46] rounded-xl border border-outline-variant/30 shadow-2xl"></canvas>
+        </div>
+
+        <!-- Detection Controls & Realtime Tags -->
+        <div class="lg:col-span-4 space-y-6">
+          <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
+            <h3 class="font-display font-bold text-lg text-on-surface">HUD Overlay Toggles</h3>
+
+            <div class="space-y-3 font-mono text-xs">
+              <label
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
+                <span>AI BOUNDING BOXES</span>
+                <input id="toggle-boxes" type="checkbox" checked class="accent-primary-container w-4 h-4" />
+              </label>
+
+              <label
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
+                <span>DISTANCE METRIC TAGS</span>
+                <input id="toggle-dist" type="checkbox" checked class="accent-primary-container w-4 h-4" />
+              </label>
+
+              <label
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
+                <span>OPTICAL FLOW VECTORS</span>
+                <input id="toggle-flow" type="checkbox" checked class="accent-primary-container w-4 h-4" />
+              </label>
+            </div>
+
+            <!-- Proximity Metric Box -->
+            <div class="p-4 bg-surface rounded-xl border border-outline-variant/20 space-y-2">
+              <div class="text-[10px] font-mono text-outline">CLOSEST PROXIMITY HAZARD</div>
+              <div id="closest-dist-value" class="text-xl font-bold font-mono text-primary">1.1m (Step / Threshold)
+              </div>
+              <div class="text-xs text-on-surface-variant">Edge AI executes micro-deceleration buffer automatically.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= VIEW 6: NEURAL VOICE COMMAND SUITE ================= -->
+  <section id="view-voice" class="module-view hidden pt-24 pb-20">
+    <div class="max-w-[1400px] mx-auto px-6 space-y-8">
+
+      <div class="text-center max-w-3xl mx-auto space-y-3">
+        <span class="text-xs font-mono text-primary tracking-widest uppercase">NATURAL LANGUAGE PROCESSING // ACOUSTIC
+          CORE</span>
+        <h1 class="font-display text-4xl md:text-5xl font-bold text-on-surface">Conversational Voice Control</h1>
+        <p class="text-on-surface-variant text-base">State of the art intent parsing without pre-memorized rigid
+          commands.</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+        <!-- Left: Audio Waveform & Mic Activator -->
+        <div
+          class="lg:col-span-6 p-8 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-6 text-center">
+
+          <canvas id="audio-waveform-canvas" width="450" height="120"
+            class="w-full h-[120px] rounded-xl bg-surface border border-outline-variant/20"></canvas>
+
+          <!-- Large Mic Button -->
+          <div class="flex flex-col items-center gap-3">
+            <button id="voice-mic-trigger"
+              class="w-20 h-20 rounded-full bg-primary-container text-white flex items-center justify-center shadow-2xl hover:scale-105 transition-all glow-effect">
+              <span class="material-symbols-outlined text-[36px]">mic</span>
+            </button>
+            <div id="voice-status-text" class="font-mono text-xs text-outline uppercase font-bold">MIC READY • PRESS TO
+              SPEAK</div>
+          </div>
+
+          <!-- Live Transcript Output -->
+          <div
+            class="p-4 bg-surface rounded-xl border border-outline-variant/20 min-h-[70px] flex items-center justify-center text-center">
+            <div id="voice-live-transcript" class="font-display font-semibold text-lg text-on-surface">
+              "Click the mic or choose a command preset below"
+            </div>
+          </div>
+
+          <!-- Type input box for testing without mic -->
+          <div class="flex gap-2">
+            <input id="voice-text-input" type="text"
+              placeholder="Type a custom voice command (e.g., Take me to kitchen)..."
+              class="flex-1 bg-surface border border-outline-variant/30 rounded-xl px-4 py-2 text-sm text-on-surface focus:outline-none focus:border-primary" />
+            <button id="voice-text-submit"
+              class="bg-primary-container text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-inverse-primary transition-colors">Send</button>
+          </div>
+
+          <!-- Sample Command Chips -->
+          <div class="space-y-2 text-left pt-2">
+            <div class="text-xs font-mono text-outline">QUICK TEST PRESETS (CLICK TO EXECUTE):</div>
+            <div class="flex flex-wrap gap-2">
+              <button
+                class="sample-command-chip px-3 py-1.5 rounded-lg bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Take
+                me to the kitchen"</button>
+              <button
+                class="sample-command-chip px-3 py-1.5 rounded-lg bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Emergency
+                stop"</button>
+              <button
+                class="sample-command-chip px-3 py-1.5 rounded-lg bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Navigate
+                to charging dock"</button>
+              <button
+                class="sample-command-chip px-3 py-1.5 rounded-lg bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Report
+                system diagnostic status"</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Real-time Execution History Log -->
+        <div class="lg:col-span-6 p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
+          <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+            <span class="font-mono text-xs text-primary font-bold">INTENT EXECUTION LOG</span>
+            <span class="font-mono text-xs text-outline">REALTIME NLP KERNEL</span>
+          </div>
+
+          <div id="voice-history-list" class="space-y-3 max-h-[480px] overflow-y-auto pr-1">
+            <div class="p-4 bg-surface border border-outline-variant/20 rounded-xl space-y-1">
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-primary font-mono">12:00:15</span>
+                <span
+                  class="px-2 py-0.5 rounded bg-primary-container/20 text-primary text-[10px] font-semibold">BOOT</span>
+              </div>
+              <div class="font-semibold text-on-surface text-sm">"Voice recognition neural weights initialized"</div>
+              <div class="text-on-surface-variant text-xs">Acoustic beamforming isolation active on 4 channels.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= VIEW 7: AI MULTI-SPECTRAL CAMERAS ================= -->
+  <section id="view-camera" class="module-view hidden pt-24 pb-20">
+    <div class="max-w-[1500px] mx-auto px-6 space-y-8">
+
+      <div
+        class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
+        <div>
+          <span class="text-xs font-mono text-primary tracking-widest uppercase">MULTI-SPECTRAL OPTICAL SENSOR
+            SUITE</span>
+          <h1 class="font-display text-3xl md:text-4xl font-bold text-on-surface">AI Camera System</h1>
+        </div>
+
+        <!-- 4-Way Mode Selector -->
+        <div
+          class="flex flex-wrap items-center gap-2 bg-surface-container p-1.5 rounded-xl border border-outline-variant/30 font-mono text-xs">
+          <button data-cam-mode="optical"
+            class="cam-mode-btn px-4 py-2 rounded-lg bg-primary-container text-white border border-primary transition-all font-bold">FRONT
+            AI OPTICAL</button>
+          <button data-cam-mode="depth"
+            class="cam-mode-btn px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all font-bold">LIDAR
+            DEPTH MAP</button>
+          <button data-cam-mode="infrared"
+            class="cam-mode-btn px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all font-bold">NIGHT
+            VISION IR</button>
+          <button data-cam-mode="rear"
+            class="cam-mode-btn px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all font-bold">REAR
+            REVERSE CAM</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Live Camera Feed Canvas -->
+        <div class="lg:col-span-8 p-4 rounded-2xl bg-surface-container border border-outline-variant/30">
+          <div class="flex items-center justify-between px-2 pb-3 font-mono text-xs">
+            <span id="camera-mode-title" class="text-primary font-bold">FRONT AI OPTICAL</span>
+            <span class="text-emerald-400 font-bold">FEED: 1080p 60FPS</span>
+          </div>
+          <canvas id="camera-feed-canvas" width="760" height="450"
+            class="w-full h-auto aspect-[76/45] rounded-xl border border-outline-variant/30 shadow-2xl"></canvas>
+        </div>
+
+        <!-- Camera HUD Settings -->
+        <div class="lg:col-span-4 space-y-6">
+          <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
+            <h3 class="font-display font-bold text-lg text-on-surface">Optical Filters & Overlays</h3>
+
+            <div class="space-y-3 font-mono text-xs">
+              <label
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
+                <span>LANE CLEARANCE GUIDANCE</span>
+                <input id="cam-toggle-guidance" type="checkbox" checked class="accent-primary-container w-4 h-4" />
+              </label>
+
+              <label
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
+                <span>SAFE DISTANCE ENVELOPE</span>
+                <input id="cam-toggle-envelope" type="checkbox" checked class="accent-primary-container w-4 h-4" />
+              </label>
+
+              <label
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
+                <span>SEMANTIC SEGMENTATION</span>
+                <input id="cam-toggle-seg" type="checkbox" class="accent-primary-container w-4 h-4" />
+              </label>
+            </div>
+
+            <button id="cam-snapshot-btn"
+              class="w-full py-3 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold text-sm flex items-center justify-center gap-2 transition-all">
+              <span class="material-symbols-outlined text-primary text-[20px]">photo_camera</span>
+              Capture High-Res Frame Snapshot
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= VIEW 8: USER & MEDICAL PROFILE HUD ================= -->
+  <section id="view-profile" class="module-view hidden pt-24 pb-20">
+    <div class="max-w-[1500px] mx-auto px-6 space-y-8">
+
+      <!-- Top Title Header -->
+      <div
+        class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-xs font-mono text-primary tracking-widest uppercase">OPERATOR IDENTITY // TELEMETRY &
+              MEDICAL HUD</span>
+          </div>
+          <h1 class="font-display text-3xl md:text-5xl font-bold text-on-surface">User & Medical Profile</h1>
+        </div>
+
+        <!-- Quick Status Pill -->
+        <div class="flex items-center gap-3">
+          <div
+            class="bg-surface-container px-4 py-2 rounded-xl border border-outline-variant/30 font-mono text-xs flex items-center gap-2">
+            <span class="text-outline">SYSTEM ID:</span>
+            <strong id="profile-display-id" class="text-primary font-bold">SR-PAT-7492</strong>
+          </div>
+          <div
+            class="bg-surface-container px-4 py-2 rounded-xl border border-outline-variant/30 font-mono text-xs text-emerald-400 font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">verified</span>
+            <span id="profile-display-clearance">TIER-4 AUTONOMY</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Identity Hero Card -->
+      <div
+        class="p-8 rounded-3xl bg-surface-container/90 border border-primary/30 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+        <!-- Ambient decorative glow -->
+        <div
+          class="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-primary-container/10 blur-3xl pointer-events-none">
+        </div>
+
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
+
+          <!-- Avatar & Primary Info -->
+          <div
+            class="flex flex-col sm:flex-row items-center sm:items-start lg:items-center gap-6 text-center sm:text-left">
+            <!-- Avatar with Cybernetic Ring -->
+            <div class="relative">
+              <div
+                class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-tr from-primary-container to-secondary flex items-center justify-center text-3xl sm:text-4xl font-display font-black text-background shadow-xl border-2 border-primary glow-effect">
+                <span id="profile-avatar-initials">AM</span>
+              </div>
+              <div
+                class="absolute -bottom-1.5 -right-1.5 w-6 h-6 rounded-full bg-emerald-500 border-2 border-surface flex items-center justify-center shadow"
+                title="Operator Verified & Active">
+                <span class="material-symbols-outlined text-[14px] text-white">check</span>
+              </div>
+            </div>
+
+            <!-- Identity Details -->
+            <div class="space-y-2">
+              <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                <h2 id="profile-display-name"
+                  class="font-display text-2xl sm:text-4xl font-black text-on-surface tracking-tight">Alex Mercer</h2>
+                <span
+                  class="px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-mono font-bold">ACTIVE
+                  OPERATOR</span>
+              </div>
+              <p id="profile-display-email"
+                class="text-on-surface-variant text-sm font-mono flex items-center justify-center sm:justify-start gap-1.5">
+                <span class="material-symbols-outlined text-[16px] text-primary">mail</span>
+                alex.mercer@smartride.os
+              </p>
+              <div
+                class="flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-1 text-xs font-mono text-outline">
+                <span>MOBILITY CLASS: <strong class="text-on-surface">AUTONOMOUS GRADE 4</strong></span>
+                <span>•</span>
+                <span>SYNCED SINCE: <strong id="profile-display-date" class="text-on-surface">AUG 20,
+                    2026</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="flex flex-wrap items-center justify-center lg:justify-end gap-3 pt-2 lg:pt-0">
+            <button id="profile-edit-btn"
+              class="px-5 py-2.5 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/40 text-on-surface text-xs font-mono font-bold flex items-center gap-2 transition-all hover:border-primary">
+              <span class="material-symbols-outlined text-primary text-[18px]">edit_note</span>
+              EDIT PROFILE
+            </button>
+
+            <button id="profile-export-btn"
+              class="px-5 py-2.5 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/40 text-on-surface text-xs font-mono font-bold flex items-center gap-2 transition-all hover:border-primary">
+              <span class="material-symbols-outlined text-secondary text-[18px]">badge</span>
+              MEDICAL ID CARD
+            </button>
+
+            <button id="profile-sos-btn"
+              class="px-5 py-2.5 rounded-xl bg-error-container text-error hover:bg-error hover:text-white border border-error/50 text-xs font-mono font-bold flex items-center gap-2 transition-all shadow-lg glow-effect animate-soft-pulse">
+              <span class="material-symbols-outlined text-[18px]">sos</span>
+              EMERGENCY SOS
+            </button>
+
+            <button id="profile-lock-btn"
+              class="p-2.5 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-outline hover:text-on-surface transition-all"
+              title="Lock System / Switch User">
+              <span class="material-symbols-outlined text-[20px]">lock_reset</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Information Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6">
+
+        <!-- Column 1: Medical & Caregiver Profile (5 Cols) -->
+        <div class="lg:col-span-6 p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-6">
+          <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[22px]">medical_information</span>
+              <h3 class="font-display text-lg font-bold text-on-surface">Medical & Emergency Records</h3>
+            </div>
+            <span class="text-xs font-mono text-primary font-bold">EHR SYNCED</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[11px] font-mono text-outline uppercase">Blood Group & Type</div>
+              <div id="profile-display-blood" class="font-display text-xl font-black text-rose-400">O+ (Rh Positive)
+              </div>
+              <div class="text-[11px] text-on-surface-variant">Universal donor compatibility</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[11px] font-mono text-outline uppercase">Primary Condition</div>
+              <div id="profile-display-condition" class="font-bold text-sm text-on-surface">Motor Neuropathy Gr. 2</div>
+              <div class="text-[11px] text-on-surface-variant">Assisted vector steering required</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1 sm:col-span-2">
+              <div class="text-[11px] font-mono text-outline uppercase">Supervising Physician</div>
+              <div id="profile-display-doctor" class="font-bold text-base text-primary">Dr. Arthur Bennett, MD</div>
+              <div class="text-xs text-on-surface-variant">Neuro-Mobility Rehabilitation Specialist • Metro General
+              </div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1 sm:col-span-2">
+              <div class="flex items-center justify-between">
+                <div class="text-[11px] font-mono text-outline uppercase">Emergency Caregiver Contact</div>
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              </div>
+              <div id="profile-display-contact" class="font-bold text-base text-emerald-400">+1 (555) 019-2834 (Elena
+                Mercer)</div>
+              <div class="text-xs text-on-surface-variant">Priority 1 Beacon Receiver • Automated SMS & Telemetry
+                Telecast</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1 sm:col-span-2">
+              <div class="text-[11px] font-mono text-outline uppercase">Known Allergies & Clinical Cautions</div>
+              <div id="profile-display-allergies" class="text-sm font-semibold text-amber-300">Penicillin, NSAIDs, Latex
+                Sensitivity</div>
+              <div class="text-[11px] text-on-surface-variant">Medical telemetry broadcast automatically alerts EMT
+                responders</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Column 2: Wheelchair Hardware & Diagnostics (6 Cols) -->
+        <div class="lg:col-span-6 p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-6">
+          <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary text-[22px]">accessible_forward</span>
+              <h3 class="font-display text-lg font-bold text-on-surface">Paired Mobility Hardware Core</h3>
+            </div>
+            <span class="text-xs font-mono text-emerald-400 font-bold">100% HEALTH</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[11px] font-mono text-outline uppercase">Mobility Unit Model</div>
+              <div id="profile-display-unit" class="font-bold text-sm text-on-surface">SmartRide Kinetic V4.2.1 Pro
+              </div>
+              <div class="text-[11px] text-outline font-mono">CHASSIS: CARBON COMPOSITE</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[11px] font-mono text-outline uppercase">Hardware Serial No.</div>
+              <div id="profile-display-serial" class="font-mono text-sm font-bold text-primary">SR-KX-9024-ALPHA</div>
+              <div class="text-[11px] text-outline font-mono">CRYPTOGRAPHIC KEY PAIRED</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[11px] font-mono text-outline uppercase">Battery Cell Health (SOH)</div>
+              <div id="profile-display-battery-soh" class="font-display text-xl font-bold text-emerald-400">99.1% SOH
+              </div>
+              <div class="text-[11px] text-on-surface-variant">LiFePO4 48V Matrix • 42 Cycles</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[11px] font-mono text-outline uppercase">Firmware OS Kernel</div>
+              <div id="profile-display-firmware" class="font-mono text-sm font-bold text-secondary">v2.4.8 Kinetic OS
+              </div>
+              <div class="text-[11px] text-on-surface-variant">Realtime Neural Weights Active</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1 sm:col-span-2">
+              <div class="text-[11px] font-mono text-outline uppercase">Sensor Array Calibration</div>
+              <div class="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
+                <span
+                  class="px-2.5 py-1 rounded-lg bg-surface-container-high border border-emerald-500/30 text-emerald-400">LiDAR
+                  360°: OK (50Hz)</span>
+                <span
+                  class="px-2.5 py-1 rounded-lg bg-surface-container-high border border-emerald-500/30 text-emerald-400">Dual
+                  ESP32-CAM: OK</span>
+                <span
+                  class="px-2.5 py-1 rounded-lg bg-surface-container-high border border-emerald-500/30 text-emerald-400">4-MEMS
+                  Audio: OK</span>
+                <span
+                  class="px-2.5 py-1 rounded-lg bg-surface-container-high border border-emerald-500/30 text-emerald-400">E-Brake:
+                  ARMED</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Telemetry & Lifetime Stats (4 Grid Cards - Full Width) -->
+        <div class="lg:col-span-12 grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2">
+            <div class="flex items-center justify-between text-outline">
+              <span class="text-xs font-mono uppercase">LIFETIME DISTANCE</span>
+              <span class="material-symbols-outlined text-primary text-[20px]">timeline</span>
+            </div>
+            <div class="text-3xl font-display font-black text-on-surface">1,284.6 <span
+                class="text-sm font-mono text-primary">km</span></div>
+            <div class="text-xs text-on-surface-variant">342 Autonomous routes logged</div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2">
+            <div class="flex items-center justify-between text-outline">
+              <span class="text-xs font-mono uppercase">AUTONOMY TIME</span>
+              <span class="material-symbols-outlined text-emerald-400 text-[20px]">timer</span>
+            </div>
+            <div class="text-3xl font-display font-black text-on-surface">142.8 <span
+                class="text-sm font-mono text-emerald-400">hrs</span></div>
+            <div class="text-xs text-on-surface-variant">Hands-free navigation active</div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2">
+            <div class="flex items-center justify-between text-outline">
+              <span class="text-xs font-mono uppercase">SAFETY RECORD</span>
+              <span class="material-symbols-outlined text-secondary text-[20px]">shield</span>
+            </div>
+            <div class="text-3xl font-display font-black text-on-surface">100% <span
+                class="text-sm font-mono text-secondary">A+</span></div>
+            <div class="text-xs text-on-surface-variant">Zero collision incidents</div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2">
+            <div class="flex items-center justify-between text-outline">
+              <span class="text-xs font-mono uppercase">REGEN EFFICIENCY</span>
+              <span class="material-symbols-outlined text-cyan-400 text-[20px]">bolt</span>
+            </div>
+            <div class="text-3xl font-display font-black text-on-surface">94.2% <span
+                class="text-sm font-mono text-cyan-400">RECOV</span></div>
+            <div class="text-xs text-on-surface-variant">+38.4 kWh kinetic regeneration</div>
+          </div>
+        </div>
+
+        <!-- Column 3: Biometric Vitals & Seating Sensors (6 Cols) -->
+        <div class="lg:col-span-6 p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
+          <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-rose-400 text-[22px]">vital_signs</span>
+              <h3 class="font-display text-lg font-bold text-on-surface">Live Bio-Sensors & Seating HUD</h3>
+            </div>
+            <span class="text-xs font-mono text-emerald-400 font-bold">STREAMING</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[10px] font-mono text-outline">RESTING HEART RATE</div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl font-display font-black text-rose-400">72</span>
+                <span class="text-xs font-mono text-outline">BPM</span>
+              </div>
+              <div class="text-[11px] text-emerald-400">● Stable Sinus Rhythm</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[10px] font-mono text-outline">SEAT PRESSURE BALANCE</div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl font-display font-black text-emerald-400">98%</span>
+                <span class="text-xs font-mono text-outline">OPTIMAL</span>
+              </div>
+              <div class="text-[11px] text-on-surface-variant">Zero decubitus hotspots</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[10px] font-mono text-outline">SEATING RECLINE ANGLE</div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl font-display font-black text-secondary">102°</span>
+                <span class="text-xs font-mono text-outline">TILT</span>
+              </div>
+              <div class="text-[11px] text-on-surface-variant">Ergonomic posture profile</div>
+            </div>
+
+            <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-1">
+              <div class="text-[10px] font-mono text-outline">SKIN AMBIENT TEMP</div>
+              <div class="flex items-baseline gap-2">
+                <span class="text-2xl font-display font-black text-cyan-400">36.4°</span>
+                <span class="text-xs font-mono text-outline">CELSIUS</span>
+              </div>
+              <div class="text-[11px] text-on-surface-variant">Comfort HVAC calibrated</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 4: Recent Autonomous Trips History (6 Cols) -->
+        <div class="lg:col-span-6 p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
+          <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[22px]">history</span>
+              <h3 class="font-display text-lg font-bold text-on-surface">Recent Autonomous Trips</h3>
+            </div>
+            <span class="text-xs font-mono text-outline">SAVED LOGS</span>
+          </div>
+
+          <div class="space-y-2.5 text-xs font-mono">
+            <div
+              class="p-3 bg-surface rounded-xl border border-outline-variant/20 flex items-center justify-between hover:border-primary/40 transition-colors">
+              <div class="space-y-0.5">
+                <div class="font-bold text-sm text-on-surface font-body">Living Room Hub → Kitchen Prep</div>
+                <div class="text-outline">Dist: 18.2m • Speed: 4.2 km/h • 0 Obstacles</div>
+              </div>
+              <span
+                class="px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 font-bold text-[10px]">COMPLETED</span>
+            </div>
+
+            <div
+              class="p-3 bg-surface rounded-xl border border-outline-variant/20 flex items-center justify-between hover:border-primary/40 transition-colors">
+              <div class="space-y-0.5">
+                <div class="font-bold text-sm text-on-surface font-body">Master Bedroom Dock → Study Desk</div>
+                <div class="text-outline">Dist: 14.5m • Speed: 3.8 km/h • LiDAR Reroute</div>
+              </div>
+              <span
+                class="px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 font-bold text-[10px]">COMPLETED</span>
+            </div>
+
+            <div
+              class="p-3 bg-surface rounded-xl border border-outline-variant/20 flex items-center justify-between hover:border-primary/40 transition-colors">
+              <div class="space-y-0.5">
+                <div class="font-bold text-sm text-on-surface font-body">Inductive Charging Bay → Living Hub</div>
+                <div class="text-outline">Dist: 22.1m • Auto Undock • +100% Charged</div>
+              </div>
+              <span
+                class="px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 font-bold text-[10px]">COMPLETED</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= VIEW 9: SPLIT-SCREEN SECURE LOGIN PAGE ================= -->
+  <section id="view-auth" class="module-view hidden pt-16 pb-16 min-h-[90vh]">
+    <div class="max-w-[1500px] mx-auto px-4 sm:px-6">
+
+      <div
+        class="rounded-3xl border border-outline-variant/30 bg-surface-container/80 backdrop-blur-xl overflow-hidden shadow-2xl grid grid-cols-1 lg:grid-cols-12 min-h-[750px]">
+
+        <!-- Left Visual Cybernetic Panel (Desktop) -->
+        <div
+          class="lg:col-span-5 relative bg-surface-container-lowest p-8 sm:p-12 flex flex-col justify-between overflow-hidden border-b lg:border-b-0 lg:border-r border-outline-variant/20 blueprint-grid">
+
+          <!-- Ambient Glow Effect -->
+          <div
+            class="absolute -top-24 -left-24 w-80 h-80 bg-primary-container/20 rounded-full blur-3xl pointer-events-none">
+          </div>
+          <div
+            class="absolute -bottom-24 -right-24 w-80 h-80 bg-secondary/15 rounded-full blur-3xl pointer-events-none">
+          </div>
+
+          <!-- Top Status Badge -->
+          <div class="relative z-10 space-y-4">
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-container/15 border border-primary/40 text-primary text-xs font-mono tracking-widest uppercase">
+              <span class="material-symbols-outlined text-[16px]">security</span>
+              <span>Secure Environment Active</span>
+            </div>
+
+            <div class="pt-4">
+              <div class="h-1 w-16 bg-primary-container rounded-full mb-4"></div>
+              <h2 class="font-display text-4xl sm:text-5xl font-black text-on-surface leading-tight">
+                Smart Ride OS<br />
+                <span class="text-primary">v4.2.1 Core</span>
+              </h2>
+              <p class="text-on-surface-variant text-sm sm:text-base mt-3 leading-relaxed">
+                Authorized patient & clinical operator portal. Real-time EHR telemetry synchronization and Kinetic Logic
+                mobility kernel.
+              </p>
+            </div>
+          </div>
+
+          <!-- Center Biometric Quick Authentication Hub -->
+          <div
+            class="relative z-10 my-8 p-6 rounded-2xl bg-surface/80 border border-outline-variant/30 space-y-4 text-center shadow-lg">
+            <div class="text-xs font-mono text-outline uppercase font-bold tracking-wider">TOUCHLESS BIOMETRIC ACCESS
+            </div>
+
+            <div class="flex flex-col items-center gap-2">
+              <div id="bio-scan-ring"
+                class="w-20 h-20 rounded-full border-2 border-dashed border-primary/60 flex items-center justify-center cursor-pointer transition-all hover:border-primary hover:scale-105 shadow-inner">
+                <span class="material-symbols-outlined text-primary text-[36px]">fingerprint</span>
+              </div>
+              <button id="biometric-scan-trigger" class="text-xs font-mono text-primary font-bold hover:underline mt-1">
+                PRESS TO SCAN FINGERPRINT / FACE ID
+              </button>
+              <div id="bio-status-label" class="font-mono text-[11px] text-outline">MATCH READY FOR ALEX MERCER</div>
+            </div>
+          </div>
+
+          <!-- Bottom Telemetry Badges -->
+          <div class="relative z-10 grid grid-cols-3 gap-2 text-[10px] font-mono text-center">
+            <div class="p-2.5 rounded-xl bg-surface border border-outline-variant/20">
+              <div class="text-outline">CIPHER</div>
+              <div class="text-emerald-400 font-bold">AES-256</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-surface border border-outline-variant/20">
+              <div class="text-outline">ROS BRIDGE</div>
+              <div class="text-sky-400 font-bold">v2.4 ONLINE</div>
+            </div>
+            <div class="p-2.5 rounded-xl bg-surface border border-outline-variant/20">
+              <div class="text-outline">EHR SYNC</div>
+              <div class="text-secondary font-bold">FHIR ACTIVE</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Form Panel: Full Patient & Doctor Details -->
+        <div class="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-center space-y-6 bg-surface relative z-10">
+
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono text-primary tracking-widest uppercase font-bold">SYSTEM ACCESS // IDENTITY
+                INITIALIZATION</span>
+              <button id="btn-quick-fill-demo"
+                class="text-xs font-mono text-secondary hover:underline font-bold flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">auto_fix_high</span> Auto-fill Demo Data
+              </button>
+            </div>
+            <h1 class="font-display text-3xl sm:text-4xl font-bold text-on-surface mt-1">Operator & Patient Sign In</h1>
+            <p class="text-on-surface-variant text-sm mt-1">Enter your identity credentials, supervising physician, and
+              emergency care network.</p>
+          </div>
+
+          <!-- Form Alert Feedback -->
+          <div id="login-feedback" class="hidden p-3.5 rounded-xl text-xs font-mono text-center"></div>
+
+          <!-- Login & Profile Form -->
+          <form id="login-form" class="space-y-4 font-mono text-xs">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+              <!-- Patient / Operator Name -->
+              <div class="space-y-1.5">
+                <label for="login-patient-name" class="text-outline uppercase tracking-wider font-bold">Operator /
+                  Patient Full Name *</label>
+                <input id="login-patient-name" type="text" required placeholder="e.g. Alex Mercer"
+                  class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary font-body font-semibold transition-colors" />
+              </div>
+
+              <!-- Email Address -->
+              <div class="space-y-1.5">
+                <label for="login-email" class="text-outline uppercase tracking-wider font-bold">Email Address /
+                  Operator ID *</label>
+                <input id="login-email" type="email" required placeholder="e.g. alex.mercer@smartride.os"
+                  class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary font-body transition-colors" />
+              </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+              <!-- Password / Key -->
+              <div class="space-y-1.5">
+                <label for="login-password" class="text-outline uppercase tracking-wider font-bold">Access Key /
+                  Password *</label>
+                <input id="login-password" type="password" required value="••••••••••••" placeholder="••••••••••••"
+                  class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary font-body transition-colors" />
+              </div>
+
+              <!-- Blood Group -->
+              <div class="space-y-1.5">
+                <label for="login-blood-group" class="text-outline uppercase tracking-wider font-bold">Patient Blood
+                  Group *</label>
+                <select id="login-blood-group"
+                  class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary font-body transition-colors">
+                  <option value="O+">O+ (Rh Positive - Universal)</option>
+                  <option value="O-">O- (Rh Negative)</option>
+                  <option value="A+">A+ (Rh Positive)</option>
+                  <option value="A-">A- (Rh Negative)</option>
+                  <option value="B+">B+ (Rh Positive)</option>
+                  <option value="B-">B- (Rh Negative)</option>
+                  <option value="AB+">AB+ (Rh Positive)</option>
+                  <option value="AB-">AB- (Rh Negative)</option>
+                </select>
+              </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+              <!-- Doctor Name -->
+              <div class="space-y-1.5">
+                <label for="login-doctor-name" class="text-outline uppercase tracking-wider font-bold">Supervising
+                  Physician Name *</label>
+                <input id="login-doctor-name" type="text" placeholder="e.g. Dr. Arthur Bennett, MD"
+                  class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary font-body transition-colors" />
+              </div>
+
+              <!-- Emergency Contact -->
+              <div class="space-y-1.5">
+                <label for="login-emergency-contact" class="text-outline uppercase tracking-wider font-bold">Caregiver
+                  Emergency Contact & Phone *</label>
+                <input id="login-emergency-contact" type="text" placeholder="e.g. +1 (555) 019-2834 (Elena Mercer)"
+                  class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary font-body transition-colors" />
+              </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+              <!-- Condition -->
+              <div class="space-y-1.5">
+                <label for="login-condition" class="text-outline uppercase tracking-wider font-bold">Mobility Condition
+                  / Diagnosis</label>
+                <input id="login-condition" type="text" placeholder="e.g. Motor Neuropathy Gr. 2 / Spinal Assist"
+                  class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary font-body transition-colors" />
+              </div>
+
+              <!-- Allergies -->
+              <div class="space-y-1.5">
+                <label for="login-allergies" class="text-outline uppercase tracking-wider font-bold">Allergies &
+                  Clinical Cautions</label>
+                <input id="login-allergies" type="text" placeholder="e.g. Penicillin, NSAIDs, Latex"
+                  class="w-full bg-surface-container border border-outline-variant/30 rounded-xl px-4 py-3 text-sm text-on-surface focus:outline-none focus:border-primary font-body transition-colors" />
+              </div>
+
+            </div>
+
+            <!-- Submit Primary Button -->
+            <button type="submit"
+              class="w-full mt-4 bg-primary-container hover:bg-inverse-primary text-white font-display font-bold text-base py-4 rounded-xl flex items-center justify-center gap-2 shadow-xl glow-effect transition-all group">
+              <span>Initialize System Access</span>
+              <span
+                class="material-symbols-outlined text-[20px] group-hover:translate-x-1.5 transition-transform">arrow_forward</span>
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= VIRTUAL JOYSTICK MODAL ================= -->
+  <div id="joystick-modal"
+    class="fixed inset-0 z-50 bg-background/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div
+      class="bg-surface-container-high border border-sky-400/40 rounded-3xl max-w-md w-full p-6 space-y-6 shadow-2xl text-center">
+
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-sky-400 text-[24px]">sports_esports</span>
+          <h3 class="font-display font-bold text-lg text-on-surface">Virtual Joystick Controller</h3>
+        </div>
+        <button id="joystick-close-btn"
+          class="p-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface transition-colors">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <!-- Virtual D-Pad / Interactive Joystick Pad -->
+      <div class="flex flex-col items-center justify-center py-4 space-y-4">
+
+        <div id="joystick-base"
+          class="relative w-48 h-48 rounded-full bg-surface border-4 border-outline-variant/30 flex items-center justify-center shadow-inner select-none cursor-pointer">
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span class="absolute top-2 text-[10px] font-mono text-outline">FWD</span>
+            <span class="absolute bottom-2 text-[10px] font-mono text-outline">REV</span>
+            <span class="absolute left-2 text-[10px] font-mono text-outline">LEFT</span>
+            <span class="absolute right-2 text-[10px] font-mono text-outline">RIGHT</span>
+          </div>
+
+          <!-- Movable Thumb Stick -->
+          <div id="joystick-thumb"
+            class="w-16 h-16 rounded-full bg-gradient-to-tr from-sky-500 to-primary-container text-white flex items-center justify-center shadow-2xl border-2 border-white transition-transform duration-75">
+            <span class="material-symbols-outlined text-[24px]">navigation</span>
+          </div>
+        </div>
+
+        <!-- D-Pad Directional Arrows -->
+        <div class="grid grid-cols-3 gap-2 w-44 font-mono text-xs">
+          <div></div>
+          <button data-dir="up"
+            class="dpad-btn p-3 rounded-xl bg-surface hover:bg-sky-500 hover:text-white border border-outline-variant/30 flex items-center justify-center transition-all"><span
+              class="material-symbols-outlined">north</span></button>
+          <div></div>
+          <button data-dir="left"
+            class="dpad-btn p-3 rounded-xl bg-surface hover:bg-sky-500 hover:text-white border border-outline-variant/30 flex items-center justify-center transition-all"><span
+              class="material-symbols-outlined">west</span></button>
+          <button data-dir="stop"
+            class="dpad-btn p-3 rounded-xl bg-error/20 text-error border border-error/30 flex items-center justify-center transition-all font-bold">STOP</button>
+          <button data-dir="right"
+            class="dpad-btn p-3 rounded-xl bg-surface hover:bg-sky-500 hover:text-white border border-outline-variant/30 flex items-center justify-center transition-all"><span
+              class="material-symbols-outlined">east</span></button>
+          <div></div>
+          <button data-dir="down"
+            class="dpad-btn p-3 rounded-xl bg-surface hover:bg-sky-500 hover:text-white border border-outline-variant/30 flex items-center justify-center transition-all"><span
+              class="material-symbols-outlined">south</span></button>
+          <div></div>
+        </div>
+
+        <div class="text-xs font-mono text-on-surface-variant">
+          Keyboard: Use <strong class="text-sky-400">Arrow Keys</strong> or drag thumbstick to steer.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= EDIT PROFILE MODAL ================= -->
+  <div id="profile-edit-modal"
+    class="fixed inset-0 z-50 bg-background/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div
+      class="bg-surface-container-high border border-primary/40 rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+
+      <div class="flex items-center justify-between border-b border-outline-variant/30 pb-4">
+        <div class="flex items-center gap-2.5">
+          <span class="material-symbols-outlined text-primary text-[24px]">manage_accounts</span>
+          <h3 class="font-display font-bold text-xl text-on-surface">Edit Operator Profile</h3>
+        </div>
+        <button id="modal-close-btn"
+          class="p-1 rounded-lg text-outline hover:text-on-surface hover:bg-surface transition-colors">
+          <span class="material-symbols-outlined text-[22px]">close</span>
+        </button>
+      </div>
+
+      <form id="edit-profile-form" class="space-y-4 font-mono text-xs">
+
+        <div class="space-y-1.5">
+          <label for="edit-user-name" class="text-outline uppercase">Operator / Patient Full Name</label>
+          <input id="edit-user-name" type="text" required
+            class="w-full bg-surface border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:border-primary font-body font-semibold" />
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="edit-user-email" class="text-outline uppercase">Email Address</label>
+          <input id="edit-user-email" type="email" required
+            class="w-full bg-surface border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:border-primary font-body" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label for="edit-user-blood" class="text-outline uppercase">Blood Group</label>
+            <select id="edit-user-blood"
+              class="w-full bg-surface border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:border-primary font-body">
+              <option value="O+">O+ (Rh Positive)</option>
+              <option value="O-">O- (Rh Negative)</option>
+              <option value="A+">A+ (Rh Positive)</option>
+              <option value="A-">A- (Rh Negative)</option>
+              <option value="B+">B+ (Rh Positive)</option>
+              <option value="B-">B- (Rh Negative)</option>
+              <option value="AB+">AB+ (Rh Positive)</option>
+              <option value="AB-">AB- (Rh Negative)</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="edit-user-condition" class="text-outline uppercase">Mobility Condition</label>
+            <input id="edit-user-condition" type="text"
+              class="w-full bg-surface border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:border-primary font-body" />
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="edit-user-doctor" class="text-outline uppercase">Supervising Physician</label>
+          <input id="edit-user-doctor" type="text"
+            class="w-full bg-surface border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:border-primary font-body" />
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="edit-user-contact" class="text-outline uppercase">Emergency Caregiver Contact & Phone</label>
+          <input id="edit-user-contact" type="text"
+            class="w-full bg-surface border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:border-primary font-body" />
+        </div>
+
+        <div class="space-y-1.5">
+          <label for="edit-user-allergies" class="text-outline uppercase">Known Allergies / Medical Notes</label>
+          <input id="edit-user-allergies" type="text"
+            class="w-full bg-surface border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:border-primary font-body" />
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-outline-variant/20">
+          <button type="button" id="modal-cancel-btn"
+            class="px-5 py-2.5 rounded-xl bg-surface border border-outline-variant/30 text-on-surface hover:bg-surface-container transition-colors">
+            Cancel
+          </button>
+          <button type="submit" id="modal-save-btn"
+            class="px-6 py-2.5 rounded-xl bg-primary-container text-white font-bold hover:bg-inverse-primary transition-colors shadow-lg">
+            Save Profile
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Subsystem JavaScript Modules -->
+  <script src="assets/js/fluid-gesture.js"></script>
+  <script src="assets/js/scroll-anim.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+  <script src="assets/js/map-nav.js"></script>
+  <script src="assets/js/object-detect.js"></script>
+  <script src="assets/js/voice-command.js"></script>
+  <script src="assets/js/camera-system.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/battery-bms.js"></script>
+  <script src="assets/js/app.js"></script>
+
+</body>
+
+</html>

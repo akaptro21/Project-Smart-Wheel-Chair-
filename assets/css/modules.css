@@ -1,0 +1,52 @@
+/* Module Specific Styles for HUD, Navigation, Camera, and Gauges */
+
+.gauge-dial {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 3px solid rgba(66, 71, 76, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.radar-hud-container {
+  position: relative;
+  background: radial-gradient(circle, #1d1b1b 0%, #151313 100%);
+  border-radius: 1rem;
+  border: 1px solid rgba(66, 71, 76, 0.3);
+  overflow: hidden;
+}
+
+.camera-grid-overlay {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Profile Modal & Card Enhancements */
+#profile-edit-modal {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.profile-stat-card {
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(227, 112, 56, 0.5);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes pulseBorder {
+  0%, 100% { border-color: rgba(227, 112, 56, 0.3); }
+  50% { border-color: rgba(227, 112, 56, 0.8); }
+}
+
+.pulse-border {
+  animation: pulseBorder 2s infinite ease-in-out;
+}
