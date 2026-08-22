@@ -99,6 +99,12 @@ class SmartRideApp {
         window.batteryBMS.drawBMSChart();
       }, 100);
     }
+
+    if (route === 'map' && window.liveLeafletMap) {
+      setTimeout(() => {
+        window.liveLeafletMap.invalidateSize();
+      }, 150);
+    }
   }
 
   initGlobalShortcuts() {

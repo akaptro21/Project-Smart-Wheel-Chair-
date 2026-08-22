@@ -54,6 +54,11 @@
 
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/modules.css" />
+
+  <!-- Leaflet & FontAwesome for Live Accessible Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
 <body
@@ -985,109 +990,261 @@
 
   <!-- ================= VIEW 4: INTERACTIVE NAVIGATION MAP ================= -->
   <section id="view-map" class="module-view hidden pt-24 pb-20">
-    <div class="max-w-[1500px] mx-auto px-6 space-y-8">
+    <div class="max-w-[1500px] mx-auto px-6 space-y-6">
 
-      <div
-        class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
+      <!-- View Header with Mode Selector -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
         <div>
-          <span class="text-xs font-mono text-primary tracking-widest uppercase">INDOOR & OUTDOOR LOCALIZATION</span>
-          <h1 class="font-display text-3xl md:text-4xl font-bold text-on-surface">Interactive Navigation Blueprint</h1>
+          <span class="text-xs font-mono text-primary tracking-widest uppercase">BARRIER-FREE ASSISTIVE LOCALIZATION</span>
+          <h1 class="font-display text-3xl md:text-4xl font-bold text-on-surface">Intelligent Wheelchair Navigation</h1>
         </div>
 
-        <div class="flex items-center gap-3">
-          <div class="bg-surface-container px-4 py-2 rounded-xl border border-outline-variant/30 font-mono text-xs">
-            <span class="text-outline">TARGET: </span>
-            <strong id="map-destination-label" class="text-primary">Living Room Hub</strong>
+        <!-- Tab Toggle: Outdoor GPS vs Indoor LiDAR -->
+        <div class="flex items-center bg-surface-container p-1 rounded-xl border border-outline-variant/30 font-mono text-xs">
+          <button id="tab-outdoor-map" onclick="switchMapMode('outdoor')"
+            class="px-4 py-2 rounded-lg bg-primary text-black font-bold flex items-center gap-2 transition-all">
+            <span class="material-symbols-outlined text-[16px]">public</span> Outdoor GPS &amp; Ramps
+          </button>
+          <button id="tab-indoor-map" onclick="switchMapMode('indoor')"
+            class="px-4 py-2 rounded-lg text-on-surface-variant hover:text-primary flex items-center gap-2 transition-all">
+            <span class="material-symbols-outlined text-[16px]">floor</span> Indoor Blueprint
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= OUTDOOR GPS NAVIGATION CONTAINER ================= -->
+      <div id="container-outdoor-map" class="space-y-4">
+        
+        <!-- Search & Control Header Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-surface-container/90 backdrop-blur p-4 rounded-2xl border border-outline-variant/30 shadow-xl">
+          <div class="flex flex-1 flex-wrap items-center gap-3 min-w-[280px]">
+            
+            <!-- Origin Search -->
+            <div class="relative flex-1 min-w-[220px]">
+              <div class="flex items-center bg-surface border border-outline-variant/40 rounded-xl px-3 py-2.5 text-xs">
+                <span class="material-symbols-outlined text-emerald-400 text-[18px] mr-2">my_location</span>
+                <input id="outdoor-start-input" type="text" placeholder="Starting point (or click on map)..." class="bg-transparent border-none text-on-surface text-xs w-full focus:outline-none placeholder:text-on-surface-variant/60" autocomplete="off" />
+                <button onclick="window.outdoorMap?.useCurrentLocation()" title="Use GPS Location" class="text-primary hover:text-white p-1 ml-1 text-xs flex items-center gap-1 bg-primary/10 rounded-lg px-2 shrink-0">
+                  <span class="material-symbols-outlined text-[14px]">crosshairs</span> GPS
+                </button>
+              </div>
+              <div id="outdoor-start-autocomplete" class="autocomplete-list"></div>
+            </div>
+
+            <!-- Destination Search -->
+            <div class="relative flex-1 min-w-[220px]">
+              <div class="flex items-center bg-surface border border-outline-variant/40 rounded-xl px-3 py-2.5 text-xs">
+                <span class="material-symbols-outlined text-primary text-[18px] mr-2">flag</span>
+                <input id="outdoor-end-input" type="text" placeholder="Destination point..." class="bg-transparent border-none text-on-surface text-xs w-full focus:outline-none placeholder:text-on-surface-variant/60" autocomplete="off" />
+              </div>
+              <div id="outdoor-end-autocomplete" class="autocomplete-list"></div>
+            </div>
+
+            <!-- Calculate Route Button -->
+            <button onclick="window.outdoorMap?.calculateWheelchairRoute()" class="bg-primary hover:bg-primary-container text-black font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all shadow-lg">
+              <span class="material-symbols-outlined text-[18px]">alt_route</span> Find Barrier-Free Route
+            </button>
           </div>
-          <div id="map-eta-label"
-            class="bg-surface-container px-4 py-2 rounded-xl border border-outline-variant/30 font-mono text-xs text-emerald-400 font-bold">
-            ETA: 0s (0.0m)
+
+          <!-- Quick Accessibility Overlay Toggles -->
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="window.outdoorMap?.togglePOI('ramps', this)" class="bg-emerald-500/20 border border-emerald-500/60 text-emerald-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-stairs"></i> Ramps
+            </button>
+            <button onclick="window.outdoorMap?.togglePOI('elevators', this)" class="bg-sky-500/20 border border-sky-500/60 text-sky-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-elevator"></i> Elevators
+            </button>
+            <button onclick="window.outdoorMap?.togglePOI('curbs', this)" class="bg-purple-500/20 border border-purple-500/60 text-purple-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-road"></i> Lowered Curbs
+            </button>
+            <button onclick="window.outdoorMap?.togglePOI('toilets', this)" class="bg-cyan-500/20 border border-cyan-500/60 text-cyan-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+              <i class="fa-solid fa-restroom"></i> Toilets
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Map & Navigation Side-by-Side Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[520px]">
+          
+          <!-- Leaflet Live Map Canvas (8 Cols) -->
+          <div class="lg:col-span-8 h-[520px] relative rounded-2xl overflow-hidden border border-outline-variant/30 bg-surface-container shadow-2xl">
+            <div id="live-leaflet-map" style="width: 100%; height: 100%;"></div>
+
+            <!-- Floating Top HUD Badges -->
+            <div class="absolute top-4 left-4 z-[1000] pointer-events-none">
+              <div class="bg-surface-container/90 backdrop-blur tech-border rounded-xl px-3 py-2 flex items-center gap-2 pointer-events-auto shadow-lg">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-mono text-[11px] text-emerald-400 tracking-wider uppercase font-bold">GPS ACTIVE</span>
+              </div>
+            </div>
+
+            <div class="absolute top-4 right-4 z-[1000] pointer-events-none">
+              <div class="bg-surface-container/90 backdrop-blur tech-border rounded-xl px-3 py-2 flex items-center gap-2 pointer-events-auto shadow-lg">
+                <span class="font-mono text-[11px] text-outline uppercase">SLOPE</span>
+                <span class="font-display text-xs font-bold text-primary" id="outdoor-hud-slope">&le; 6% (ADA SAFE)</span>
+              </div>
+            </div>
+
+            <!-- Bottom Floating Speed & ETA Bar -->
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] pointer-events-auto flex items-center gap-6 bg-surface-container-high/90 backdrop-blur border border-outline-variant/30 rounded-2xl px-6 py-2.5 shadow-2xl">
+              <div class="flex flex-col items-center">
+                <span class="font-mono text-[10px] text-outline uppercase">Rider Speed</span>
+                <div class="flex items-baseline gap-1 text-primary">
+                  <span class="font-display text-lg font-black">3.2</span>
+                  <span class="font-mono text-[10px]">MPH</span>
+                </div>
+              </div>
+              <div class="w-px h-6 bg-outline-variant/40"></div>
+              <div class="flex flex-col items-center">
+                <span class="font-mono text-[10px] text-outline uppercase">Est. Arrival</span>
+                <div class="flex items-baseline gap-1 text-amber-400">
+                  <span class="font-display text-lg font-black" id="outdoor-hud-eta">--:--</span>
+                </div>
+              </div>
+              <div class="w-px h-6 bg-outline-variant/40"></div>
+              <div class="flex flex-col items-center">
+                <span class="font-mono text-[10px] text-outline uppercase">Distance</span>
+                <div class="flex items-baseline gap-1 text-emerald-400">
+                  <span class="font-display text-lg font-black" id="outdoor-hud-dist">-- km</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Navigation & Preference Details (4 Cols) -->
+          <div class="lg:col-span-4 space-y-4">
+            
+            <!-- Active Route & Voice Guidance Card -->
+            <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 shadow-xl">
+              <div class="flex items-center justify-between border-b border-outline-variant/20 pb-2">
+                <div class="flex items-center gap-2">
+                  <span class="material-symbols-outlined text-primary text-[20px]">alt_route</span>
+                  <h3 class="font-display font-bold text-sm text-on-surface uppercase tracking-wider">Turn-by-Turn Guidance</h3>
+                </div>
+                <button onclick="window.outdoorMap?.speakDirections()" class="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/40 px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 font-semibold transition-all">
+                  <i class="fa-solid fa-volume-high"></i> Listen
+                </button>
+              </div>
+
+              <!-- Steps List Container -->
+              <div class="flex flex-col gap-2 max-h-[190px] overflow-y-auto pr-1" id="outdoor-step-list">
+                <div class="text-xs text-on-surface-variant italic p-3 bg-surface rounded-xl border border-outline-variant/20">
+                  Click on the map or type an address to generate barrier-free turn-by-turn navigation with ramp highlights.
+                </div>
+              </div>
+            </div>
+
+            <!-- Incline & Terrain Safety Settings -->
+            <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 shadow-xl">
+              <div class="flex items-center gap-2 border-b border-outline-variant/20 pb-2">
+                <span class="material-symbols-outlined text-amber-400 text-[20px]">tune</span>
+                <h3 class="font-display font-bold text-sm text-on-surface uppercase tracking-wider">Safety Constraints</h3>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3 text-xs">
+                <div class="bg-surface p-2.5 rounded-xl border border-outline-variant/20">
+                  <span class="font-mono text-[10px] text-outline block mb-1">MAX INCLINE</span>
+                  <select id="outdoor-pref-incline" onchange="window.outdoorMap?.calculateWheelchairRoute()" class="bg-surface-container text-on-surface border border-outline-variant/40 rounded-lg p-1.5 text-xs w-full">
+                    <option value="3">3% (Gentle / Manual)</option>
+                    <option value="6" selected>6% (ADA Safe)</option>
+                    <option value="10">10% (Motorized)</option>
+                  </select>
+                </div>
+
+                <div class="bg-surface p-2.5 rounded-xl border border-outline-variant/20">
+                  <span class="font-mono text-[10px] text-outline block mb-1">MAX KERB / CURB</span>
+                  <select id="outdoor-pref-curb" onchange="window.outdoorMap?.calculateWheelchairRoute()" class="bg-surface-container text-on-surface border border-outline-variant/40 rounded-lg p-1.5 text-xs w-full">
+                    <option value="0.03" selected>3 cm (Dropped Curbs)</option>
+                    <option value="0.06">6 cm (Low Kerbs)</option>
+                    <option value="0.10">10 cm</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Emergency Assist Button -->
+            <button onclick="alert('EMERGENCY ASSIST: Broadcasted current GPS coordinates to registered emergency contacts.')" class="w-full py-3 px-4 bg-error/90 hover:bg-error text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all">
+              <span class="material-symbols-outlined text-[18px]">warning</span> Emergency Assist Broadcast
+            </button>
+
           </div>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        <!-- Left: Floorplan Canvas -->
-        <div class="lg:col-span-8 p-4 rounded-2xl bg-surface-container border border-outline-variant/30">
-          <div class="flex items-center justify-between px-2 pb-3 text-xs font-mono">
-            <span class="text-outline">CLICK ANY POINT OR WAYPOINT TO PLOT AUTONOMOUS PATH</span>
-            <span id="map-status-label" class="text-emerald-400 font-bold">AUTONOMOUS TRANSIT ACTIVE</span>
-          </div>
-          <canvas id="map-canvas" width="760" height="500"
-            class="w-full h-auto aspect-[76/50] rounded-xl border border-outline-variant/30 cursor-crosshair"></canvas>
+      <!-- ================= INDOOR LIDAR BLUEPRINT CONTAINER ================= -->
+      <div id="container-indoor-map" class="hidden space-y-4">
+        <div class="flex items-center justify-between px-2 pb-2 text-xs font-mono">
+          <span class="text-outline">INDOOR LOCALIZATION: CLICK ANY WAYPOINT TO NAVIGATE</span>
+          <span id="map-status-label" class="text-emerald-400 font-bold">AUTONOMOUS TRANSIT ACTIVE</span>
         </div>
 
-        <!-- Right: Quick Waypoints & Controls -->
-        <div class="lg:col-span-4 space-y-4">
-          <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
-            <h3 class="font-display font-bold text-lg text-on-surface">Predefined Waypoints</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div class="lg:col-span-8 p-4 rounded-2xl bg-surface-container border border-outline-variant/30">
+            <canvas id="map-canvas" width="760" height="500"
+              class="w-full h-auto aspect-[76/50] rounded-xl border border-outline-variant/30 cursor-crosshair"></canvas>
+          </div>
 
-            <div class="grid grid-cols-1 gap-2.5">
-              <button data-wp="wp-living"
-                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-primary">chair</span>
-                  <div>
-                    <div class="font-bold text-sm text-on-surface">Living Room Hub</div>
-                    <div class="text-[11px] font-mono text-outline">Central seating zone</div>
+          <div class="lg:col-span-4 space-y-4">
+            <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
+              <h3 class="font-display font-bold text-lg text-on-surface">Predefined Waypoints</h3>
+              <div class="grid grid-cols-1 gap-2.5">
+                <button data-wp="wp-living" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">chair</span>
+                    <div>
+                      <div class="font-bold text-sm text-on-surface">Living Room Hub</div>
+                      <div class="text-[11px] font-mono text-outline">Central seating zone</div>
+                    </div>
                   </div>
-                </div>
-                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
-              </button>
-
-              <button data-wp="wp-kitchen"
-                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-primary">restaurant</span>
-                  <div>
-                    <div class="font-bold text-sm text-on-surface">Kitchen & Dining</div>
-                    <div class="text-[11px] font-mono text-outline">Prep counter station</div>
+                  <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+                </button>
+                <button data-wp="wp-kitchen" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">restaurant</span>
+                    <div>
+                      <div class="font-bold text-sm text-on-surface">Kitchen &amp; Dining</div>
+                      <div class="text-[11px] font-mono text-outline">Prep counter station</div>
+                    </div>
                   </div>
-                </div>
-                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
-              </button>
-
-              <button data-wp="wp-bedroom"
-                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-primary">bed</span>
-                  <div>
-                    <div class="font-bold text-sm text-on-surface">Master Bedroom</div>
-                    <div class="text-[11px] font-mono text-outline">Bedside transfer dock</div>
+                  <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+                </button>
+                <button data-wp="wp-bedroom" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">bed</span>
+                    <div>
+                      <div class="font-bold text-sm text-on-surface">Master Bedroom</div>
+                      <div class="text-[11px] font-mono text-outline">Bedside transfer dock</div>
+                    </div>
                   </div>
-                </div>
-                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
-              </button>
-
-              <button data-wp="wp-office"
-                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-primary">computer</span>
-                  <div>
-                    <div class="font-bold text-sm text-on-surface">Work Office / Study</div>
-                    <div class="text-[11px] font-mono text-outline">Height-adjusted desk</div>
+                  <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+                </button>
+                <button data-wp="wp-office" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">computer</span>
+                    <div>
+                      <div class="font-bold text-sm text-on-surface">Work Office / Study</div>
+                      <div class="text-[11px] font-mono text-outline">Height-adjusted desk</div>
+                    </div>
                   </div>
-                </div>
-                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
-              </button>
-
-              <button data-wp="wp-dock"
-                class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
-                <div class="flex items-center gap-3">
-                  <span class="material-symbols-outlined text-primary">electrical_services</span>
-                  <div>
-                    <div class="font-bold text-sm text-on-surface">Autonomous Charging Bay</div>
-                    <div class="text-[11px] font-mono text-outline">Inductive fast charger</div>
+                  <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+                </button>
+                <button data-wp="wp-dock" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">electrical_services</span>
+                    <div>
+                      <div class="font-bold text-sm text-on-surface">Autonomous Charging Bay</div>
+                      <div class="text-[11px] font-mono text-outline">Inductive fast charger</div>
+                    </div>
                   </div>
-                </div>
-                <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
-              </button>
+                  <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-
       </div>
+
+    </div>
 
     </div>
   </section>
