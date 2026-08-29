@@ -19,6 +19,18 @@ class OutdoorWheelchairMap {
     this.spokenSteps = [];
     this.map = null;
 
+    this.currentLoc = {
+      lat: 28.6139,
+      lng: 77.2090,
+      label: 'Connaught Place, New Delhi, India',
+      accuracy: 2.5,
+      altitude: 216,
+      satellites: 9,
+      timestamp: new Date()
+    };
+    this.userLocationMarker = null;
+    this.accuracyCircle = null;
+
     this.poiLayers = {
       ramps: L.layerGroup(),
       elevators: L.layerGroup(),
@@ -31,8 +43,8 @@ class OutdoorWheelchairMap {
   }
 
   init() {
-    // 1. Initialize Map centered on India (New Delhi default, or auto-locates via GPS)
-    this.map = L.map('live-leaflet-map', { zoomControl: false }).setView([28.6139, 77.2090], 14);
+    // 1. Initialize Map centered on default location
+    this.map = L.map('live-leaflet-map', { zoomControl: false }).setView([this.currentLoc.lat, this.currentLoc.lng], 14);
     L.control.zoom({ position: 'bottomright' }).addTo(this.map);
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
@@ -40,12 +52,32 @@ class OutdoorWheelchairMap {
       attribution: '&copy; OpenStreetMap contributors | India Wheelchair Nav'
     }).addTo(this.map);
 
-    // Auto-locate rider in India if GPS is enabled
+    // Initial render of location card and map marker
+    this.updateLocationStatus(this.currentLoc.lat, this.currentLoc.lng, this.currentLoc.label, this.currentLoc.accuracy, this.currentLoc.altitude, true);
+
+    // Auto-locate rider if GPS is enabled
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos) => {
-        const userLoc = [pos.coords.latitude, pos.coords.longitude];
-        this.map.setView(userLoc, 16);
-      }, () => {});
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const acc = pos.coords.accuracy ? Math.round(pos.coords.accuracy * 10) / 10 : 2.5;
+        const alt = pos.coords.altitude ? Math.round(pos.coords.altitude) : 216;
+        this.map.setView([lat, lng], 16);
+        this.reverseGeocode(lat, lng, (label) => {
+          this.updateLocationStatus(lat, lng, label, acc, alt, true);
+        });
+      }, () => {
+        this.updateLocationStatus(this.currentLoc.lat, this.currentLoc.lng, this.currentLoc.label, 2.5, 216, false);
+      });
+
+      // Watch position for continuous real-time telemetry updates
+      navigator.geolocation.watchPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const acc = pos.coords.accuracy ? Math.round(pos.coords.accuracy * 10) / 10 : 2.5;
+        const alt = pos.coords.altitude ? Math.round(pos.coords.altitude) : 216;
+        this.updateLocationStatus(lat, lng, null, acc, alt, true);
+      }, () => {}, { enableHighAccuracy: true, maximumAge: 10000 });
     }
 
     // Add all POI layers to map
@@ -66,6 +98,11 @@ class OutdoorWheelchairMap {
         this.setStartLocation(e.latlng, `Pin: ${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}`);
       }
     });
+
+    // 4. Update relative timestamp periodically
+    setInterval(() => {
+      this.updateTimestampDisplay();
+    }, 15000);
 
     window.liveLeafletMap = this.map;
   }
@@ -143,6 +180,8 @@ class OutdoorWheelchairMap {
 
     const startInp = document.getElementById('outdoor-start-input');
     if (startInp) startInp.value = label;
+
+    this.updateLocationStatus(latlng.lat, latlng.lng, label, 2.5, 216, false);
   }
 
   setEndLocation(latlng, label) {
@@ -168,13 +207,165 @@ class OutdoorWheelchairMap {
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const latlng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        const acc = pos.coords.accuracy ? Math.round(pos.coords.accuracy * 10) / 10 : 2.5;
+        const alt = pos.coords.altitude ? Math.round(pos.coords.altitude) : 216;
+        const latlng = { lat, lng };
         this.map.setView(latlng, 16);
-        this.setStartLocation(latlng, "Current GPS Location");
+        this.reverseGeocode(lat, lng, (label) => {
+          const locName = label || "Current GPS Location";
+          this.setStartLocation(latlng, locName);
+          this.updateLocationStatus(lat, lng, locName, acc, alt, true);
+        });
         this.loadOverpassPOIs();
       },
       () => alert("Unable to access your current GPS location.")
     );
+  }
+
+  updateLocationStatus(lat, lng, label = null, accuracy = 2.5, altitude = 216, isLiveGPS = true) {
+    this.currentLoc.lat = Number(lat);
+    this.currentLoc.lng = Number(lng);
+    this.currentLoc.accuracy = accuracy;
+    this.currentLoc.altitude = altitude;
+    this.currentLoc.timestamp = new Date();
+    if (label) this.currentLoc.label = label;
+
+    // Update Name
+    const nameEl = document.getElementById('loc-display-name');
+    if (nameEl) nameEl.textContent = this.currentLoc.label;
+
+    // Update Coordinates
+    const coordsEl = document.getElementById('loc-display-coords');
+    if (coordsEl) {
+      const latDir = this.currentLoc.lat >= 0 ? 'N' : 'S';
+      const lngDir = this.currentLoc.lng >= 0 ? 'E' : 'W';
+      coordsEl.textContent = `${Math.abs(this.currentLoc.lat).toFixed(4)}° ${latDir}, ${Math.abs(this.currentLoc.lng).toFixed(4)}° ${lngDir}`;
+    }
+
+    // Update Accuracy
+    const accEl = document.getElementById('loc-accuracy-val');
+    if (accEl) accEl.innerHTML = `&plusmn; ${accuracy} m`;
+
+    // Update Altitude
+    const altEl = document.getElementById('loc-altitude-val');
+    if (altEl) altEl.textContent = `${altitude} m`;
+
+    // Update Fix Badge
+    const fixBadge = document.getElementById('loc-fix-badge');
+    if (fixBadge) {
+      if (isLiveGPS) {
+        fixBadge.className = 'font-mono text-[10px] bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1';
+        fixBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span>GPS Active</span>';
+      } else {
+        fixBadge.className = 'font-mono text-[10px] bg-primary/15 border border-primary/40 text-primary px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1';
+        fixBadge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-primary"></span><span>Last Fix</span>';
+      }
+    }
+
+    // Update Timestamp Label
+    const updatedEl = document.getElementById('loc-last-updated');
+    if (updatedEl) updatedEl.textContent = 'Live';
+
+    // Update or create pulsating rider marker on leaflet map
+    if (this.map) {
+      const latlng = [this.currentLoc.lat, this.currentLoc.lng];
+      if (!this.userLocationMarker) {
+        this.userLocationMarker = L.marker(latlng, {
+          zIndexOffset: 1000,
+          icon: L.divIcon({
+            className: 'live-user-marker',
+            html: `
+              <div style="position:relative; width:30px; height:30px; display:flex; align-items:center; justify-content:center;">
+                <div style="position:absolute; width:100%; height:100%; border-radius:50%; background:rgba(16,185,129,0.35); animation:pulse 1.8s cubic-bezier(0,0,0.2,1) infinite;"></div>
+                <div style="width:14px; height:14px; border-radius:50%; background:#10b981; border:2.5px solid #ffffff; box-shadow:0 0 10px rgba(16,185,129,0.8);"></div>
+              </div>
+            `,
+            iconSize: [30, 30],
+            iconAnchor: [15, 15]
+          })
+        }).addTo(this.map).bindPopup(`<b>📍 Current Location:</b><br>${this.currentLoc.label}`);
+      } else {
+        this.userLocationMarker.setLatLng(latlng);
+        this.userLocationMarker.setPopupContent(`<b>📍 Current Location:</b><br>${this.currentLoc.label}`);
+      }
+
+      if (!this.accuracyCircle) {
+        this.accuracyCircle = L.circle(latlng, {
+          radius: Math.max(accuracy, 15),
+          color: '#10b981',
+          weight: 1,
+          opacity: 0.4,
+          fillColor: '#10b981',
+          fillOpacity: 0.08
+        }).addTo(this.map);
+      } else {
+        this.accuracyCircle.setLatLng(latlng);
+        this.accuracyCircle.setRadius(Math.max(accuracy, 15));
+      }
+    }
+  }
+
+  updateTimestampDisplay() {
+    const updatedEl = document.getElementById('loc-last-updated');
+    if (!updatedEl || !this.currentLoc || !this.currentLoc.timestamp) return;
+    const diffSecs = Math.floor((new Date() - this.currentLoc.timestamp) / 1000);
+    if (diffSecs < 15) {
+      updatedEl.textContent = 'Live';
+    } else if (diffSecs < 60) {
+      updatedEl.textContent = `${diffSecs}s ago`;
+    } else {
+      const mins = Math.floor(diffSecs / 60);
+      updatedEl.textContent = `${mins}m ago`;
+    }
+  }
+
+  async reverseGeocode(lat, lng, callback) {
+    try {
+      const res = await fetch(`https://photon.komoot.io/reverse?lat=${lat}&lon=${lng}`);
+      const data = await res.json();
+      if (data.features && data.features.length > 0) {
+        const p = data.features[0].properties;
+        const name = p.name || p.street || '';
+        const city = p.city || p.district || p.state || '';
+        const country = p.country || '';
+        const label = [name, city, country].filter(Boolean).join(', ') || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+        if (callback) callback(label);
+        return;
+      }
+    } catch (e) {
+      console.warn('Reverse geocode error:', e);
+    }
+    if (callback) callback(`Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`);
+  }
+
+  recenterOnCurrentLocation() {
+    if (this.map && this.currentLoc) {
+      this.map.flyTo([this.currentLoc.lat, this.currentLoc.lng], 16, { duration: 1.2 });
+      if (this.userLocationMarker) this.userLocationMarker.openPopup();
+      if (window.appRouter && window.appRouter.showToast) {
+        window.appRouter.showToast('Recentered map to current location');
+      }
+    }
+  }
+
+  copyCoordinates() {
+    if (!this.currentLoc) return;
+    const text = `${this.currentLoc.lat.toFixed(6)}, ${this.currentLoc.lng.toFixed(6)}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        if (window.appRouter && window.appRouter.showToast) {
+          window.appRouter.showToast(`Coordinates copied: ${text}`);
+        } else {
+          alert(`Coordinates copied: ${text}`);
+        }
+      }).catch(() => {
+        prompt('Copy coordinates:', text);
+      });
+    } else {
+      prompt('Copy coordinates:', text);
+    }
   }
 
   async calculateWheelchairRoute() {

@@ -1090,6 +1090,75 @@
           <!-- Right Column: Navigation & Preference Details (4 Cols) -->
           <div class="lg:col-span-4 space-y-4">
 
+            <!-- Current Location Status / Last Location Card -->
+            <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3.5 shadow-xl relative overflow-hidden">
+              <div class="flex items-center justify-between border-b border-outline-variant/20 pb-2.5">
+                <div class="flex items-center gap-2">
+                  <span class="relative flex h-2.5 w-2.5">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                  </span>
+                  <h3 class="font-display font-bold text-sm text-on-surface uppercase tracking-wider">Location Status</h3>
+                </div>
+                <span id="loc-fix-badge" class="font-mono text-[10px] bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span>GPS Active</span>
+                </span>
+              </div>
+
+              <!-- Location Address & Coordinates Display -->
+              <div class="space-y-2.5">
+                <div class="bg-surface p-3.5 rounded-xl border border-outline-variant/20 space-y-1.5">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant font-mono">
+                      <span class="material-symbols-outlined text-primary text-[16px]">my_location</span>
+                      <span class="font-semibold uppercase tracking-wider text-[10px]">Current / Last Fix</span>
+                    </div>
+                    <span id="loc-last-updated" class="font-mono text-[10px] text-outline">Live</span>
+                  </div>
+                  <div id="loc-display-name" class="font-semibold text-sm text-on-surface leading-snug">
+                    Connaught Place, New Delhi, India
+                  </div>
+                  <div class="flex items-center justify-between pt-2 border-t border-outline-variant/15 text-xs font-mono">
+                    <span class="text-outline text-[10px] uppercase">Coordinates</span>
+                    <span id="loc-display-coords" class="text-primary font-bold text-[11px] tracking-tight">
+                      28.6139° N, 77.2090° E
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Live Precision & Telemetry Sub-grid -->
+                <div class="grid grid-cols-3 gap-2 text-center text-xs">
+                  <div class="bg-surface p-2 rounded-xl border border-outline-variant/20">
+                    <span class="font-mono text-[9px] text-outline uppercase block mb-0.5">Accuracy</span>
+                    <span id="loc-accuracy-val" class="font-display font-bold text-emerald-400 text-xs">&plusmn; 2.5 m</span>
+                  </div>
+                  <div class="bg-surface p-2 rounded-xl border border-outline-variant/20">
+                    <span class="font-mono text-[9px] text-outline uppercase block mb-0.5">Altitude</span>
+                    <span id="loc-altitude-val" class="font-display font-bold text-on-surface text-xs">216 m</span>
+                  </div>
+                  <div class="bg-surface p-2 rounded-xl border border-outline-variant/20">
+                    <span class="font-mono text-[9px] text-outline uppercase block mb-0.5">Satellites</span>
+                    <span id="loc-satellites-val" class="font-display font-bold text-primary text-xs">9 Locked</span>
+                  </div>
+                </div>
+
+                <!-- Action Buttons: Recenter & Copy Coordinates -->
+                <div class="flex items-center gap-2 pt-0.5">
+                  <button onclick="window.outdoorMap?.recenterOnCurrentLocation()"
+                    class="flex-1 bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface hover:text-primary py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+                    <span class="material-symbols-outlined text-[16px] text-emerald-400">my_location</span> Recenter Map
+                  </button>
+                  <button onclick="window.outdoorMap?.copyCoordinates()"
+                    class="bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface-variant hover:text-primary p-2 px-3 rounded-xl text-xs flex items-center gap-1 font-semibold transition-all"
+                    title="Copy Coordinates">
+                    <span class="material-symbols-outlined text-[15px]">content_copy</span>
+                    <span>Copy</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <!-- Active Route & Voice Guidance Card -->
             <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 shadow-xl">
               <div class="flex items-center justify-between border-b border-outline-variant/20 pb-2">
