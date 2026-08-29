@@ -1,0 +1,225 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Smart Ride - Technology</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700&amp;family=Epilogue:wght@400;450&amp;family=Libre+Caslon+Text:wght@500&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e7e1e1",
+                        "surface-bright": "#3b3839",
+                        "tertiary-fixed-dim": "#d4c4b4",
+                        "outline": "#8c9197",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "primary-fixed": "#ffdbcd",
+                        "surface-tint": "#ffb596",
+                        "error": "#ffb4ab",
+                        "surface-container": "#211f1f",
+                        "secondary": "#e7c17a",
+                        "on-secondary-fixed": "#261900",
+                        "surface-container-highest": "#373434",
+                        "surface-container-high": "#2c292a",
+                        "background": "#151313",
+                        "on-primary-fixed": "#360f00",
+                        "on-tertiary": "#392f24",
+                        "surface-container-low": "#1d1b1b",
+                        "on-surface": "#e7e1e1",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb596",
+                        "on-surface-variant": "#c2c7cd",
+                        "tertiary-container": "#9d8e80",
+                        "on-secondary-fixed-variant": "#5c4205",
+                        "on-secondary": "#412d00",
+                        "on-primary-container": "#4d1900",
+                        "secondary-fixed": "#ffdea4",
+                        "inverse-primary": "#a14007",
+                        "surface": "#151313",
+                        "secondary-fixed-dim": "#e7c17a",
+                        "secondary-container": "#5f4507",
+                        "on-background": "#e7e1e1",
+                        "tertiary": "#d4c4b4",
+                        "inverse-on-surface": "#323030",
+                        "primary-container": "#e37038",
+                        "on-primary-fixed-variant": "#7d2d00",
+                        "tertiary-fixed": "#f1e0cf",
+                        "on-primary": "#581e00",
+                        "on-tertiary-fixed": "#231a10",
+                        "primary": "#ffb596",
+                        "outline-variant": "#42474c",
+                        "on-secondary-container": "#d8b36d",
+                        "surface-dim": "#151313",
+                        "on-tertiary-fixed-variant": "#504539",
+                        "surface-container-lowest": "#0f0e0e",
+                        "on-tertiary-container": "#32281d",
+                        "surface-variant": "#373434"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "4xl": "72px",
+                        "5xl": "96px",
+                        "lg": "20px",
+                        "margin-desktop": "48px",
+                        "2xl": "40px",
+                        "gutter-desktop": "16px",
+                        "xs": "4px",
+                        "md": "12px",
+                        "6xl": "128px",
+                        "3xl": "56px",
+                        "xl": "28px",
+                        "sm": "8px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "display-xl-mobile": ["Chivo"],
+                        "display-md": ["Chivo"],
+                        "headline-lg": ["Chivo"],
+                        "technical": ["Libre Caslon Text"],
+                        "body-sm": ["Epilogue"],
+                        "body-lg": ["Epilogue"],
+                        "display-xl": ["Chivo"]
+                    },
+                    "fontSize": {
+                        "display-xl-mobile": ["64px", {"lineHeight": "1.1", "fontWeight": "700"}],
+                        "display-md": ["76px", {"lineHeight": "1.1", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-lg": ["42px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "technical": ["12px", {"letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "body-sm": ["14px", {"lineHeight": "1.55", "fontWeight": "450"}],
+                        "body-lg": ["18px", {"lineHeight": "1.65", "fontWeight": "400"}],
+                        "display-xl": ["132px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .blueprint-grid {
+            background-image: 
+                linear-gradient(to right, rgba(140, 145, 151, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(140, 145, 151, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .tech-line {
+            position: relative;
+        }
+        .tech-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -40px;
+            width: 30px;
+            height: 1px;
+            background-color: var(--color-primary, #ffb596);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased blueprint-grid font-body-lg text-body-lg">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md dark:bg-background/80 border-b border-outline-variant/30 flex justify-between items-center px-margin-desktop py-md max-w-full mx-auto">
+<div class="font-display-md text-display-md text-primary dark:text-primary !text-[32px] tracking-tight">Smart Ride</div>
+<nav class="hidden md:flex items-center gap-xl">
+<a class="font-body-lg text-body-lg text-primary border-b-2 border-primary pb-1" href="#">Features</a>
+<a class="font-body-lg text-body-lg text-on-surface-variant hover:text-primary transition-colors hover:text-primary-container transition-all" href="#">How It Works</a>
+<a class="font-body-lg text-body-lg text-on-surface-variant hover:text-primary transition-colors hover:text-primary-container transition-all" href="#">Dashboard</a>
+<a class="font-body-lg text-body-lg text-on-surface-variant hover:text-primary transition-colors hover:text-primary-container transition-all" href="#">Safety</a>
+<a class="font-body-lg text-body-lg text-on-surface-variant hover:text-primary transition-colors hover:text-primary-container transition-all" href="#">About</a>
+<a class="font-body-lg text-body-lg text-on-surface-variant hover:text-primary transition-colors hover:text-primary-container transition-all" href="#">Contact</a>
+</nav>
+<button class="bg-[#C45923] text-[#FFFFFF] px-xl py-sm rounded-full font-technical text-technical hover:opacity-90 transition-opacity scale-95 duration-200">Request Demo</button>
+</header>
+<main class="pt-[120px] pb-6xl px-margin-desktop w-full mx-auto max-w-[1440px]">
+<!-- Header Section -->
+<div class="grid grid-cols-4 md:grid-cols-8 xl:grid-cols-12 gap-gutter-desktop mb-5xl">
+<div class="col-span-4 md:col-span-6 xl:col-span-8 xl:col-start-2">
+<p class="font-technical text-technical text-primary uppercase tracking-widest mb-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">memory</span> System Architecture
+                </p>
+<h1 class="font-display-xl text-display-xl-mobile md:text-display-xl text-on-surface mb-2xl">Core Technology</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl border-l border-primary pl-lg">
+                    A deep dive into the engineering minimalism and precision intelligence that powers the Smart Ride MedTech Ecosystem. Designed for uncompromising safety and clinical reliability.
+                </p>
+</div>
+</div>
+<!-- 1. AI Perception Engine -->
+<section class="mb-6xl"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4xl">
+  <div class="border-2 border-primary p-2xl rounded-lg bg-surface-container-low flex flex-col gap-md">
+    <span class="material-symbols-outlined text-primary">settings_motion</span>
+    <h3 class="font-headline-lg text-[24px] text-on-surface">Motorized movement</h3>
+    <p class="font-body-sm text-on-surface-variant">Precision control: forward, backward, left, and right.</p>
+  </div>
+  <div class="border-2 border-primary p-2xl rounded-lg bg-surface-container-low flex flex-col gap-md">
+    <span class="material-symbols-outlined text-primary">mic</span>
+    <h3 class="font-headline-lg text-[24px] text-on-surface">Voice command control</h3>
+    <p class="font-body-sm text-on-surface-variant">Hands-free navigation via integrated voice API.</p>
+  </div>
+  <div class="border-2 border-primary p-2xl rounded-lg bg-surface-container-low flex flex-col gap-md">
+    <span class="material-symbols-outlined text-primary">videocam</span>
+    <h3 class="font-headline-lg text-[24px] text-on-surface">Front AI camera</h3>
+    <p class="font-body-sm text-on-surface-variant">High-fidelity optical sensor for forward path mapping.</p>
+  </div>
+  <div class="border-2 border-primary p-2xl rounded-lg bg-surface-container-low flex flex-col gap-md">
+    <span class="material-symbols-outlined text-primary">visibility</span>
+    <h3 class="font-headline-lg text-[24px] text-on-surface">Rear AI camera</h3>
+    <p class="font-body-sm text-on-surface-variant">360° situational awareness with rear-facing vision.</p>
+  </div>
+  <div class="border-2 border-primary p-2xl rounded-lg bg-surface-container-low flex flex-col gap-md">
+    <span class="material-symbols-outlined text-primary">psychology</span>
+    <h3 class="font-headline-lg text-[24px] text-on-surface">AI object detection</h3>
+    <p class="font-body-sm text-on-surface-variant">Real-time identification of obstacles and personnel.</p>
+  </div>
+  <div class="border-2 border-primary p-2xl rounded-lg bg-surface-container-low flex flex-col gap-md">
+    <span class="material-symbols-outlined text-error">emergency</span>
+    <h3 class="font-headline-lg text-[24px] text-on-surface">Emergency STOP button</h3>
+    <p class="font-body-sm text-on-surface-variant">Instant mechanical and software-based safety override.</p>
+  </div>
+  <div class="border-2 border-primary p-2xl rounded-lg bg-surface-container-low flex flex-col gap-md">
+    <span class="material-symbols-outlined text-primary">battery_charging_full</span>
+    <h3 class="font-headline-lg text-[24px] text-on-surface">Battery monitoring</h3>
+    <p class="font-body-sm text-on-surface-variant">Real-time power status and low-battery alerts.</p>
+  </div>
+</div></section>
+<!-- 2. Voice Control -->
+
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-outline-variant/10 bg-surface-container-lowest dark:bg-surface-container-lowest grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg px-margin-desktop py-3xl font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant">
+<div>
+<div class="font-display-md text-display-md text-primary !text-[24px] mb-lg tracking-tight">Smart Ride</div>
+<p class="font-technical text-technical text-on-tertiary-fixed-variant max-w-[200px]">Engineering safe mobility solutions for clinical environments.</p>
+</div>
+<div class="flex flex-col gap-md">
+<span class="font-technical text-technical text-on-surface uppercase tracking-widest mb-xs">Legal</span>
+<a class="text-on-tertiary-fixed-variant hover:text-primary transition-colors underline-offset-4 hover:underline" href="#">Accessibility</a>
+<a class="text-on-tertiary-fixed-variant hover:text-primary transition-colors underline-offset-4 hover:underline" href="#">Privacy Policy</a>
+<a class="text-on-tertiary-fixed-variant hover:text-primary transition-colors underline-offset-4 hover:underline" href="#">Regulatory Compliance</a>
+</div>
+<div class="flex flex-col gap-md">
+<span class="font-technical text-technical text-on-surface uppercase tracking-widest mb-xs">Resources</span>
+<a class="text-on-tertiary-fixed-variant hover:text-primary transition-colors underline-offset-4 hover:underline" href="#">User Manual</a>
+<a class="text-on-tertiary-fixed-variant hover:text-primary transition-colors underline-offset-4 hover:underline" href="#">Emergency Protocol</a>
+<a class="text-on-tertiary-fixed-variant hover:text-primary transition-colors underline-offset-4 hover:underline" href="#">Quality Management</a>
+</div>
+<div class="flex flex-col justify-end lg:items-end">
+<p class="font-technical text-technical text-on-tertiary-fixed-variant text-right">© 2024 Smart Ride MedTech Ecosystem. All rights reserved.</p>
+</div>
+</footer>
+
+
+</body></html>

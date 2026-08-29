@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smart Ride OS - Telemetry</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;600;700&amp;family=Epilogue:wght@400;450&amp;family=Libre+Caslon+Text:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#e7e1e1",
+                    "surface-bright": "#3b3839",
+                    "tertiary-fixed-dim": "#d4c4b4",
+                    "outline": "#8c9197",
+                    "on-error-container": "#ffdad6",
+                    "on-error": "#690005",
+                    "primary-fixed": "#ffdbcd",
+                    "surface-tint": "#ffb596",
+                    "error": "#ffb4ab",
+                    "surface-container": "#211f1f",
+                    "secondary": "#e7c17a",
+                    "on-secondary-fixed": "#261900",
+                    "surface-container-highest": "#373434",
+                    "surface-container-high": "#2c292a",
+                    "background": "#151313",
+                    "on-primary-fixed": "#360f00",
+                    "on-tertiary": "#392f24",
+                    "surface-container-low": "#1d1b1b",
+                    "on-surface": "#e7e1e1",
+                    "error-container": "#93000a",
+                    "primary-fixed-dim": "#ffb596",
+                    "on-surface-variant": "#c2c7cd",
+                    "tertiary-container": "#9d8e80",
+                    "on-secondary-fixed-variant": "#5c4205",
+                    "on-secondary": "#412d00",
+                    "on-primary-container": "#4d1900",
+                    "secondary-fixed": "#ffdea4",
+                    "inverse-primary": "#a14007",
+                    "surface": "#151313",
+                    "secondary-fixed-dim": "#e7c17a",
+                    "secondary-container": "#5f4507",
+                    "on-background": "#e7e1e1",
+                    "tertiary": "#d4c4b4",
+                    "inverse-on-surface": "#323030",
+                    "primary-container": "#e37038",
+                    "on-primary-fixed-variant": "#7d2d00",
+                    "tertiary-fixed": "#f1e0cf",
+                    "on-primary": "#581e00",
+                    "on-tertiary-fixed": "#231a10",
+                    "primary": "#ffb596",
+                    "outline-variant": "#42474c",
+                    "on-secondary-container": "#d8b36d",
+                    "surface-dim": "#151313",
+                    "on-tertiary-fixed-variant": "#504539",
+                    "surface-container-lowest": "#0f0e0e",
+                    "on-tertiary-container": "#32281d",
+                    "surface-variant": "#373434"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "4xl": "72px",
+                    "5xl": "96px",
+                    "lg": "20px",
+                    "margin-desktop": "48px",
+                    "2xl": "40px",
+                    "gutter-desktop": "16px",
+                    "xs": "4px",
+                    "md": "12px",
+                    "6xl": "128px",
+                    "3xl": "56px",
+                    "xl": "28px",
+                    "sm": "8px",
+                    "base": "4px"
+            },
+            "fontFamily": {
+                    "display-xl-mobile": ["Chivo"],
+                    "display-md": ["Chivo"],
+                    "headline-lg": ["Chivo"],
+                    "technical": ["Libre Caslon Text"],
+                    "body-sm": ["Epilogue"],
+                    "body-lg": ["Epilogue"],
+                    "display-xl": ["Chivo"]
+            },
+            "fontSize": {
+                    "display-xl-mobile": ["64px", {"lineHeight": "1.1", "fontWeight": "700"}],
+                    "display-md": ["76px", {"lineHeight": "1.1", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-lg": ["42px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "technical": ["12px", {"letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "1.55", "fontWeight": "450"}],
+                    "body-lg": ["18px", {"lineHeight": "1.65", "fontWeight": "400"}],
+                    "display-xl": ["132px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        /* Engineering Blueprint Grid Overlay */
+        .blueprint-bg {
+            background-image: 
+                linear-gradient(to right, rgba(140, 145, 151, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(140, 145, 151, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        /* Subtle scanline effect for technical modules */
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.1) 51%);
+            background-size: 100% 4px;
+        }
+
+        /* Material Symbols Fill override */
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        /* Thin scrollbar for technical OS feel */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #151313; }
+        ::-webkit-scrollbar-thumb { background: #42474c; }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-sm h-screen flex overflow-hidden">
+<!-- SideNavBar Component (From JSON) -->
+<nav class="hidden md:flex flex-col h-full py-xl h-screen w-64 border-r border-outline-variant/20 bg-surface-container-low dark:bg-surface-container-low shrink-0 z-40 relative">
+<!-- Header -->
+<div class="px-lg mb-2xl">
+<h1 class="font-display-md text-headline-lg text-on-surface mb-xs tracking-tight">Smart Ride OS</h1>
+<p class="font-technical text-technical text-primary uppercase opacity-80 tracking-widest flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                MedTech v4.2.1
+            </p>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 flex flex-col gap-sm px-sm">
+<!-- Active: Telemetry -->
+<a class="flex items-center gap-md px-md py-3 rounded-r-DEFAULT bg-primary-container/10 text-primary border-r-4 border-primary transition-all group" href="#">
+<span class="material-symbols-outlined" data-weight="fill">analytics</span>
+<span class="font-technical text-technical uppercase tracking-wider">Telemetry</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 rounded-r-DEFAULT text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all group opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined">precision_manufacturing</span>
+<span class="font-technical text-technical uppercase tracking-wider">Diagnostics</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 rounded-r-DEFAULT text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all group opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined">security</span>
+<span class="font-technical text-technical uppercase tracking-wider">Safety Log</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 rounded-r-DEFAULT text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all group opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined">hub</span>
+<span class="font-technical text-technical uppercase tracking-wider">Network</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 rounded-r-DEFAULT text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all group opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-technical text-technical uppercase tracking-wider">System Config</span>
+</a>
+<a class="flex items-center gap-md px-md py-3 rounded-r-DEFAULT text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all group opacity-80 hover:opacity-100" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-technical text-technical uppercase tracking-wider">User Profile</span>
+</a>
+</div>
+<!-- Footer / CTA -->
+<div class="px-lg mt-auto flex flex-col gap-md border-t border-outline-variant/10 pt-lg">
+<div class="flex justify-between items-center px-xs text-on-surface-variant hover:text-primary cursor-pointer transition-colors">
+<span class="font-technical text-technical uppercase">Support</span>
+<span class="material-symbols-outlined text-[16px]">help</span>
+</div>
+<div class="flex justify-between items-center px-xs text-on-surface-variant hover:text-primary cursor-pointer transition-colors mb-md">
+<span class="font-technical text-technical uppercase">Manual</span>
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+</div>
+<button class="w-full py-3 border border-error text-error font-technical text-technical uppercase tracking-wider hover:bg-error/10 transition-colors flex justify-center items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">emergency</span>
+                Emergency Stop
+            </button>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-1 relative bg-background blueprint-bg overflow-y-auto">
+<!-- Inner Grid Container -->
+<div class="p-margin-desktop min-h-full flex flex-col gap-lg max-w-[1600px] mx-auto">
+<!-- Top Status Strip -->
+<div class="w-full h-8 border-b border-outline-variant/30 flex justify-between items-center px-md bg-surface-container/50 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<span class="font-technical text-technical text-on-surface-variant uppercase tracking-widest">Sys_Time: <span class="text-on-surface" id="sys-time">14:22:45 UTC</span></span>
+<span class="w-px h-3 bg-outline-variant/50"></span>
+<span class="font-technical text-technical text-primary uppercase flex items-center gap-2">
+<span class="material-symbols-outlined text-[14px]">satellite_alt</span>
+                        Uplink Established
+                    </span>
+</div>
+<div class="font-technical text-technical text-secondary uppercase">
+                    Security Level: Alpha
+                </div>
+</div>
+<!-- Asymmetric Grid Content -->
+<div class="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-lg mt-sm">
+<!-- Velocity & Heading (Cols 1-5) -->
+<div class="col-span-1 md:col-span-8 lg:col-span-5 bg-surface-container-highest border border-outline-variant/20 p-xl relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-transparent opacity-50"></div>
+<div class="flex justify-between items-start mb-2xl">
+<h2 class="font-technical text-technical text-on-surface-variant uppercase tracking-widest">Primary Velocity</h2>
+<span class="material-symbols-outlined text-outline">speed</span>
+</div>
+<div class="flex items-baseline gap-xs">
+<span class="font-display-xl text-display-xl text-on-surface">124</span>
+<span class="font-technical text-technical text-primary uppercase">km/h</span>
+</div>
+<div class="mt-4xl pt-lg border-t border-outline-variant/20 flex justify-between items-center">
+<div>
+<div class="font-technical text-technical text-on-surface-variant uppercase mb-xs">Vector Heading</div>
+<div class="font-headline-lg text-headline-lg text-on-surface">045° <span class="text-secondary text-lg">NE</span></div>
+</div>
+<div class="w-16 h-16 rounded-full border border-primary/30 flex items-center justify-center relative">
+<span class="absolute w-1 h-full bg-primary/20 rotate-[45deg]"></span>
+<span class="material-symbols-outlined text-primary rotate-[45deg]">navigation</span>
+</div>
+</div>
+</div>
+<!-- Power Core (Cols 6-9) -->
+<div class="col-span-1 md:col-span-4 lg:col-span-4 bg-surface-container border border-outline-variant/20 p-xl flex flex-col justify-between">
+<div class="flex justify-between items-start mb-lg">
+<h2 class="font-technical text-technical text-on-surface-variant uppercase tracking-widest">Power Core</h2>
+<span class="material-symbols-outlined text-secondary" data-weight="fill">battery_charging_80</span>
+</div>
+<div class="mb-xl">
+<div class="flex justify-between items-baseline mb-sm">
+<span class="font-headline-lg text-headline-lg text-secondary">82%</span>
+<span class="font-technical text-technical text-on-surface-variant uppercase">Discharging</span>
+</div>
+<!-- Battery Bar -->
+<div class="w-full h-2 bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[82%] relative">
+<div class="absolute inset-0 scanline opacity-50"></div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-md border-t border-outline-variant/20 pt-md mt-auto">
+<div>
+<div class="font-technical text-technical text-outline uppercase mb-1">Bus Voltage</div>
+<div class="font-body-lg text-body-lg text-on-surface">842.5 V</div>
+</div>
+<div>
+<div class="font-technical text-technical text-outline uppercase mb-1">Est. Range</div>
+<div class="font-body-lg text-body-lg text-on-surface">412 km</div>
+</div>
+</div>
+</div>
+<!-- Uplink Status (Cols 10-12) -->
+<div class="col-span-1 md:col-span-4 lg:col-span-3 bg-surface-container-low border border-outline-variant/20 p-xl">
+<div class="flex justify-between items-start mb-xl border-b border-outline-variant/20 pb-md">
+<h2 class="font-technical text-technical text-on-surface-variant uppercase tracking-widest">Comm Array</h2>
+<span class="material-symbols-outlined text-primary">cell_tower</span>
+</div>
+<div class="flex flex-col gap-lg">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px] text-outline">satellite</span>
+<span class="font-technical text-technical text-on-surface uppercase">GPS Lock</span>
+</div>
+<span class="font-technical text-technical text-secondary">12 SAT</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px] text-outline">5g</span>
+<span class="font-technical text-technical text-on-surface uppercase">Network</span>
+</div>
+<span class="font-technical text-technical text-primary">1.2 Gbps</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-[18px] text-outline">radar</span>
+<span class="font-technical text-technical text-on-surface uppercase">LiDAR Link</span>
+</div>
+<span class="font-technical text-technical text-on-surface-variant">Active</span>
+</div>
+</div>
+</div>
+<!-- Active Safety / Sensor Proximity (Cols 1-7) -->
+<div class="col-span-1 md:col-span-8 lg:col-span-7 bg-surface-container border border-outline-variant/20 p-xl flex flex-col lg:flex-row gap-xl">
+<div class="flex-1 flex flex-col justify-between">
+<div class="flex items-center gap-md mb-xl">
+<span class="material-symbols-outlined text-primary text-[24px]">gpp_good</span>
+<h2 class="font-technical text-technical text-on-surface-variant uppercase tracking-widest">Active Safety Shield</h2>
+</div>
+<div class="space-y-md">
+<div class="border-l-2 border-primary pl-md py-sm">
+<div class="font-technical text-technical text-outline uppercase mb-1">Forward Radar</div>
+<div class="font-body-lg text-body-lg text-on-surface flex justify-between">
+<span>Tracking: 2 Objects</span>
+<span class="text-primary font-technical text-technical">SAFE</span>
+</div>
+</div>
+<div class="border-l-2 border-secondary pl-md py-sm">
+<div class="font-technical text-technical text-outline uppercase mb-1">360° LiDAR Sweep</div>
+<div class="font-body-lg text-body-lg text-on-surface flex justify-between">
+<span>Environment mapping active</span>
+<span class="text-secondary font-technical text-technical">NOMINAL</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Abstract Visualization Area (No Map) -->
+<div class="w-full lg:w-64 h-48 lg:h-full bg-surface-container-lowest border border-outline-variant/10 relative overflow-hidden flex items-center justify-center scanline">
+<div class="absolute inset-0 opacity-20 blueprint-bg"></div>
+<!-- Abstract Radar Rings -->
+<div class="w-32 h-32 rounded-full border border-primary/20 absolute animate-ping duration-[3000ms]"></div>
+<div class="w-48 h-48 rounded-full border border-primary/10 absolute"></div>
+<div class="w-16 h-16 rounded-full bg-primary/10 border border-primary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[20px]">directions_car</span>
+</div>
+<!-- Data Points -->
+<div class="absolute top-1/4 left-1/4 w-2 h-2 bg-secondary rounded-full shadow-[0_0_8px_rgba(231,193,122,0.8)]"></div>
+<div class="absolute bottom-1/3 right-1/4 w-1.5 h-1.5 bg-outline rounded-full"></div>
+</div>
+</div>
+<!-- Trip Telemetry Grid (Cols 8-12) -->
+<div class="col-span-1 md:col-span-8 lg:col-span-5 bg-surface-container-low border border-outline-variant/20 p-xl flex flex-col justify-between">
+<div class="flex justify-between items-start mb-xl border-b border-outline-variant/20 pb-md">
+<h2 class="font-technical text-technical text-on-surface-variant uppercase tracking-widest">Trip Metrics</h2>
+<span class="material-symbols-outlined text-outline">query_stats</span>
+</div>
+<div class="grid grid-cols-2 gap-x-xl gap-y-2xl">
+<div>
+<div class="font-technical text-technical text-outline uppercase mb-xs flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">route</span> Distance
+                            </div>
+<div class="font-headline-lg text-headline-lg text-on-surface">112.4 <span class="text-body-sm font-body-sm text-outline">km</span></div>
+</div>
+<div>
+<div class="font-technical text-technical text-outline uppercase mb-xs flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">thermostat</span> Motor Temp
+                            </div>
+<div class="font-headline-lg text-headline-lg text-on-surface">42°<span class="text-body-sm font-body-sm text-outline">C</span></div>
+</div>
+<div class="col-span-2">
+<div class="font-technical text-technical text-outline uppercase mb-xs flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">bolt</span> System Efficiency
+                            </div>
+<div class="font-headline-lg text-headline-lg text-primary">18.5 <span class="text-body-sm font-body-sm text-outline">kWh/100km</span></div>
+<div class="w-full h-1 bg-surface-container mt-sm flex">
+<div class="h-full bg-primary w-2/3"></div>
+<div class="h-full bg-outline-variant/30 w-1/3"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Simple script to update system time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toISOString().split('T')[1].split('.')[0] + ' UTC';
+            document.getElementById('sys-time').textContent = timeString;
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+</body></html>

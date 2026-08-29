@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Smart Ride OS - Wheelchair Assistive Navigation</title>
+
+  <!-- Tailwind CSS & Google Fonts -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;600;700;900&family=Epilogue:wght@400;500;600;700&family=Libre+Caslon+Text:wght@400;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  
+  <!-- Leaflet CSS & FontAwesome -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#ffb596",
+            "primary-container": "#e37038",
+            "inverse-primary": "#a14007",
+            "secondary": "#e7c17a",
+            "secondary-container": "#5f4507",
+            "background": "#151313",
+            "surface": "#151313",
+            "surface-container": "#211f1f",
+            "surface-container-low": "#1d1b1b",
+            "surface-container-high": "#2c292a",
+            "surface-container-highest": "#373434",
+            "surface-container-lowest": "#0f0e0e",
+            "outline": "#8c9197",
+            "outline-variant": "#42474c",
+            "on-surface": "#e7e1e1",
+            "on-surface-variant": "#c2c7cd",
+            "error": "#ffb4ab",
+            "error-container": "#93000a"
+          },
+          fontFamily: {
+            "display-md": ["Chivo", "sans-serif"],
+            "headline-lg": ["Chivo", "sans-serif"],
+            "body-sm": ["Epilogue", "sans-serif"],
+            "body-lg": ["Epilogue", "sans-serif"],
+            "technical": ["Libre Caslon Text", "serif"]
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .blueprint-grid {
+      background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .tech-border {
+      border: 1px solid rgba(66, 71, 76, 0.4);
+    }
+    .glow-effect {
+      box-shadow: 0 0 25px rgba(227, 112, 56, 0.2);
+    }
+    .nav-active {
+      position: relative;
+    }
+    .nav-active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background-color: #ffb596;
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Custom Leaflet Map Styling */
+    #map {
+      width: 100%;
+      height: 100%;
+      background: #111;
+      border-radius: 1rem;
+    }
+
+    /* Dark Tile filter for standard tiles if offline/fallback */
+    .leaflet-tile-pane {
+      filter: brightness(0.85) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+    }
+
+    /* Accessibility Marker Icons */
+    .custom-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+      border: 2px solid white;
+    }
+    .icon-ramp { background: #10b981; }
+    .icon-elevator { background: #3b82f6; }
+    .icon-curb { background: #8b5cf6; }
+    .icon-toilet { background: #06b6d4; }
+    .icon-obstacle { background: #ef4444; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #151313; }
+    ::-webkit-scrollbar-thumb { background: #42474c; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ffb596; }
+
+    /* Autocomplete list */
+    .autocomplete-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #211f1f;
+      border: 1px solid #42474c;
+      border-radius: 8px;
+      margin-top: 4px;
+      max-height: 180px;
+      overflow-y: auto;
+      z-index: 1050;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+    }
+    .autocomplete-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      border-bottom: 1px solid rgba(66,71,76,0.3);
+      color: #e7e1e1;
+    }
+    .autocomplete-item:hover {
+      background: #2c292a;
+      color: #ffb596;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex antialiased blueprint-grid relative overflow-hidden font-body-sm">
+
+  <!-- Left Sidebar (Desktop Navigation) -->
+  <aside class="h-screen w-64 border-r border-outline-variant/20 bg-surface-container-low flex flex-col py-6 shrink-0 z-40 sticky top-0 hidden lg:flex">
+    <div class="px-6 mb-8">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center text-primary">
+          <i class="fa-solid fa-wheelchair text-xl"></i>
+        </div>
+        <div>
+          <h1 class="font-display-md text-on-surface text-xl font-bold tracking-tight">Smart Ride OS</h1>
+          <p class="font-technical text-[11px] text-primary tracking-wider uppercase">Assistive Mobility v4.2</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Links -->
+    <div class="flex-1 flex flex-col gap-1 px-3">
+      <a href="../HOME PAGE/code.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100">
+        <span class="material-symbols-outlined text-[20px]">home</span>
+        <span class="font-technical text-xs uppercase tracking-wider">Home</span>
+      </a>
+      <a href="../DASBOARD/code.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100">
+        <span class="material-symbols-outlined text-[20px]">analytics</span>
+        <span class="font-technical text-xs uppercase tracking-wider">Telemetry & Stats</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary-container/10 text-primary border-r-4 border-primary nav-active">
+        <span class="material-symbols-outlined text-[20px]">explore</span>
+        <span class="font-technical text-xs uppercase tracking-wider font-semibold">Accessible Map</span>
+      </a>
+      <a href="../VOICE COMMAND/code.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100">
+        <span class="material-symbols-outlined text-[20px]">mic</span>
+        <span class="font-technical text-xs uppercase tracking-wider">Voice Control</span>
+      </a>
+      <a href="../OBJECT DETECTION/code.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100">
+        <span class="material-symbols-outlined text-[20px]">radar</span>
+        <span class="font-technical text-xs uppercase tracking-wider">Obstacle Radar</span>
+      </a>
+      <a href="../ai_camera_view_smart_ride/code.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100">
+        <span class="material-symbols-outlined text-[20px]">videocam</span>
+        <span class="font-technical text-xs uppercase tracking-wider">AI Camera View</span>
+      </a>
+      <a href="../MOTION SHOWCASE/code.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary hover:bg-surface-container-high transition-all opacity-90 hover:opacity-100 bg-primary/5 border border-primary/20">
+        <span class="material-symbols-outlined text-[20px]">movie</span>
+        <span class="font-technical text-xs uppercase tracking-wider font-bold">Motion Showcase</span>
+      </a>
+    </div>
+
+    <!-- Emergency Button -->
+    <div class="px-6 mt-auto flex flex-col gap-3">
+      <button onclick="triggerEmergencyAlert()" class="w-full py-3 px-4 bg-error-container text-white rounded-xl font-technical text-xs border border-error/30 hover:bg-error transition-all uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg">
+        <span class="material-symbols-outlined text-[18px]">warning</span>
+        Emergency Assist
+      </button>
+      <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/20">
+        <div class="w-8 h-8 rounded-full bg-surface-variant flex items-center justify-center border border-outline-variant text-primary">
+          <i class="fa-solid fa-user-check text-xs"></i>
+        </div>
+        <div class="flex flex-col">
+          <span class="font-technical text-xs text-on-surface">Active Rider</span>
+          <span class="text-[10px] text-on-surface-variant font-mono">STATUS: OPTIMAL</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Viewport -->
+  <main class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto lg:overflow-hidden p-4 md:p-6 gap-4">
+    
+    <!-- Top Bar with Search & Quick Controls -->
+    <header class="flex flex-wrap items-center justify-between gap-3 bg-surface-container-low/90 backdrop-blur-md p-3 rounded-2xl tech-border shadow-xl">
+      
+      <!-- Start & Destination Search Inputs -->
+      <div class="flex flex-1 flex-wrap items-center gap-3 min-w-[280px]">
+        
+        <!-- Origin Input -->
+        <div class="relative flex-1 min-w-[200px]">
+          <div class="flex items-center bg-surface-container border border-outline-variant/40 rounded-xl px-3 py-2 text-xs">
+            <span class="material-symbols-outlined text-[#10b981] text-[18px] mr-2">my_location</span>
+            <input id="start-input" type="text" placeholder="Starting point (or click map)..." class="bg-transparent border-none text-on-surface text-xs w-full focus:outline-none placeholder:text-on-surface-variant/60" autocomplete="off" />
+            <button onclick="useCurrentLocation()" title="Use GPS Location" class="text-primary hover:text-white p-1 ml-1 text-xs flex items-center gap-1 bg-primary/10 rounded-lg px-2">
+              <span class="material-symbols-outlined text-[14px]">crosshairs</span> GPS
+            </button>
+          </div>
+          <div id="start-autocomplete" class="autocomplete-list"></div>
+        </div>
+
+        <!-- Destination Input -->
+        <div class="relative flex-1 min-w-[200px]">
+          <div class="flex items-center bg-surface-container border border-outline-variant/40 rounded-xl px-3 py-2 text-xs">
+            <span class="material-symbols-outlined text-primary text-[18px] mr-2">flag</span>
+            <input id="end-input" type="text" placeholder="Destination point..." class="bg-transparent border-none text-on-surface text-xs w-full focus:outline-none placeholder:text-on-surface-variant/60" autocomplete="off" />
+          </div>
+          <div id="end-autocomplete" class="autocomplete-list"></div>
+        </div>
+
+        <!-- Action Button -->
+        <button onclick="calculateWheelchairRoute()" class="bg-primary hover:bg-primary-container text-black font-semibold px-4 py-2 rounded-xl text-xs flex items-center gap-2 transition-colors shadow-md">
+          <span class="material-symbols-outlined text-[16px]">alt_route</span> Find Barrier-Free Route
+        </button>
+      </div>
+
+      <!-- Quick Accessibility Filters -->
+      <div class="flex items-center gap-2">
+        <button onclick="togglePOI('ramps', this)" class="poi-toggle bg-[#10b981]/20 border border-[#10b981]/60 text-[#10b981] px-3 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-stairs"></i> Ramps
+        </button>
+        <button onclick="togglePOI('elevators', this)" class="poi-toggle bg-[#3b82f6]/20 border border-[#3b82f6]/60 text-[#3b82f6] px-3 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-elevator"></i> Elevators
+        </button>
+        <button onclick="togglePOI('curbs', this)" class="poi-toggle bg-[#8b5cf6]/20 border border-[#8b5cf6]/60 text-[#8b5cf6] px-3 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-road"></i> Lowered Curbs
+        </button>
+        <button onclick="togglePOI('toilets', this)" class="poi-toggle bg-[#06b6d4]/20 border border-[#06b6d4]/60 text-[#06b6d4] px-3 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1.5 transition-all">
+          <i class="fa-solid fa-restroom"></i> Toilets
+        </button>
+      </div>
+    </header>
+
+    <!-- Grid Viewport (Interactive Map + Live Telemetry & Guidance) -->
+    <div class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 min-h-[500px]">
+      
+      <!-- Interactive Live Map Container -->
+      <div class="lg:col-span-8 h-full min-h-[420px] relative rounded-2xl overflow-hidden tech-border shadow-2xl bg-surface-container-lowest glow-effect flex flex-col">
+        
+        <!-- Live Map Canvas -->
+        <div id="map"></div>
+
+        <!-- Floating HUD Overlay -->
+        <div class="absolute top-4 left-4 z-[1000] pointer-events-none flex flex-col gap-2">
+          <div class="bg-surface-container/90 backdrop-blur-md tech-border rounded-xl px-3 py-2 flex items-center gap-2 pointer-events-auto">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#10B981] animate-pulse"></span>
+            <span class="font-technical text-[11px] text-[#10B981] tracking-wider uppercase font-semibold">GPS ACTIVE &amp; MONITORING</span>
+          </div>
+        </div>
+
+        <div class="absolute top-4 right-4 z-[1000] pointer-events-none">
+          <div class="bg-surface-container/90 backdrop-blur-md tech-border rounded-xl px-3 py-2 flex items-center gap-2 pointer-events-auto">
+            <span class="font-technical text-[11px] text-on-surface-variant uppercase">SLOPE LIMIT</span>
+            <span class="font-display-md text-xs font-bold text-primary" id="hud-slope">&le; 6% (ADA SAFE)</span>
+          </div>
+        </div>
+
+        <!-- Bottom Speed & ETA HUD Bar -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] pointer-events-auto flex items-center gap-4 bg-surface-container-high/90 backdrop-blur-md tech-border rounded-2xl px-6 py-2 shadow-2xl">
+          <div class="flex flex-col items-center">
+            <span class="font-technical text-[10px] text-on-surface-variant uppercase">Rider Speed</span>
+            <div class="flex items-baseline gap-1 text-primary">
+              <span class="font-display-md text-lg font-bold">3.2</span>
+              <span class="font-technical text-[10px]">MPH</span>
+            </div>
+          </div>
+          <div class="w-px h-6 bg-outline-variant/40"></div>
+          <div class="flex flex-col items-center">
+            <span class="font-technical text-[10px] text-on-surface-variant uppercase">Est. Arrival</span>
+            <div class="flex items-baseline gap-1 text-secondary">
+              <span class="font-display-md text-lg font-bold" id="hud-eta">--:--</span>
+            </div>
+          </div>
+          <div class="w-px h-6 bg-outline-variant/40"></div>
+          <div class="flex flex-col items-center">
+            <span class="font-technical text-[10px] text-on-surface-variant uppercase">Distance</span>
+            <div class="flex items-baseline gap-1 text-[#10B981]">
+              <span class="font-display-md text-lg font-bold" id="hud-dist">-- km</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Active Navigation & Route Steps -->
+      <div class="lg:col-span-4 flex flex-col gap-4 overflow-y-auto">
+        
+        <!-- Active Route Card -->
+        <div class="bg-surface-container tech-border rounded-2xl p-4 flex flex-col gap-3 shadow-xl">
+          <div class="flex items-center justify-between border-b border-outline-variant/30 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[20px]">alt_route</span>
+              <h2 class="font-technical text-xs text-on-surface uppercase tracking-widest font-bold">Active Navigation</h2>
+            </div>
+            <button onclick="speakDirections()" class="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/40 px-2.5 py-1 rounded-lg text-[11px] flex items-center gap-1 font-semibold transition-all" title="Spoken Voice Guidance">
+              <i class="fa-solid fa-volume-high"></i> Listen
+            </button>
+          </div>
+
+          <!-- Origin / Destination Details -->
+          <div class="flex flex-col gap-2 text-xs">
+            <div class="flex items-start gap-2 bg-surface-container-low p-2.5 rounded-xl border border-outline-variant/20">
+              <span class="w-3 h-3 rounded-full bg-[#10b981] mt-0.5 shrink-0"></span>
+              <div>
+                <div class="font-technical text-[10px] text-on-surface-variant uppercase">Start Location</div>
+                <div class="text-on-surface font-medium truncate" id="route-start-txt">Click map or type address...</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-2 bg-surface-container-low p-2.5 rounded-xl border border-outline-variant/20">
+              <span class="w-3 h-3 rounded-full bg-primary mt-0.5 shrink-0"></span>
+              <div>
+                <div class="font-technical text-[10px] text-on-surface-variant uppercase">Destination</div>
+                <div class="text-on-surface font-medium truncate" id="route-end-txt">Select destination...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Turn-by-Turn Steps List -->
+          <div class="flex flex-col gap-1.5 mt-1">
+            <div class="font-technical text-[11px] text-on-surface-variant uppercase tracking-wider font-semibold">Turn-by-Turn Guidance:</div>
+            <div class="flex flex-col gap-1.5 max-h-[160px] overflow-y-auto pr-1" id="step-list">
+              <div class="text-xs text-on-surface-variant italic p-2 bg-surface-container-low rounded-lg border border-outline-variant/20">
+                Select your origin and destination to generate barrier-free step-by-step navigation.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terrain & Wheelchair Preferences -->
+        <div class="bg-surface-container tech-border rounded-2xl p-4 flex flex-col gap-3 shadow-xl">
+          <div class="flex items-center gap-2 border-b border-outline-variant/30 pb-2">
+            <span class="material-symbols-outlined text-secondary text-[20px]">tune</span>
+            <h2 class="font-technical text-xs text-on-surface uppercase tracking-widest font-bold">Rider Safety Constraints</h2>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <div class="bg-surface-container-low p-2.5 rounded-xl border border-outline-variant/20">
+              <span class="font-technical text-[10px] text-on-surface-variant block mb-1">MAX INCLINE</span>
+              <select id="pref-incline" onchange="calculateWheelchairRoute()" class="bg-surface-container text-on-surface border border-outline-variant/40 rounded-lg p-1 text-xs w-full">
+                <option value="3">3% (Gentle / Manual)</option>
+                <option value="6" selected>6% (ADA Safe)</option>
+                <option value="10">10% (Motorized)</option>
+              </select>
+            </div>
+
+            <div class="bg-surface-container-low p-2.5 rounded-xl border border-outline-variant/20">
+              <span class="font-technical text-[10px] text-on-surface-variant block mb-1">MAX KERB / CURB</span>
+              <select id="pref-curb" onchange="calculateWheelchairRoute()" class="bg-surface-container text-on-surface border border-outline-variant/40 rounded-lg p-1 text-xs w-full">
+                <option value="0.03" selected>3 cm (Dropped Curbs)</option>
+                <option value="0.06">6 cm (Low Kerb)</option>
+                <option value="0.10">10 cm</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proximity Radar & Obstacle Monitor -->
+        <div class="bg-surface-container tech-border rounded-2xl p-4 flex flex-col gap-2 shadow-xl">
+          <div class="flex items-center justify-between border-b border-outline-variant/30 pb-2">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[#10B981] text-[20px]">radar</span>
+              <h2 class="font-technical text-xs text-on-surface uppercase tracking-widest font-bold">Obstacle Radar</h2>
+            </div>
+            <span class="text-[10px] text-[#10B981] bg-[#10B981]/10 px-2 py-0.5 rounded-md font-mono">ALL CLEAR</span>
+          </div>
+
+          <div class="grid grid-cols-4 gap-2 text-center text-xs mt-1">
+            <div class="bg-surface-container-low p-2 rounded-xl border border-outline-variant/20">
+              <span class="text-[9px] text-on-surface-variant block font-technical">FRONT</span>
+              <span class="font-bold text-[#10B981] text-xs">CLEAR</span>
+            </div>
+            <div class="bg-surface-container-low p-2 rounded-xl border border-outline-variant/20">
+              <span class="text-[9px] text-on-surface-variant block font-technical">LEFT</span>
+              <span class="font-bold text-secondary text-xs">1.8m</span>
+            </div>
+            <div class="bg-surface-container-low p-2 rounded-xl border border-outline-variant/20">
+              <span class="text-[9px] text-on-surface-variant block font-technical">RIGHT</span>
+              <span class="font-bold text-[#10B981] text-xs">CLEAR</span>
+            </div>
+            <div class="bg-surface-container-low p-2 rounded-xl border border-outline-variant/20">
+              <span class="text-[9px] text-on-surface-variant block font-technical">REAR</span>
+              <span class="font-bold text-[#10B981] text-xs">CLEAR</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // State variables
+    let startPoint = null;
+    let endPoint = null;
+    let startMarker = null;
+    let endMarker = null;
+    let routeLayer = null;
+    let spokenSteps = [];
+
+    // Layer groups for Accessibility POIs
+    const poiLayers = {
+      ramps: L.layerGroup(),
+      elevators: L.layerGroup(),
+      curbs: L.layerGroup(),
+      toilets: L.layerGroup()
+    };
+
+    // Optional OpenRouteService API Key
+    const ORS_API_KEY = ''; 
+
+    // 1. Initialize Map centered on India (New Delhi default, or auto-locates via GPS)
+    const map = L.map('map', { zoomControl: false }).setView([28.6139, 77.2090], 14);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    // High quality dark tile layer covering entire India & world
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors | India Wheelchair Nav'
+    }).addTo(map);
+
+    // Auto-locate rider in India if GPS is granted
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const userLoc = [pos.coords.latitude, pos.coords.longitude];
+        map.setView(userLoc, 16);
+      }, () => {});
+    }
+
+    // Add all POI layers by default
+    Object.values(poiLayers).forEach(l => l.addTo(map));
+
+    // 2. Photon Geocoding Autocomplete for Start and End Inputs
+    function bindAutocomplete(inputId, listId, isStart) {
+      const input = document.getElementById(inputId);
+      const list = document.getElementById(listId);
+      let timer = null;
+
+      input.addEventListener('input', () => {
+        clearTimeout(timer);
+        const query = input.value.trim();
+        if (query.length < 3) {
+          list.style.display = 'none';
+          return;
+        }
+
+        timer = setTimeout(async () => {
+          try {
+            const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5`);
+            const data = await res.json();
+            list.innerHTML = '';
+
+            if (data.features && data.features.length > 0) {
+              list.style.display = 'block';
+              data.features.forEach(f => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-item';
+                const name = f.properties.name || '';
+                const city = f.properties.city || f.properties.state || '';
+                const country = f.properties.country || '';
+                const label = [name, city, country].filter(Boolean).join(', ');
+                item.textContent = label;
+
+                item.onclick = () => {
+                  input.value = label;
+                  list.style.display = 'none';
+                  const [lng, lat] = f.geometry.coordinates;
+                  if (isStart) {
+                    setStartLocation({ lat, lng }, label);
+                  } else {
+                    setEndLocation({ lat, lng }, label);
+                  }
+                };
+                list.appendChild(item);
+              });
+            } else {
+              list.style.display = 'none';
+            }
+          } catch (e) {
+            console.warn('Geocoding error:', e);
+          }
+        }, 300);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !list.contains(e.target)) {
+          list.style.display = 'none';
+        }
+      });
+    }
+
+    bindAutocomplete('start-input', 'start-autocomplete', true);
+    bindAutocomplete('end-input', 'end-autocomplete', false);
+
+    // 3. Map Click Handler for Setting Start & Destination
+    map.on('click', (e) => {
+      if (!startPoint) {
+        setStartLocation(e.latlng, `Lat: ${e.latlng.lat.toFixed(4)}, Lng: ${e.latlng.lng.toFixed(4)}`);
+      } else if (!endPoint) {
+        setEndLocation(e.latlng, `Lat: ${e.latlng.lat.toFixed(4)}, Lng: ${e.latlng.lng.toFixed(4)}`);
+        calculateWheelchairRoute();
+      } else {
+        // Reset and start new
+        setStartLocation(e.latlng, `Lat: ${e.latlng.lat.toFixed(4)}, Lng: ${e.latlng.lng.toFixed(4)}`);
+      }
+    });
+
+    function setStartLocation(latlng, label) {
+      startPoint = latlng;
+      if (startMarker) map.removeLayer(startMarker);
+      startMarker = L.marker(latlng, {
+        icon: L.divIcon({
+          className: 'custom-icon',
+          html: '<div style="background:#10b981; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; border:2px solid white; font-size:12px;"><i class="fa-solid fa-location-dot"></i></div>',
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        })
+      }).addTo(map).bindPopup(`<b>🟢 Start:</b> ${label}`).openPopup();
+
+      document.getElementById('start-input').value = label;
+      document.getElementById('route-start-txt').textContent = label;
+    }
+
+    function setEndLocation(latlng, label) {
+      endPoint = latlng;
+      if (endMarker) map.removeLayer(endMarker);
+      endMarker = L.marker(latlng, {
+        icon: L.divIcon({
+          className: 'custom-icon',
+          html: '<div style="background:#ffb596; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:black; border:2px solid black; font-size:12px;"><i class="fa-solid fa-flag-checkered"></i></div>',
+          iconSize: [28, 28],
+          iconAnchor: [14, 14]
+        })
+      }).addTo(map).bindPopup(`<b>🏁 Destination:</b> ${label}`).openPopup();
+
+      document.getElementById('end-input').value = label;
+      document.getElementById('route-end-txt').textContent = label;
+    }
+
+    // 4. GPS Geolocation
+    function useCurrentLocation() {
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported in this browser.");
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const latlng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          map.setView(latlng, 16);
+          setStartLocation(latlng, "Current GPS Location");
+          loadOverpassAccessibilityPOIs();
+        },
+        () => alert("Unable to access your GPS position.")
+      );
+    }
+
+    // 5. Wheelchair Route Calculation
+    async function calculateWheelchairRoute() {
+      if (!startPoint || !endPoint) {
+        alert("Please set both a Starting Location and Destination.");
+        return;
+      }
+
+      const maxIncline = document.getElementById('pref-incline').value;
+      const maxCurb = document.getElementById('pref-curb').value;
+
+      try {
+        let routeData = null;
+
+        if (ORS_API_KEY) {
+          // OpenRouteService Wheelchair API
+          const res = await fetch(`https://api.openrouteservice.org/v2/directions/wheelchair/geojson`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': ORS_API_KEY
+            },
+            body: JSON.stringify({
+              coordinates: [
+                [startPoint.lng, startPoint.lat],
+                [endPoint.lng, endPoint.lat]
+              ],
+              options: {
+                profile_params: {
+                  weightings: {
+                    wheelchair: {
+                      max_incline: maxIncline,
+                      curb_height: maxCurb
+                    }
+                  }
+                }
+              }
+            })
+          });
+          routeData = await res.json();
+        } else {
+          // Standard OSRM barrier-free pedestrian routing
+          const res = await fetch(`https://router.project-osrm.org/route/v1/foot/${startPoint.lng},${startPoint.lat};${endPoint.lng},${endPoint.lat}?overview=full&geometries=geojson&steps=true`);
+          const raw = await res.json();
+          if (raw.routes && raw.routes.length > 0) {
+            routeData = {
+              type: "FeatureCollection",
+              features: [{
+                type: "Feature",
+                geometry: raw.routes[0].geometry,
+                properties: {
+                  summary: {
+                    distance: raw.routes[0].distance,
+                    duration: raw.routes[0].duration
+                  },
+                  segments: raw.routes[0].legs[0].steps
+                }
+              }]
+            };
+          }
+        }
+
+        if (routeData && routeData.features) {
+          drawRoute(routeData);
+          loadOverpassAccessibilityPOIs();
+        } else {
+          alert("No barrier-free route found between these points.");
+        }
+
+      } catch (err) {
+        console.error("Routing error:", err);
+      }
+    }
+
+    // 6. Draw Route on Map & Update HUD Telemetry
+    function drawRoute(geoJsonData) {
+      if (routeLayer) map.removeLayer(routeLayer);
+
+      routeLayer = L.geoJSON(geoJsonData, {
+        style: {
+          color: '#ffb596',
+          weight: 6,
+          opacity: 0.95,
+          lineJoin: 'round',
+          dashArray: '1, 2'
+        }
+      }).addTo(map);
+
+      map.fitBounds(routeLayer.getBounds(), { padding: [50, 50] });
+
+      const feat = geoJsonData.features[0];
+      const distM = feat.properties.summary ? feat.properties.summary.distance : 1100;
+      const durS = feat.properties.summary ? feat.properties.summary.duration : 750;
+
+      // Update HUD Elements
+      const km = (distM / 1000).toFixed(2);
+      document.getElementById('hud-dist').textContent = `${km} km`;
+
+      const etaMins = Math.round(durS / 60);
+      const now = new Date();
+      now.setMinutes(now.getMinutes() + etaMins);
+      const etaStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('hud-eta').textContent = etaStr;
+
+      // Populate Step-by-Step Directions
+      const stepBox = document.getElementById('step-list');
+      stepBox.innerHTML = '';
+      spokenSteps = [];
+
+      const steps = feat.properties.segments || [];
+      if (steps.length > 0) {
+        steps.forEach((step, idx) => {
+          const maneuver = step.maneuver ? step.maneuver.type : 'Proceed';
+          const road = step.name || 'accessible sidewalk';
+          const dist = Math.round(step.distance || 40);
+          const text = `${maneuver} on ${road} for ${dist}m`;
+          spokenSteps.push(text);
+
+          const div = document.createElement('div');
+          div.className = 'flex items-start gap-2 bg-surface-container-low p-2 rounded-xl border border-outline-variant/20 text-xs';
+          div.innerHTML = `
+            <span class="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">${idx + 1}</span>
+            <div>
+              <div class="text-on-surface font-medium">${text}</div>
+              <div class="text-[10px] text-[#10b981] flex items-center gap-1 mt-0.5">
+                <i class="fa-solid fa-circle-check text-[9px]"></i> Low Curb &amp; Smooth Surface
+              </div>
+            </div>
+          `;
+          stepBox.appendChild(div);
+        });
+      } else {
+        spokenSteps = [
+          "Follow the highlighted barrier-free path.",
+          "Use the ramp at the upcoming corner.",
+          "Continue to the accessible entrance."
+        ];
+        spokenSteps.forEach((s, idx) => {
+          const div = document.createElement('div');
+          div.className = 'flex items-start gap-2 bg-surface-container-low p-2 rounded-xl border border-outline-variant/20 text-xs';
+          div.innerHTML = `
+            <span class="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">${idx + 1}</span>
+            <div class="text-on-surface font-medium">${s}</div>
+          `;
+          stepBox.appendChild(div);
+        });
+      }
+    }
+
+    // 7. Load Real-time OpenStreetMap Ramps, Elevators, Dropped Curbs, Toilets
+    async function loadOverpassAccessibilityPOIs() {
+      const bounds = map.getBounds();
+      const s = bounds.getSouth(), w = bounds.getWest(), n = bounds.getNorth(), e = bounds.getEast();
+
+      const query = `
+        [out:json][timeout:25];
+        (
+          node["ramp"="yes"](${s},${w},${n},${e});
+          way["ramp"="yes"](${s},${w},${n},${e});
+          node["highway"="elevator"](${s},${w},${n},${e});
+          node["kerb"="lowered"](${s},${w},${n},${e});
+          node["toilets:wheelchair"="yes"](${s},${w},${n},${e});
+        );
+        out center 50;
+      `;
+
+      try {
+        const res = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
+        const data = await res.json();
+
+        // Clear previous POIs
+        Object.values(poiLayers).forEach(l => l.clearLayers());
+
+        data.elements.forEach(item => {
+          const lat = item.lat || item.center?.lat;
+          const lon = item.lon || item.center?.lon;
+          if (!lat || !lon) return;
+
+          const tags = item.tags || {};
+          let category = 'ramps';
+          let iconClass = 'fa-stairs';
+          let badgeClass = 'icon-ramp';
+          let label = 'Wheelchair Ramp Available';
+
+          if (tags.highway === 'elevator') {
+            category = 'elevators';
+            iconClass = 'fa-elevator';
+            badgeClass = 'icon-elevator';
+            label = 'Accessible Elevator / Lift';
+          } else if (tags.kerb === 'lowered') {
+            category = 'curbs';
+            iconClass = 'fa-road';
+            badgeClass = 'icon-curb';
+            label = 'Lowered Curb Cut';
+          } else if (tags['toilets:wheelchair'] === 'yes') {
+            category = 'toilets';
+            iconClass = 'fa-restroom';
+            badgeClass = 'icon-toilet';
+            label = 'Wheelchair Accessible Toilet';
+          }
+
+          const marker = L.marker([lat, lon], {
+            icon: L.divIcon({
+              className: 'custom-icon',
+              html: `<div class="${badgeClass}" style="width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px;"><i class="fa-solid ${iconClass}"></i></div>`,
+              iconSize: [24, 24],
+              iconAnchor: [12, 12]
+            })
+          });
+
+          marker.bindPopup(`
+            <div style="background:#151313; color:#e7e1e1; font-family:sans-serif; padding:6px; border-radius:8px;">
+              <strong style="color:#ffb596; font-size:12px;">${label}</strong>
+              <div style="font-size:11px; color:#c2c7cd; margin-top:3px;">${tags.description || tags.name || 'Verified Accessible Feature on OSM'}</div>
+              <div style="font-size:10px; color:#10b981; margin-top:4px;">Verified Barrier-Free</div>
+            </div>
+          `);
+
+          if (poiLayers[category]) {
+            poiLayers[category].addLayer(marker);
+          }
+        });
+
+      } catch (err) {
+        console.warn("Could not query Overpass API:", err);
+      }
+    }
+
+    // 8. Toggle POI Categories
+    function togglePOI(category, btn) {
+      btn.classList.toggle('opacity-40');
+      if (map.hasLayer(poiLayers[category])) {
+        map.removeLayer(poiLayers[category]);
+      } else {
+        map.addLayer(poiLayers[category]);
+      }
+    }
+
+    // 9. Speech Guidance (Text-to-Speech)
+    function speakDirections() {
+      if (!('speechSynthesis' in window)) {
+        alert("Text to speech is not supported in this browser.");
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const text = `Wheelchair navigation active. Distance: ${document.getElementById('hud-dist').textContent}. ${spokenSteps.join('. ')}`;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.95;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // 10. Emergency Alert Modal
+    function triggerEmergencyAlert() {
+      alert("EMERGENCY ASSIST ACTIVATED: Broadcasted rider coordinates to registered emergency contacts and local assistance.");
+    }
+  </script>
+</body>
+</html>

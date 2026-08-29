@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Smart Ride | Secure Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@600;700&amp;family=Epilogue:wght@400;450&amp;family=Libre+Caslon+Text:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-surface": "#e7e1e1",
+                        "surface-bright": "#3b3839",
+                        "tertiary-fixed-dim": "#d4c4b4",
+                        "outline": "#8c9197",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "primary-fixed": "#ffdbcd",
+                        "surface-tint": "#ffb596",
+                        "error": "#ffb4ab",
+                        "surface-container": "#211f1f",
+                        "secondary": "#e7c17a",
+                        "on-secondary-fixed": "#261900",
+                        "surface-container-highest": "#373434",
+                        "surface-container-high": "#2c292a",
+                        "background": "#151313",
+                        "on-primary-fixed": "#360f00",
+                        "on-tertiary": "#392f24",
+                        "surface-container-low": "#1d1b1b",
+                        "on-surface": "#e7e1e1",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#ffb596",
+                        "on-surface-variant": "#c2c7cd",
+                        "tertiary-container": "#9d8e80",
+                        "on-secondary-fixed-variant": "#5c4205",
+                        "on-secondary": "#412d00",
+                        "on-primary-container": "#4d1900",
+                        "secondary-fixed": "#ffdea4",
+                        "inverse-primary": "#a14007",
+                        "surface": "#151313",
+                        "secondary-fixed-dim": "#e7c17a",
+                        "secondary-container": "#5f4507",
+                        "on-background": "#e7e1e1",
+                        "tertiary": "#d4c4b4",
+                        "inverse-on-surface": "#323030",
+                        "primary-container": "#e37038",
+                        "on-primary-fixed-variant": "#7d2d00",
+                        "tertiary-fixed": "#f1e0cf",
+                        "on-primary": "#581e00",
+                        "on-tertiary-fixed": "#231a10",
+                        "primary": "#ffb596",
+                        "outline-variant": "#42474c",
+                        "on-secondary-container": "#d8b36d",
+                        "surface-dim": "#151313",
+                        "on-tertiary-fixed-variant": "#504539",
+                        "surface-container-lowest": "#0f0e0e",
+                        "on-tertiary-container": "#32281d",
+                        "surface-variant": "#373434"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "4xl": "72px",
+                        "5xl": "96px",
+                        "lg": "20px",
+                        "margin-desktop": "48px",
+                        "2xl": "40px",
+                        "gutter-desktop": "16px",
+                        "xs": "4px",
+                        "md": "12px",
+                        "6xl": "128px",
+                        "3xl": "56px",
+                        "xl": "28px",
+                        "sm": "8px",
+                        "base": "4px"
+                    },
+                    "fontFamily": {
+                        "display-xl-mobile": ["Chivo"],
+                        "display-md": ["Chivo"],
+                        "headline-lg": ["Chivo"],
+                        "technical": ["Libre Caslon Text"],
+                        "body-sm": ["Epilogue"],
+                        "body-lg": ["Epilogue"],
+                        "display-xl": ["Chivo"]
+                    },
+                    "fontSize": {
+                        "display-xl-mobile": ["64px", { "lineHeight": "1.1", "fontWeight": "700" }],
+                        "display-md": ["76px", { "lineHeight": "1.1", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["42px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "technical": ["12px", { "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.55", "fontWeight": "450" }],
+                        "body-lg": ["18px", { "lineHeight": "1.65", "fontWeight": "400" }],
+                        "display-xl": ["132px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .blueprint-grid {
+            background-image: linear-gradient(to right, rgba(140, 145, 151, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(140, 145, 151, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex selection:bg-primary-container selection:text-on-primary-container">
+<!-- Left Visual Panel (Suppressed on Mobile) -->
+<div class="hidden lg:flex lg:w-3/5 relative bg-surface-container-lowest overflow-hidden items-center justify-center border-r border-outline-variant/20">
+<!-- Blueprint Grid Overlay -->
+<div class="absolute inset-0 blueprint-grid pointer-events-none z-10"></div>
+<!-- High-Tech Contextual Image -->
+<div class="absolute inset-0 opacity-40 mix-blend-luminosity z-0" data-alt="A highly detailed, photorealistic render of an advanced, minimalist medical-automotive dashboard interface glowing in a dark room. Deep blacks, clinical whites, and subtle accents of burnt copper (#C45923). The mood is precise, authoritative, and strictly high-tech engineering. The lighting is low-key, illuminating intricate technical telemetry graphics and precise 1px connecting lines." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBeIqABMKdRSwVfTOWfWF4OgNjshzObak0_ksSJoMl533aPRpk_KDtjMIFKHaZYQeJjfdj1X_2loDUoPIqv2hGJWTx8nOgX3KKFTahIXmas1QsezY2hvPHRKRGRk5zJQV0WFuzPVHGcThG-N2TuNQR6uDC0fXgKe8i49vtgDrk1XzUwZMUqAXLT7NRxlUW2eXv0vCzG-88x0kT0bXMnvQCdOJKbOH3cr1jKb5tVnQEgUkDXo8ShtnPo4s3PSWkughkfXAs'); background-size: cover; background-position: center;">
+</div>
+<!-- Technical Overlays -->
+<div class="absolute inset-0 z-20 flex flex-col justify-between p-margin-desktop pointer-events-none">
+<div class="flex items-center gap-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-technical text-technical text-primary uppercase tracking-widest">Secure Environment Active</span>
+</div>
+<div class="max-w-md">
+<div class="h-px w-16 bg-primary mb-md"></div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-md">Smart Ride OS<br/><span class="text-on-surface-variant">v4.2.1 Core</span></h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Authorized personnel only. All access attempts are logged and monitored by the Kinetic Logic framework.</p>
+</div>
+</div>
+</div>
+<!-- Right Login Form Panel -->
+<div class="w-full lg:w-2/5 flex flex-col justify-center px-lg py-5xl sm:px-margin-desktop bg-surface relative z-30">
+<!-- Mobile Header (Visible only on small screens) -->
+<div class="lg:hidden mb-4xl">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-sm">Smart Ride OS</h1>
+<p class="font-technical text-technical text-primary uppercase tracking-widest flex items-center gap-sm">
+<span class="material-symbols-outlined" style="font-size: 16px;">lock</span> Secure Portal
+            </p>
+</div>
+<div class="w-full max-w-md mx-auto flex flex-col gap-2xl">
+<div class="flex flex-col gap-sm">
+<h2 class="font-headline-lg text-headline-lg text-on-surface hidden lg:block">System Access</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant hidden lg:block">Sign in to your account.</p>
+</div>
+<form class="flex flex-col gap-xl">
+<!-- Operator ID Input Group -->
+<div class="flex flex-col gap-sm group">
+<label class="font-technical text-technical text-on-surface-variant uppercase tracking-widest group-focus-within:text-primary transition-colors" for="operatorId">Email</label>
+<div class="relative">
+<input autocomplete="username" class="w-full bg-transparent border-b border-outline-variant py-md font-body-lg text-body-lg text-on-surface placeholder-on-surface-variant/30 focus:border-primary focus:ring-0 outline-none transition-colors" id="operatorId" name="operatorId" placeholder="e.g. OP-7492-X" required="" type="text"/>
+</div>
+</div>
+<!-- Access Key Input Group -->
+<div class="flex flex-col gap-sm group">
+<div class="flex justify-between items-center w-full">
+<label class="font-technical text-technical text-on-surface-variant uppercase tracking-widest group-focus-within:text-primary transition-colors" for="accessKey">Password</label>
+<a class="font-technical text-technical text-primary hover:text-primary-container transition-colors" href="#">Forgot Key?</a>
+</div>
+<div class="relative">
+<input autocomplete="current-password" class="w-full bg-transparent border-b border-outline-variant py-md font-body-lg text-body-lg text-on-surface placeholder-on-surface-variant/30 focus:border-primary focus:ring-0 outline-none transition-colors" id="accessKey" name="accessKey" placeholder="••••••••••••" required="" type="password"/>
+</div>
+</div>
+<!-- Primary Action -->
+<button class="mt-lg w-full bg-primary-container text-on-primary-container font-technical text-technical uppercase tracking-widest py-xl rounded flex items-center justify-center gap-md hover:bg-primary-container/90 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background group" type="submit">Get Started <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span></button>
+</form>
+<!-- Security Badge -->
+</div>
+</div>
+</body></html>

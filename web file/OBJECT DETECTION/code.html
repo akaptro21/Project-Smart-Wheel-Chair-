@@ -1,0 +1,334 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Smart Ride - AI Object Detection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@100..900&amp;family=Epilogue:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#f1e0cf",
+                      "surface-tint": "#ffb596",
+                      "surface-dim": "#151313",
+                      "surface-container-low": "#1d1b1b",
+                      "tertiary-container": "#9d8e80",
+                      "on-tertiary-fixed-variant": "#504539",
+                      "on-error": "#690005",
+                      "inverse-on-surface": "#323030",
+                      "on-secondary-fixed-variant": "#5c4205",
+                      "on-surface": "#e7e1e1",
+                      "tertiary-fixed-dim": "#d4c4b4",
+                      "surface-container": "#211f1f",
+                      "surface-container-highest": "#373434",
+                      "outline-variant": "#42474c",
+                      "surface": "#151313",
+                      "on-tertiary-fixed": "#231a10",
+                      "on-background": "#e7e1e1",
+                      "primary": "#ffb596",
+                      "surface-container-high": "#2c292a",
+                      "surface-container-lowest": "#0f0e0e",
+                      "background": "#151313",
+                      "surface-bright": "#3b3839",
+                      "on-primary-fixed": "#360f00",
+                      "inverse-surface": "#e7e1e1",
+                      "error-container": "#93000a",
+                      "secondary": "#e7c17a",
+                      "on-tertiary": "#392f24",
+                      "on-primary": "#581e00",
+                      "on-secondary": "#412d00",
+                      "secondary-fixed-dim": "#e7c17a",
+                      "error": "#ffb4ab",
+                      "on-primary-fixed-variant": "#7d2d00",
+                      "on-surface-variant": "#c2c7cd",
+                      "tertiary": "#d4c4b4",
+                      "outline": "#8c9197",
+                      "secondary-container": "#5f4507",
+                      "on-tertiary-container": "#32281d",
+                      "inverse-primary": "#a14007",
+                      "surface-variant": "#373434",
+                      "on-primary-container": "#4d1900",
+                      "on-secondary-fixed": "#261900",
+                      "primary-container": "#e37038",
+                      "secondary-fixed": "#ffdea4",
+                      "primary-fixed": "#ffdbcd",
+                      "on-secondary-container": "#d8b36d",
+                      "primary-fixed-dim": "#ffb596",
+                      "on-error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter-desktop": "16px",
+                      "sm": "8px",
+                      "3xl": "56px",
+                      "lg": "20px",
+                      "6xl": "128px",
+                      "xl": "28px",
+                      "5xl": "96px",
+                      "md": "12px",
+                      "xs": "4px",
+                      "margin-desktop": "48px",
+                      "4xl": "72px",
+                      "2xl": "40px",
+                      "base": "4px"
+              },
+              "fontFamily": {
+                      "display-md": ["Chivo"],
+                      "headline-lg": ["Chivo"],
+                      "body-sm": ["Epilogue"],
+                      "display-xl-mobile": ["Chivo"],
+                      "display-xl": ["Chivo"],
+                      "body-lg": ["Epilogue"],
+                      "technical": ["Libre Caslon Text"]
+              },
+              "fontSize": {
+                      "display-md": ["76px", {"lineHeight": "1.1", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-lg": ["42px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "body-sm": ["14px", {"lineHeight": "1.55", "fontWeight": "450"}],
+                      "display-xl-mobile": ["64px", {"lineHeight": "1.1", "fontWeight": "700"}],
+                      "display-xl": ["132px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.65", "fontWeight": "400"}],
+                      "technical": ["12px", {"letterSpacing": "0.05em", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        /* Blueprint Grid Overlay */
+        .bg-blueprint {
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        /* Radar Animation */
+        @keyframes radarSweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .radar-sweep {
+            animation: radarSweep 4s linear infinite;
+            background: conic-gradient(from 0deg, transparent 70%, rgba(255, 181, 150, 0.2) 100%);
+        }
+        @keyframes pulseRing {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .pulse-ring {
+            animation: pulseRing 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-sm selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center px-margin-desktop py-md max-w-full mx-auto">
+<div class="flex items-center gap-md">
+<span class="font-display-md text-display-md text-primary tracking-tight">Smart Ride</span>
+</div>
+<div class="hidden md:flex gap-xl font-body-lg text-body-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Features</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">How It Works</a>
+<a class="text-primary border-b-2 border-primary pb-1" href="#">Dashboard</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Safety</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">About</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a>
+</div>
+<button class="bg-[#C45923] text-[#FFFFFF] px-xl py-sm rounded-full font-technical hover:opacity-90 transition-opacity scale-95 duration-200">
+            Request Demo
+        </button>
+</nav>
+<!-- Main Layout Grid -->
+<div class="flex h-screen pt-[120px] px-margin-desktop gap-gutter-desktop max-w-[1440px] mx-auto pb-3xl">
+<!-- SideNavBar (Semantic: Settings/System Info) -->
+<aside class="hidden md:flex flex-col h-full py-xl w-64 border-r border-outline-variant/20 bg-surface-container-low mr-xl">
+<div class="px-lg mb-2xl">
+<p class="font-display-xl-mobile text-display-xl-mobile text-on-surface leading-tight mb-xs">Smart Ride OS</p>
+<p class="font-technical text-technical text-on-surface-variant">MedTech v4.2.1</p>
+</div>
+<nav class="flex-1 flex flex-col gap-sm px-sm font-technical text-technical"><a class="flex items-center gap-md px-md py-sm rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings_input_component</span>Drive Control</a><a class="flex items-center gap-md px-md py-sm rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">mic</span>Voice Control</a><a class="flex items-center gap-md px-md py-sm rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">videocam</span>Camera Views</a><a class="flex items-center gap-md px-md py-sm rounded-lg bg-primary-container/10 text-primary border-r-4 border-primary" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">radar</span>Safety Radar</a><a class="flex items-center gap-md px-md py-sm rounded-lg text-on-tertiary-fixed-variant hover:bg-surface-container-high transition-all opacity-80 hover:opacity-100" href="#"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help</span>Help</a></nav>
+<div class="px-sm mt-auto border-t border-outline-variant/20 pt-lg">
+<button class="w-full flex items-center justify-center gap-sm bg-error-container text-on-error-container py-md rounded-lg font-technical hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined">warning</span>
+                    Emergency Stop
+                </button>
+</div>
+
+</aside>
+<!-- Main Content Area: AI Object Detection -->
+<main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop h-[calc(100vh-160px)]">
+<!-- Canvas: Proximity Awareness Radar (Col 1-8) -->
+<section class="lg:col-span-8 bg-surface-container rounded-xl border border-outline-variant/30 relative overflow-hidden flex flex-col">
+<!-- Status Strip -->
+<div class="h-8 border-b border-outline-variant/30 flex items-center px-lg bg-surface-container-highest">
+<div class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="font-technical text-technical text-primary tracking-widest uppercase">AI Vision Active</span>
+</div>
+</div>
+<!-- Radar Visualization -->
+<div class="flex-1 relative bg-surface-dim bg-blueprint flex items-center justify-center overflow-hidden">
+<!-- Radar Rings -->
+<div class="absolute inset-0 flex items-center justify-center opacity-30">
+<div class="w-[800px] h-[800px] rounded-full border border-primary/20 absolute"></div>
+<div class="w-[600px] h-[600px] rounded-full border border-primary/30 absolute"></div>
+<div class="w-[400px] h-[400px] rounded-full border border-primary/40 absolute"></div>
+<div class="w-[200px] h-[200px] rounded-full border border-primary/60 absolute pulse-ring"></div>
+<!-- Crosshairs -->
+<div class="w-full h-[1px] bg-primary/20 absolute"></div>
+<div class="h-full w-[1px] bg-primary/20 absolute"></div>
+</div>
+<!-- Radar Sweep -->
+<div class="absolute w-[800px] h-[800px] rounded-full radar-sweep pointer-events-none"></div>
+<!-- Center: Wheelchair -->
+<div class="relative z-10 w-16 h-16 bg-surface-container rounded-full border-2 border-primary flex items-center justify-center shadow-[0_0_20px_rgba(255,181,150,0.3)]">
+<span class="material-symbols-outlined text-primary text-[32px]">wheelchair_pickup</span>
+</div>
+<!-- Detected Objects -->
+<!-- Object 1: Warning -->
+<div class="absolute top-[20%] left-[30%] z-20 group">
+<div class="w-4 h-4 bg-error rounded-full animate-bounce shadow-[0_0_15px_rgba(255,180,171,0.6)]"></div>
+<div class="absolute top-6 left-1/2 -translate-x-1/2 w-[1px] h-8 bg-error/50"></div>
+<div class="absolute top-14 left-1/2 -translate-x-1/2 bg-surface-container-high border border-error/50 px-md py-xs rounded font-technical text-technical text-error whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                            Pedestrian - 2.1m (High Risk)
+                        </div>
+</div>
+<!-- Object 2: Caution -->
+<div class="absolute top-[60%] right-[25%] z-20 group">
+<div class="w-3 h-3 bg-secondary rounded-full shadow-[0_0_10px_rgba(231,193,122,0.4)]"></div>
+<div class="absolute top-5 left-1/2 -translate-x-1/2 w-[1px] h-6 bg-secondary/50"></div>
+<div class="absolute top-11 left-1/2 -translate-x-1/2 bg-surface-container-high border border-secondary/50 px-md py-xs rounded font-technical text-technical text-secondary whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                            Bicycle - 5.4m (Caution)
+                        </div>
+</div>
+<!-- Object 3: Safe -->
+<div class="absolute bottom-[20%] left-[40%] z-20 group">
+<div class="w-2 h-2 bg-outline rounded-full"></div>
+<div class="absolute top-3 left-1/2 -translate-x-1/2 bg-surface-container-high border border-outline/50 px-md py-xs rounded font-technical text-technical text-outline whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                            Static Object - 8.2m
+                        </div>
+</div>
+<!-- Technical Annotation Overlay -->
+<div class="absolute top-lg left-lg font-technical text-technical text-on-surface-variant flex flex-col gap-xs opacity-70">
+<span class="">FOV: 360° LiDAR</span>
+<span class="">Range: 15m</span>
+<span class="">Refresh: 60Hz</span>
+</div>
+</div>
+</section>
+<!-- Sidebar: Detected Obstacles (Col 9-12) -->
+<section class="lg:col-span-4 flex flex-col gap-lg h-full overflow-y-auto pr-sm custom-scrollbar">
+<div class="bg-surface-container-low rounded-xl border border-outline-variant/20 p-lg">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-md">Threat Matrix</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-xl">Real-time classification of proximal objects based on trajectory and velocity analysis.</p>
+<!-- Alert Cards -->
+<div class="flex flex-col gap-md">
+<!-- High Risk Card -->
+<div class="bg-surface-container border border-error/30 rounded-lg p-md relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<div class="flex justify-between items-start mb-sm pl-sm">
+<div class="flex items-center gap-xs text-error font-technical text-technical">
+<span class="material-symbols-outlined text-[16px]">directions_walk</span>
+<span class="">Pedestrian</span>
+</div>
+<span class="bg-error-container text-on-error-container px-xs py-[2px] rounded text-[10px] font-bold uppercase tracking-wider">Warning</span>
+</div>
+<div class="pl-sm">
+<div class="flex justify-between items-baseline mb-xs">
+<span class="font-body-sm text-on-surface-variant">Distance:</span>
+<span class="font-technical text-[16px] text-on-surface font-bold">2.1m</span>
+</div>
+<div class="flex justify-between items-baseline">
+<span class="font-body-sm text-on-surface-variant">Est. Time to Impact:</span>
+<span class="font-technical text-[16px] text-error font-bold">1.8s</span>
+</div>
+</div>
+</div>
+<!-- Caution Card -->
+<div class="bg-surface-container border border-secondary/30 rounded-lg p-md relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex justify-between items-start mb-sm pl-sm">
+<div class="flex items-center gap-xs text-secondary font-technical text-technical">
+<span class="material-symbols-outlined text-[16px]">pedal_bike</span>
+<span class="">Bicycle</span>
+</div>
+<span class="bg-secondary-container text-on-secondary-container px-xs py-[2px] rounded text-[10px] font-bold uppercase tracking-wider">Caution</span>
+</div>
+<div class="pl-sm">
+<div class="flex justify-between items-baseline mb-xs">
+<span class="font-body-sm text-on-surface-variant">Distance:</span>
+<span class="font-technical text-[16px] text-on-surface font-bold">5.4m</span>
+</div>
+<div class="flex justify-between items-baseline">
+<span class="font-body-sm text-on-surface-variant">Relative Velocity:</span>
+<span class="font-technical text-[16px] text-secondary font-bold">+12km/h</span>
+</div>
+</div>
+</div>
+<!-- Safe Card -->
+<div class="bg-surface-container border border-outline-variant/30 rounded-lg p-md relative overflow-hidden opacity-70">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-outline"></div>
+<div class="flex justify-between items-start mb-sm pl-sm">
+<div class="flex items-center gap-xs text-outline font-technical text-technical">
+<span class="material-symbols-outlined text-[16px]">inventory_2</span>
+<span class="">Static Object</span>
+</div>
+<span class="bg-surface-variant text-on-surface-variant px-xs py-[2px] rounded text-[10px] font-bold uppercase tracking-wider">Safe</span>
+</div>
+<div class="pl-sm flex justify-between items-baseline">
+<span class="font-body-sm text-on-surface-variant">Distance:</span>
+<span class="font-technical text-[16px] text-on-surface">8.2m</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sensor Health -->
+<div class="bg-surface-container-low rounded-xl border border-outline-variant/20 p-lg mt-auto">
+<h3 class="font-technical text-technical text-primary mb-md uppercase tracking-widest">Sensor Array Status</h3>
+<div class="grid grid-cols-2 gap-sm">
+<div class="bg-surface p-sm border border-outline-variant/20 rounded flex items-center justify-between">
+<span class="font-body-sm text-on-surface-variant">LiDAR Top</span>
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(255,181,150,0.8)]"></span>
+</div>
+<div class="bg-surface p-sm border border-outline-variant/20 rounded flex items-center justify-between">
+<span class="font-body-sm text-on-surface-variant">Ultrasonic L</span>
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(255,181,150,0.8)]"></span>
+</div>
+<div class="bg-surface p-sm border border-outline-variant/20 rounded flex items-center justify-between">
+<span class="font-body-sm text-on-surface-variant">Ultrasonic R</span>
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(255,181,150,0.8)]"></span>
+</div>
+<div class="bg-surface p-sm border border-outline-variant/20 rounded flex items-center justify-between">
+<span class="font-body-sm text-on-surface-variant">Stereo Cam</span>
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(255,181,150,0.8)]"></span>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Custom Scrollbar Style for Sidebar -->
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #42474c;
+            border-radius: 4px;
+        }
+    </style>
+
+
+</body></html>
