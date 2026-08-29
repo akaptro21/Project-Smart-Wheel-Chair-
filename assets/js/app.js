@@ -6,7 +6,7 @@
 class SmartRideApp {
   constructor() {
     this.activeRoute = 'home';
-    this.routes = ['home', 'features', 'dashboard', 'battery', 'map', 'detection', 'voice', 'camera', 'profile', 'auth'];
+    this.routes = ['home', 'features', 'dashboard', 'battery', 'map', 'camera', 'voice', 'profile', 'auth'];
     this.init();
   }
 
@@ -52,6 +52,7 @@ class SmartRideApp {
   }
 
   navigateTo(route, updateHistory = true) {
+    if (route === 'detection') route = 'camera';
     if (!this.routes.includes(route)) route = 'home';
     this.activeRoute = route;
 

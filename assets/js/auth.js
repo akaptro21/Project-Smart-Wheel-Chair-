@@ -128,6 +128,34 @@ class AuthController {
     const bioTrigger = document.getElementById('biometric-scan-trigger');
     const bioRing = document.getElementById('bio-scan-ring');
     if (bioTrigger) bioTrigger.addEventListener('click', () => this.simulateBiometricScan());
+
+    // 5. Safety & Drive Calibrations Listeners (Image 2)
+    const brakeSlider = document.getElementById('calib-brake-slider');
+    const brakeVal = document.getElementById('calib-brake-val');
+    if (brakeSlider && brakeVal) {
+      brakeSlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value).toFixed(2);
+        brakeVal.textContent = `${val}m`;
+      });
+    }
+
+    const deadzoneSlider = document.getElementById('calib-deadzone-slider');
+    if (deadzoneSlider) {
+      deadzoneSlider.addEventListener('change', (e) => {
+        if (window.appRouter) {
+          window.appRouter.showToast(`Joystick Deadzone Tolerance updated: ${e.target.value}%`);
+        }
+      });
+    }
+
+    const speedCapSelect = document.getElementById('calib-speed-cap');
+    if (speedCapSelect) {
+      speedCapSelect.addEventListener('change', (e) => {
+        if (window.appRouter) {
+          window.appRouter.showToast(`Max Speed Cap set to: ${e.target.options[e.target.selectedIndex].text}`);
+        }
+      });
+    }
     if (bioRing) bioRing.addEventListener('click', () => this.simulateBiometricScan());
   }
 

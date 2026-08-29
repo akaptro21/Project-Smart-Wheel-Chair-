@@ -214,55 +214,41 @@ class TelemetryDashboard {
       });
     }
 
-    // 2. Headlights Actuator
-    const headBtn = document.getElementById('actuator-headlights');
-    if (headBtn) {
-      headBtn.addEventListener('click', () => {
-        this.headlightsOn = !this.headlightsOn;
-        if (this.headlightsOn) {
-          headBtn.classList.add('bg-amber-400/20', 'border-amber-400', 'text-amber-300', 'shadow-lg');
-          this.playAudioTone(900, 'sine', 0.08);
-          if (window.appRouter) window.appRouter.showToast('💡 Adaptive High-Beam Headlights: ON');
+    // Round Emergency SOS Button in Telemetry
+    const roundSosBtn = document.getElementById('telemetry-sos-round-btn');
+    const sosStatusText = document.getElementById('telemetry-sos-status-text');
+    let sosActive = false;
+
+    if (roundSosBtn) {
+      roundSosBtn.addEventListener('click', () => {
+        sosActive = !sosActive;
+        if (sosActive) {
+          roundSosBtn.classList.add('animate-ping-slow', 'ring-8', 'ring-rose-500/50', 'bg-rose-600');
+          roundSosBtn.classList.remove('bg-rose-500');
+          this.playAudioTone(960, 'sawtooth', 0.3);
+          setTimeout(() => this.playAudioTone(640, 'sawtooth', 0.3), 300);
+          
+          if (sosStatusText) {
+            sosStatusText.innerHTML = '<span class="text-rose-400 font-bold animate-pulse">🚨 DISPATCH ACTIVE • GPS BROADCASTING</span>';
+          }
+          if (window.appRouter) {
+            window.appRouter.showToast('🚨 EMERGENCY SOS BROADCAST: Caregiver Elena Mercer & EMT Notified (GPS: 37.7749° N, 122.4194° W)');
+          }
+          // Engage emergency stop
+          this.targetSpeed = 0;
+          this.speed = 0;
+          this.safetyState = 'EMERGENCY STOP';
+          this.updateSafetyUI();
         } else {
-          headBtn.classList.remove('bg-amber-400/20', 'border-amber-400', 'text-amber-300', 'shadow-lg');
-          if (window.appRouter) window.appRouter.showToast('💡 Adaptive Headlights: OFF');
+          roundSosBtn.classList.remove('animate-ping-slow', 'ring-8', 'ring-rose-500/50', 'bg-rose-600');
+          roundSosBtn.classList.add('bg-rose-500');
+          if (sosStatusText) {
+            sosStatusText.innerHTML = '<span class="text-emerald-400 font-bold">● STANDBY • ARMED FOR DISPATCH</span>';
+          }
+          if (window.appRouter) {
+            window.appRouter.showToast('Emergency SOS Cancelled. System returned to standby.');
+          }
         }
-      });
-    }
-
-    // 3. Hazards Actuator
-    const hazBtn = document.getElementById('actuator-hazards');
-    if (hazBtn) {
-      hazBtn.addEventListener('click', () => {
-        this.hazardsOn = !this.hazardsOn;
-        if (this.hazardsOn) {
-          hazBtn.classList.add('bg-amber-500/30', 'border-amber-400', 'text-amber-400', 'animate-pulse');
-          this.playAudioTone(440, 'square', 0.1);
-          if (window.appRouter) window.appRouter.showToast('⚠️ Dual Hazard Warning Flashers: ACTIVE');
-        } else {
-          hazBtn.classList.remove('bg-amber-500/30', 'border-amber-400', 'text-amber-400', 'animate-pulse');
-          if (window.appRouter) window.appRouter.showToast('Hazard Flashers: OFF');
-        }
-      });
-    }
-
-    // 4. Horn Chime Actuator
-    const hornBtn = document.getElementById('actuator-horn');
-    if (hornBtn) {
-      hornBtn.addEventListener('click', () => {
-        this.playAudioTone(587.33, 'triangle', 0.18); // D5
-        setTimeout(() => this.playAudioTone(880, 'sine', 0.28), 120); // A5 chime
-        if (window.appRouter) window.appRouter.showToast('📢 Acoustic Horn Chime sounded');
-      });
-    }
-
-    // 5. Seat Tilt Angle Slider
-    const tiltSlider = document.getElementById('seat-tilt-slider');
-    const tiltVal = document.getElementById('seat-tilt-val');
-    if (tiltSlider) {
-      tiltSlider.addEventListener('input', (e) => {
-        this.seatTilt = parseInt(e.target.value);
-        if (tiltVal) tiltVal.textContent = `${this.seatTilt}°`;
       });
     }
 

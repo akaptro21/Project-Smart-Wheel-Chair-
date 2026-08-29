@@ -84,27 +84,23 @@
       <nav
         class="hidden lg:flex items-center gap-1 bg-surface-container/60 border border-outline-variant/30 rounded-full px-3 py-1.5 backdrop-blur">
         <button data-nav-target="home"
-          class="px-4 py-1.5 rounded-full text-sm font-semibold transition-all hover:text-primary active-nav">Showcase</button>
+          class="px-3.5 py-1.5 rounded-full text-sm font-semibold transition-all hover:text-primary active-nav">Showcase</button>
         <button data-nav-target="features"
-          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Engineering</button>
+          class="px-3.5 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Engineering</button>
         <button data-nav-target="dashboard"
-          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Telemetry</button>
+          class="px-3.5 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Telemetry</button>
+        <button data-nav-target="battery"
+          class="px-3.5 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Battery & BMS</button>
         <button data-nav-target="map"
-          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Live
-          Map</button>
-        <button data-nav-target="detection"
-          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">AI
-          Vision</button>
-        <button data-nav-target="voice"
-          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Voice
-          Core</button>
+          class="px-3.5 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Live Map</button>
         <button data-nav-target="camera"
-          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Cameras</button>
+          class="px-3.5 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Camera</button>
+        <button data-nav-target="voice"
+          class="px-3.5 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Voice Core</button>
         <button data-nav-target="profile"
-          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Profile</button>
+          class="px-3.5 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Profile</button>
         <button data-nav-target="auth"
-          class="px-4 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Sign
-          In</button>
+          class="px-3.5 py-1.5 rounded-full text-sm font-semibold text-on-surface-variant transition-all hover:text-primary">Sign In</button>
       </nav>
 
       <!-- System Status Bar & Profile Button -->
@@ -118,7 +114,10 @@
           <span class="text-outline">|</span>
           <span id="global-status-clock" class="text-on-surface-variant font-bold">12:00:00</span>
           <span class="text-outline">|</span>
-          <span class="text-primary font-bold">87% BATT</span>
+          <button data-nav-target="battery" class="flex items-center gap-1 text-primary font-bold hover:text-emerald-400 transition-colors cursor-pointer" title="Open 24V LiFePO4 Battery & BMS Analytics">
+            <span class="material-symbols-outlined text-[15px]">battery_charging_full</span>
+            <span>87% BATT</span>
+          </button>
         </div>
 
         <!-- Profile Direct Button -->
@@ -150,18 +149,18 @@
         <button data-nav-target="dashboard"
           class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
             class="material-symbols-outlined text-[18px] text-primary">speed</span> Telemetry</button>
+        <button data-nav-target="battery"
+          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
+            class="material-symbols-outlined text-[18px] text-primary">battery_charging_full</span> Battery & BMS</button>
         <button data-nav-target="map"
           class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
             class="material-symbols-outlined text-[18px] text-primary">map</span> Live Map</button>
-        <button data-nav-target="detection"
+        <button data-nav-target="camera"
           class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
-            class="material-symbols-outlined text-[18px] text-primary">view_in_ar</span> AI Vision</button>
+            class="material-symbols-outlined text-[18px] text-primary">videocam</span> Camera</button>
         <button data-nav-target="voice"
           class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
             class="material-symbols-outlined text-[18px] text-primary">mic</span> Voice Core</button>
-        <button data-nav-target="camera"
-          class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
-            class="material-symbols-outlined text-[18px] text-primary">videocam</span> Cameras</button>
         <button data-nav-target="profile"
           class="p-2.5 rounded-xl bg-surface text-left flex items-center gap-2 text-on-surface hover:text-primary"><span
             class="material-symbols-outlined text-[18px] text-primary">person</span> Profile</button>
@@ -541,79 +540,82 @@
       </div>
   </section>
 
-  <!-- ================= VIEW 3: LIVE TELEMETRY DASHBOARD (CONTROL COLONY) ================= -->
-  <section id="view-dashboard" class="module-view hidden pt-20 pb-16">
-    <div class="max-w-[1580px] mx-auto px-4 sm:px-6 space-y-6">
+  <!-- ================= VIEW: 24V LiFePO4 BATTERY & BMS ANALYTICS ================= -->
+  <section id="view-battery" class="module-view hidden pt-24 pb-20">
+    <div class="max-w-[1500px] mx-auto px-4 sm:px-6 space-y-8">
 
-      <!-- Telemetry Top HUD Bar (Matches Image Top Header) -->
-      <div
-        class="p-3.5 rounded-2xl bg-surface-container/90 border border-outline-variant/30 backdrop-blur flex flex-wrap items-center justify-between gap-3 shadow-lg">
-
-        <!-- Logo & Title -->
-        <div class="flex items-center gap-3">
-          <div
-            class="w-9 h-9 rounded-xl bg-sky-500/20 border border-sky-400/40 flex items-center justify-center text-sky-400 shadow">
-            <span class="material-symbols-outlined text-[22px]">visibility</span>
+      <!-- Header Section: Title, Subtitle & Fast Charger Action -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-sky-400 text-3xl md:text-4xl animate-pulse">bolt</span>
+            <h1 class="font-display text-2xl sm:text-4xl font-bold text-on-surface tracking-tight">24V LiFePO4 Battery & BMS Analytics</h1>
           </div>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="font-display font-black text-lg text-on-surface tracking-wide">Drishti</span>
-              <span
-                class="px-1.5 py-0.2 rounded bg-sky-500/20 border border-sky-400/40 text-sky-400 font-mono text-[10px] font-bold">AI
-                v2.4</span>
-            </div>
-            <div class="text-[11px] font-mono text-outline">Smart AI Assistive Mobility</div>
-          </div>
+          <p class="text-on-surface-variant text-sm pl-1">Cell balancing, charge state, regenerative braking telemetry, and smart power profiles.</p>
         </div>
 
-        <!-- System Status Pills -->
-        <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono">
+        <button id="bms-btn-fast-charge"
+          class="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-mono text-xs font-bold transition-all shadow-lg glow-effect shrink-0 self-start md:self-auto">
+          <span class="material-symbols-outlined text-[18px]">power</span>
+          Connect 24V Fast Charger
+        </button>
+      </div>
 
-          <!-- Status Warning Pill -->
-          <div id="telemetry-status-pill"
-            class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/40 text-amber-300 font-bold shadow-sm">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-            <span id="telemetry-status-text">STATUS: WARNING</span>
-          </div>
+      <!-- Top 4 Analytics Cards (Matches Image 1 Exact Layout) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 
-          <!-- Speed Pill -->
-          <div
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant/30 text-sky-400 font-bold">
-            <span class="material-symbols-outlined text-[16px]">speed</span>
-            <span id="pill-speed-val">4.2 km/h</span>
-          </div>
-
-          <!-- Battery Pill -->
-          <div
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant/30 text-emerald-400 font-bold">
-            <span class="material-symbols-outlined text-[16px]">battery_charging_full</span>
-            <span id="pill-battery-val">88%</span>
-          </div>
-
-          <!-- Network ROS Bridge Pill -->
-          <div
-            class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-outline-variant/30 text-on-surface-variant font-bold">
-            <span class="material-symbols-outlined text-[16px] text-primary">wifi</span>
-            <span>5G / ROS Bridge</span>
-          </div>
-
+        <!-- Card 1: Pack Voltage -->
+        <div class="p-6 rounded-2xl bg-surface-container/90 border border-outline-variant/30 space-y-2 shadow-xl hover:border-sky-400/40 transition-all">
+          <div class="text-[11px] font-mono text-outline uppercase tracking-wider font-bold">PACK VOLTAGE</div>
+          <div id="bms-pack-voltage" class="text-3xl sm:text-4xl font-display font-black text-sky-400">26.8 V</div>
+          <div class="text-xs font-mono text-on-surface-variant">8S Configuration</div>
         </div>
 
-        <!-- Quick Top Actions -->
-        <div class="flex items-center gap-2">
-          <button data-nav-target="voice"
-            class="p-2 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface hover:text-primary transition-colors"
-            title="Voice Controller">
-            <span class="material-symbols-outlined text-[20px]">mic</span>
-          </button>
-          <button id="header-estop-btn"
-            class="px-4 py-1.5 rounded-full bg-error text-white font-bold text-xs flex items-center gap-1.5 shadow-lg hover:bg-error-container transition-all animate-pulse">
-            <span class="material-symbols-outlined text-[16px]">pan_tool</span>
-            E-STOP
-          </button>
+        <!-- Card 2: Pack Temperature -->
+        <div class="p-6 rounded-2xl bg-surface-container/90 border border-outline-variant/30 space-y-2 shadow-xl hover:border-emerald-400/40 transition-all">
+          <div class="text-[11px] font-mono text-outline uppercase tracking-wider font-bold">PACK TEMPERATURE</div>
+          <div id="bms-pack-temp" class="text-3xl sm:text-4xl font-display font-black text-emerald-400">28.5 °C</div>
+          <div class="text-xs font-mono text-on-surface-variant">Thermal Safety: Optimal</div>
+        </div>
+
+        <!-- Card 3: State of Health -->
+        <div class="p-6 rounded-2xl bg-surface-container/90 border border-outline-variant/30 space-y-2 shadow-xl hover:border-purple-400/40 transition-all">
+          <div class="text-[11px] font-mono text-outline uppercase tracking-wider font-bold">STATE OF HEALTH (SOH)</div>
+          <div id="bms-pack-soh" class="text-3xl sm:text-4xl font-display font-black text-purple-400">98%</div>
+          <div class="text-xs font-mono text-on-surface-variant">142 Total Cycles</div>
+        </div>
+
+        <!-- Card 4: Regen Efficiency -->
+        <div class="p-6 rounded-2xl bg-surface-container/90 border border-outline-variant/30 space-y-2 shadow-xl hover:border-amber-400/40 transition-all">
+          <div class="text-[11px] font-mono text-outline uppercase tracking-wider font-bold">REGEN EFFICIENCY</div>
+          <div id="bms-pack-regen" class="text-3xl sm:text-4xl font-display font-black text-amber-400">+14.2%</div>
+          <div class="text-xs font-mono text-on-surface-variant">Dynamic Braking Capture</div>
         </div>
 
       </div>
+
+      <!-- Main Lower Card: Individual Cell Balancing (3.20V - 3.40V) -->
+      <div class="p-6 sm:p-8 rounded-3xl bg-surface-container/90 border border-outline-variant/30 shadow-2xl space-y-6">
+        
+        <!-- Sub-header -->
+        <div class="flex items-center gap-2.5 pb-2 border-b border-outline-variant/20">
+          <span class="material-symbols-outlined text-sky-400 text-[24px]">memory</span>
+          <h2 class="font-display text-lg sm:text-xl font-bold text-on-surface">Individual Cell Balancing (3.20V - 3.40V)</h2>
+        </div>
+
+        <!-- 8S Cell Balancing Grid (C1 - C8) -->
+        <div id="bms-cell-matrix-grid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4 pt-2">
+          <!-- Populated dynamically by BatteryBMSController -->
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= VIEW 3: LIVE TELEMETRY DASHBOARD (CONTROL COLONY) ================= -->
+  <section id="view-dashboard" class="module-view hidden pt-20 pb-16">
+    <div class="max-w-[1580px] mx-auto px-4 sm:px-6 space-y-6">
 
       <!-- Main Layout: Sidebar Colony + Central Telemetry Dashboard -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -705,12 +707,13 @@
                   <span class="px-1.5 py-0.2 rounded bg-error/20 text-error text-[10px] font-mono font-bold">SOS</span>
                 </button>
 
-                <button data-nav-target="features"
-                  class="w-full px-3.5 py-2 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-on-surface transition-all">
+                <button data-nav-target="battery"
+                  class="w-full px-3.5 py-2 rounded-xl bg-transparent hover:bg-surface text-left flex items-center justify-between text-sm font-semibold text-on-surface-variant hover:text-primary transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-[18px] text-outline">battery_charging_full</span>
                     <span>Battery & BMS</span>
                   </div>
+                  <span class="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-mono font-bold">24V 8S</span>
                 </button>
 
                 <button data-nav-target="profile"
@@ -789,13 +792,18 @@
               <div id="kpi-heading" class="text-xs font-mono text-on-surface-variant">0° N • Forward Vector</div>
             </div>
 
-            <!-- Card 2: Battery Capacity -->
-            <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2 shadow-md">
-              <div class="text-xs font-mono text-outline uppercase tracking-wider font-bold">BATTERY CAPACITY</div>
+            <!-- Card 2: Battery Capacity (Clickable to BMS View) -->
+            <div data-nav-target="battery"
+              class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2 shadow-md cursor-pointer hover:border-emerald-400/50 hover:bg-surface-container-high transition-all group"
+              title="Click to open 24V LiFePO4 Battery & BMS Analytics">
+              <div class="flex items-center justify-between text-xs font-mono text-outline uppercase tracking-wider font-bold">
+                <span>BATTERY CAPACITY</span>
+                <span class="material-symbols-outlined text-[16px] text-emerald-400 group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+              </div>
               <div class="flex items-baseline gap-2">
                 <div id="kpi-battery" class="text-3xl sm:text-4xl font-display font-black text-emerald-400">88%</div>
               </div>
-              <div id="kpi-range" class="text-xs font-mono text-on-surface-variant">24.5 km Estimated Range</div>
+              <div id="kpi-range" class="text-xs font-mono text-on-surface-variant">24.5 km • 24V 8S Matrix</div>
             </div>
 
             <!-- Card 3: Nearest Obstacle -->
@@ -820,7 +828,7 @@
 
           </div>
 
-          <!-- Bottom Colony Grid: Kinematics/Compass Gyro + Quick Actuators -->
+          <!-- Bottom Colony Grid: Kinematics/Compass Gyro + Emergency SOS Hub -->
           <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
 
             <!-- Left Box: Kinematics & Compass Gyro (8 Cols) -->
@@ -908,74 +916,22 @@
 
             </div>
 
-            <!-- Right Box: Quick Actuators (4 Cols) -->
+            <!-- Right Box: Round SOS Button Only (4 Cols) -->
             <div
-              class="xl:col-span-4 p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-6 shadow-xl flex flex-col justify-between">
+              class="xl:col-span-4 p-6 sm:p-8 rounded-2xl bg-surface-container border border-outline-variant/30 shadow-xl flex items-center justify-center min-h-[380px]">
 
-              <div class="space-y-4">
-
-                <!-- Quick Actuators Header & Toggle -->
-                <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
-                  <div class="flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sky-400 text-[22px]">toggle_on</span>
-                    <h3 class="font-display text-lg font-bold text-on-surface">Quick Actuators</h3>
-                  </div>
-                  <div class="w-2.5 h-2.5 rounded-full bg-emerald-400"></div>
-                </div>
-
-                <!-- Actuators 2-Column Buttons -->
-                <div class="grid grid-cols-2 gap-3">
-                  <button id="actuator-headlights"
-                    class="p-3.5 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow">
-                    <span class="material-symbols-outlined text-amber-300 text-[20px]">lightbulb</span>
-                    Headlights
-                  </button>
-
-                  <button id="actuator-hazards"
-                    class="p-3.5 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow">
-                    <span class="material-symbols-outlined text-amber-400 text-[20px]">warning</span>
-                    Hazards
-                  </button>
-                </div>
-
-                <!-- Sound Horn Chime Button -->
-                <button id="actuator-horn"
-                  class="w-full py-3.5 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold text-xs flex items-center justify-center gap-2 transition-all shadow">
-                  <span class="material-symbols-outlined text-sky-400 text-[20px]">campaign</span>
-                  Sound Horn Chime
+              <!-- Central Round SOS Button with Pulse Rings -->
+              <div class="relative flex items-center justify-center">
+                <!-- Pulsing outer ripples -->
+                <div class="absolute w-44 h-44 rounded-full bg-rose-500/20 animate-ping pointer-events-none"></div>
+                <div class="absolute w-56 h-56 rounded-full border-2 border-rose-500/30 animate-pulse pointer-events-none"></div>
+                
+                <!-- Round SOS Button -->
+                <button id="telemetry-sos-round-btn"
+                  class="relative w-40 h-40 rounded-full bg-rose-500 hover:bg-rose-600 active:scale-95 text-white font-display font-black text-4xl flex items-center justify-center shadow-2xl transition-all glow-effect cursor-pointer border-4 border-rose-400/80">
+                  <span>SOS</span>
                 </button>
-
-                <!-- Seat Tilt Angle Slider -->
-                <div class="p-4 rounded-xl bg-surface border border-outline-variant/20 space-y-2">
-                  <div class="flex items-center justify-between text-xs font-mono">
-                    <span class="text-outline">Seat Tilt Angle</span>
-                    <span id="seat-tilt-val" class="text-sky-400 font-bold">0°</span>
-                  </div>
-                  <input id="seat-tilt-slider" type="range" min="0" max="45" value="0" step="1"
-                    class="w-full accent-sky-400 cursor-pointer h-1.5 bg-surface-container-highest rounded-lg" />
-                </div>
-
-                <!-- Mode Selector -->
-                <div class="p-3 bg-surface rounded-xl border border-outline-variant/20 space-y-2">
-                  <div class="text-[11px] font-mono text-outline uppercase font-bold">DRIVING AUTONOMY MODE</div>
-                  <div class="grid grid-cols-3 gap-1.5 text-xs font-mono font-bold">
-                    <button data-mode="AUTONOMOUS"
-                      class="mode-btn py-2 rounded-lg bg-sky-500 text-white text-center transition-all">AUTO</button>
-                    <button data-mode="ASSISTED"
-                      class="mode-btn py-2 rounded-lg bg-surface-container text-on-surface-variant text-center transition-all">ASSIST</button>
-                    <button data-mode="MANUAL"
-                      class="mode-btn py-2 rounded-lg bg-surface-container text-on-surface-variant text-center transition-all">MANUAL</button>
-                  </div>
-                </div>
-
               </div>
-
-              <!-- Instant Emergency Stop Prominent Button -->
-              <button id="btn-instant-estop"
-                class="w-full py-4 rounded-2xl bg-error/90 hover:bg-error text-white font-display font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-xl glow-effect">
-                <span class="material-symbols-outlined text-[22px]">pan_tool</span>
-                Instant Emergency Stop
-              </button>
 
             </div>
 
@@ -993,14 +949,17 @@
     <div class="max-w-[1500px] mx-auto px-6 space-y-6">
 
       <!-- View Header with Mode Selector -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
+      <div
+        class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
         <div>
-          <span class="text-xs font-mono text-primary tracking-widest uppercase">BARRIER-FREE ASSISTIVE LOCALIZATION</span>
+          <span class="text-xs font-mono text-primary tracking-widest uppercase">BARRIER-FREE ASSISTIVE
+            LOCALIZATION</span>
           <h1 class="font-display text-3xl md:text-4xl font-bold text-on-surface">Intelligent Wheelchair Navigation</h1>
         </div>
 
         <!-- Tab Toggle: Outdoor GPS vs Indoor LiDAR -->
-        <div class="flex items-center bg-surface-container p-1 rounded-xl border border-outline-variant/30 font-mono text-xs">
+        <div
+          class="flex items-center bg-surface-container p-1 rounded-xl border border-outline-variant/30 font-mono text-xs">
           <button id="tab-outdoor-map" onclick="switchMapMode('outdoor')"
             class="px-4 py-2 rounded-lg bg-primary text-black font-bold flex items-center gap-2 transition-all">
             <span class="material-symbols-outlined text-[16px]">public</span> Outdoor GPS &amp; Ramps
@@ -1014,17 +973,21 @@
 
       <!-- ================= OUTDOOR GPS NAVIGATION CONTAINER ================= -->
       <div id="container-outdoor-map" class="space-y-4">
-        
+
         <!-- Search & Control Header Bar -->
-        <div class="flex flex-wrap items-center justify-between gap-3 bg-surface-container/90 backdrop-blur p-4 rounded-2xl border border-outline-variant/30 shadow-xl">
+        <div
+          class="flex flex-wrap items-center justify-between gap-3 bg-surface-container/90 backdrop-blur p-4 rounded-2xl border border-outline-variant/30 shadow-xl">
           <div class="flex flex-1 flex-wrap items-center gap-3 min-w-[280px]">
-            
+
             <!-- Origin Search -->
             <div class="relative flex-1 min-w-[220px]">
               <div class="flex items-center bg-surface border border-outline-variant/40 rounded-xl px-3 py-2.5 text-xs">
                 <span class="material-symbols-outlined text-emerald-400 text-[18px] mr-2">my_location</span>
-                <input id="outdoor-start-input" type="text" placeholder="Starting point (or click on map)..." class="bg-transparent border-none text-on-surface text-xs w-full focus:outline-none placeholder:text-on-surface-variant/60" autocomplete="off" />
-                <button onclick="window.outdoorMap?.useCurrentLocation()" title="Use GPS Location" class="text-primary hover:text-white p-1 ml-1 text-xs flex items-center gap-1 bg-primary/10 rounded-lg px-2 shrink-0">
+                <input id="outdoor-start-input" type="text" placeholder="Starting point (or click on map)..."
+                  class="bg-transparent border-none text-on-surface text-xs w-full focus:outline-none placeholder:text-on-surface-variant/60"
+                  autocomplete="off" />
+                <button onclick="window.outdoorMap?.useCurrentLocation()" title="Use GPS Location"
+                  class="text-primary hover:text-white p-1 ml-1 text-xs flex items-center gap-1 bg-primary/10 rounded-lg px-2 shrink-0">
                   <span class="material-symbols-outlined text-[14px]">crosshairs</span> GPS
                 </button>
               </div>
@@ -1035,29 +998,36 @@
             <div class="relative flex-1 min-w-[220px]">
               <div class="flex items-center bg-surface border border-outline-variant/40 rounded-xl px-3 py-2.5 text-xs">
                 <span class="material-symbols-outlined text-primary text-[18px] mr-2">flag</span>
-                <input id="outdoor-end-input" type="text" placeholder="Destination point..." class="bg-transparent border-none text-on-surface text-xs w-full focus:outline-none placeholder:text-on-surface-variant/60" autocomplete="off" />
+                <input id="outdoor-end-input" type="text" placeholder="Destination point..."
+                  class="bg-transparent border-none text-on-surface text-xs w-full focus:outline-none placeholder:text-on-surface-variant/60"
+                  autocomplete="off" />
               </div>
               <div id="outdoor-end-autocomplete" class="autocomplete-list"></div>
             </div>
 
             <!-- Calculate Route Button -->
-            <button onclick="window.outdoorMap?.calculateWheelchairRoute()" class="bg-primary hover:bg-primary-container text-black font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all shadow-lg">
+            <button onclick="window.outdoorMap?.calculateWheelchairRoute()"
+              class="bg-primary hover:bg-primary-container text-black font-bold px-5 py-2.5 rounded-xl text-xs flex items-center gap-2 transition-all shadow-lg">
               <span class="material-symbols-outlined text-[18px]">alt_route</span> Find Barrier-Free Route
             </button>
           </div>
 
           <!-- Quick Accessibility Overlay Toggles -->
           <div class="flex items-center gap-2 flex-wrap">
-            <button onclick="window.outdoorMap?.togglePOI('ramps', this)" class="bg-emerald-500/20 border border-emerald-500/60 text-emerald-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+            <button onclick="window.outdoorMap?.togglePOI('ramps', this)"
+              class="bg-emerald-500/20 border border-emerald-500/60 text-emerald-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
               <i class="fa-solid fa-stairs"></i> Ramps
             </button>
-            <button onclick="window.outdoorMap?.togglePOI('elevators', this)" class="bg-sky-500/20 border border-sky-500/60 text-sky-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+            <button onclick="window.outdoorMap?.togglePOI('elevators', this)"
+              class="bg-sky-500/20 border border-sky-500/60 text-sky-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
               <i class="fa-solid fa-elevator"></i> Elevators
             </button>
-            <button onclick="window.outdoorMap?.togglePOI('curbs', this)" class="bg-purple-500/20 border border-purple-500/60 text-purple-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+            <button onclick="window.outdoorMap?.togglePOI('curbs', this)"
+              class="bg-purple-500/20 border border-purple-500/60 text-purple-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
               <i class="fa-solid fa-road"></i> Lowered Curbs
             </button>
-            <button onclick="window.outdoorMap?.togglePOI('toilets', this)" class="bg-cyan-500/20 border border-cyan-500/60 text-cyan-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
+            <button onclick="window.outdoorMap?.togglePOI('toilets', this)"
+              class="bg-cyan-500/20 border border-cyan-500/60 text-cyan-400 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all">
               <i class="fa-solid fa-restroom"></i> Toilets
             </button>
           </div>
@@ -1065,28 +1035,34 @@
 
         <!-- Main Map & Navigation Side-by-Side Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[520px]">
-          
+
           <!-- Leaflet Live Map Canvas (8 Cols) -->
-          <div class="lg:col-span-8 h-[520px] relative rounded-2xl overflow-hidden border border-outline-variant/30 bg-surface-container shadow-2xl">
+          <div
+            class="lg:col-span-8 h-[520px] relative rounded-2xl overflow-hidden border border-outline-variant/30 bg-surface-container shadow-2xl">
             <div id="live-leaflet-map" style="width: 100%; height: 100%;"></div>
 
             <!-- Floating Top HUD Badges -->
             <div class="absolute top-4 left-4 z-[1000] pointer-events-none">
-              <div class="bg-surface-container/90 backdrop-blur tech-border rounded-xl px-3 py-2 flex items-center gap-2 pointer-events-auto shadow-lg">
+              <div
+                class="bg-surface-container/90 backdrop-blur tech-border rounded-xl px-3 py-2 flex items-center gap-2 pointer-events-auto shadow-lg">
                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span class="font-mono text-[11px] text-emerald-400 tracking-wider uppercase font-bold">GPS ACTIVE</span>
+                <span class="font-mono text-[11px] text-emerald-400 tracking-wider uppercase font-bold">GPS
+                  ACTIVE</span>
               </div>
             </div>
 
             <div class="absolute top-4 right-4 z-[1000] pointer-events-none">
-              <div class="bg-surface-container/90 backdrop-blur tech-border rounded-xl px-3 py-2 flex items-center gap-2 pointer-events-auto shadow-lg">
+              <div
+                class="bg-surface-container/90 backdrop-blur tech-border rounded-xl px-3 py-2 flex items-center gap-2 pointer-events-auto shadow-lg">
                 <span class="font-mono text-[11px] text-outline uppercase">SLOPE</span>
-                <span class="font-display text-xs font-bold text-primary" id="outdoor-hud-slope">&le; 6% (ADA SAFE)</span>
+                <span class="font-display text-xs font-bold text-primary" id="outdoor-hud-slope">&le; 6% (ADA
+                  SAFE)</span>
               </div>
             </div>
 
             <!-- Bottom Floating Speed & ETA Bar -->
-            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] pointer-events-auto flex items-center gap-6 bg-surface-container-high/90 backdrop-blur border border-outline-variant/30 rounded-2xl px-6 py-2.5 shadow-2xl">
+            <div
+              class="absolute bottom-4 left-1/2 -translate-x-1/2 z-[1000] pointer-events-auto flex items-center gap-6 bg-surface-container-high/90 backdrop-blur border border-outline-variant/30 rounded-2xl px-6 py-2.5 shadow-2xl">
               <div class="flex flex-col items-center">
                 <span class="font-mono text-[10px] text-outline uppercase">Rider Speed</span>
                 <div class="flex items-baseline gap-1 text-primary">
@@ -1113,23 +1089,27 @@
 
           <!-- Right Column: Navigation & Preference Details (4 Cols) -->
           <div class="lg:col-span-4 space-y-4">
-            
+
             <!-- Active Route & Voice Guidance Card -->
             <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 shadow-xl">
               <div class="flex items-center justify-between border-b border-outline-variant/20 pb-2">
                 <div class="flex items-center gap-2">
                   <span class="material-symbols-outlined text-primary text-[20px]">alt_route</span>
-                  <h3 class="font-display font-bold text-sm text-on-surface uppercase tracking-wider">Turn-by-Turn Guidance</h3>
+                  <h3 class="font-display font-bold text-sm text-on-surface uppercase tracking-wider">Turn-by-Turn
+                    Guidance</h3>
                 </div>
-                <button onclick="window.outdoorMap?.speakDirections()" class="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/40 px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 font-semibold transition-all">
+                <button onclick="window.outdoorMap?.speakDirections()"
+                  class="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/40 px-2.5 py-1 rounded-lg text-xs flex items-center gap-1 font-semibold transition-all">
                   <i class="fa-solid fa-volume-high"></i> Listen
                 </button>
               </div>
 
               <!-- Steps List Container -->
               <div class="flex flex-col gap-2 max-h-[190px] overflow-y-auto pr-1" id="outdoor-step-list">
-                <div class="text-xs text-on-surface-variant italic p-3 bg-surface rounded-xl border border-outline-variant/20">
-                  Click on the map or type an address to generate barrier-free turn-by-turn navigation with ramp highlights.
+                <div
+                  class="text-xs text-on-surface-variant italic p-3 bg-surface rounded-xl border border-outline-variant/20">
+                  Click on the map or type an address to generate barrier-free turn-by-turn navigation with ramp
+                  highlights.
                 </div>
               </div>
             </div>
@@ -1138,13 +1118,15 @@
             <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-3 shadow-xl">
               <div class="flex items-center gap-2 border-b border-outline-variant/20 pb-2">
                 <span class="material-symbols-outlined text-amber-400 text-[20px]">tune</span>
-                <h3 class="font-display font-bold text-sm text-on-surface uppercase tracking-wider">Safety Constraints</h3>
+                <h3 class="font-display font-bold text-sm text-on-surface uppercase tracking-wider">Safety Constraints
+                </h3>
               </div>
 
               <div class="grid grid-cols-2 gap-3 text-xs">
                 <div class="bg-surface p-2.5 rounded-xl border border-outline-variant/20">
                   <span class="font-mono text-[10px] text-outline block mb-1">MAX INCLINE</span>
-                  <select id="outdoor-pref-incline" onchange="window.outdoorMap?.calculateWheelchairRoute()" class="bg-surface-container text-on-surface border border-outline-variant/40 rounded-lg p-1.5 text-xs w-full">
+                  <select id="outdoor-pref-incline" onchange="window.outdoorMap?.calculateWheelchairRoute()"
+                    class="bg-surface-container text-on-surface border border-outline-variant/40 rounded-lg p-1.5 text-xs w-full">
                     <option value="3">3% (Gentle / Manual)</option>
                     <option value="6" selected>6% (ADA Safe)</option>
                     <option value="10">10% (Motorized)</option>
@@ -1153,7 +1135,8 @@
 
                 <div class="bg-surface p-2.5 rounded-xl border border-outline-variant/20">
                   <span class="font-mono text-[10px] text-outline block mb-1">MAX KERB / CURB</span>
-                  <select id="outdoor-pref-curb" onchange="window.outdoorMap?.calculateWheelchairRoute()" class="bg-surface-container text-on-surface border border-outline-variant/40 rounded-lg p-1.5 text-xs w-full">
+                  <select id="outdoor-pref-curb" onchange="window.outdoorMap?.calculateWheelchairRoute()"
+                    class="bg-surface-container text-on-surface border border-outline-variant/40 rounded-lg p-1.5 text-xs w-full">
                     <option value="0.03" selected>3 cm (Dropped Curbs)</option>
                     <option value="0.06">6 cm (Low Kerbs)</option>
                     <option value="0.10">10 cm</option>
@@ -1163,7 +1146,9 @@
             </div>
 
             <!-- Emergency Assist Button -->
-            <button onclick="alert('EMERGENCY ASSIST: Broadcasted current GPS coordinates to registered emergency contacts.')" class="w-full py-3 px-4 bg-error/90 hover:bg-error text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all">
+            <button
+              onclick="alert('EMERGENCY ASSIST: Broadcasted current GPS coordinates to registered emergency contacts.')"
+              class="w-full py-3 px-4 bg-error/90 hover:bg-error text-white font-bold rounded-2xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all">
               <span class="material-symbols-outlined text-[18px]">warning</span> Emergency Assist Broadcast
             </button>
 
@@ -1188,7 +1173,8 @@
             <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
               <h3 class="font-display font-bold text-lg text-on-surface">Predefined Waypoints</h3>
               <div class="grid grid-cols-1 gap-2.5">
-                <button data-wp="wp-living" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <button data-wp="wp-living"
+                  class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
                   <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary">chair</span>
                     <div>
@@ -1198,7 +1184,8 @@
                   </div>
                   <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
                 </button>
-                <button data-wp="wp-kitchen" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <button data-wp="wp-kitchen"
+                  class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
                   <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary">restaurant</span>
                     <div>
@@ -1208,7 +1195,8 @@
                   </div>
                   <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
                 </button>
-                <button data-wp="wp-bedroom" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <button data-wp="wp-bedroom"
+                  class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
                   <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary">bed</span>
                     <div>
@@ -1218,7 +1206,8 @@
                   </div>
                   <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
                 </button>
-                <button data-wp="wp-office" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <button data-wp="wp-office"
+                  class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
                   <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary">computer</span>
                     <div>
@@ -1228,7 +1217,8 @@
                   </div>
                   <span class="material-symbols-outlined text-outline text-[18px]">chevron_right</span>
                 </button>
-                <button data-wp="wp-dock" class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
+                <button data-wp="wp-dock"
+                  class="waypoint-btn w-full p-3.5 rounded-xl bg-surface border border-outline-variant/30 flex items-center justify-between text-left hover:border-primary transition-all">
                   <div class="flex items-center gap-3">
                     <span class="material-symbols-outlined text-primary">electrical_services</span>
                     <div>
@@ -1249,158 +1239,61 @@
     </div>
   </section>
 
-  <!-- ================= VIEW 5: AI OBJECT DETECTION HUD ================= -->
-  <section id="view-detection" class="module-view hidden pt-24 pb-20">
-    <div class="max-w-[1500px] mx-auto px-6 space-y-8">
-
-      <div
-        class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
-        <div>
-          <span class="text-xs font-mono text-primary tracking-widest uppercase">COMPUTER VISION & EDGE INFERENCE</span>
-          <h1 class="font-display text-3xl md:text-4xl font-bold text-on-surface">AI Object Detection & Spatial HUD</h1>
-        </div>
-
-        <div id="proximity-alert-banner"
-          class="px-4 py-2 rounded-xl bg-surface-container border border-primary/30 text-primary font-mono text-xs font-bold">
-          PATH CLEAR • SAFE CLEARANCE
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-        <!-- Live AI HUD Feed -->
-        <div class="lg:col-span-8 p-4 rounded-2xl bg-surface-container border border-outline-variant/30">
-          <canvas id="detection-canvas" width="760" height="460"
-            class="w-full h-auto aspect-[76/46] rounded-xl border border-outline-variant/30 shadow-2xl"></canvas>
-        </div>
-
-        <!-- Detection Controls & Realtime Tags -->
-        <div class="lg:col-span-4 space-y-6">
-          <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
-            <h3 class="font-display font-bold text-lg text-on-surface">HUD Overlay Toggles</h3>
-
-            <div class="space-y-3 font-mono text-xs">
-              <label
-                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
-                <span>AI BOUNDING BOXES</span>
-                <input id="toggle-boxes" type="checkbox" checked class="accent-primary-container w-4 h-4" />
-              </label>
-
-              <label
-                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
-                <span>DISTANCE METRIC TAGS</span>
-                <input id="toggle-dist" type="checkbox" checked class="accent-primary-container w-4 h-4" />
-              </label>
-
-              <label
-                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
-                <span>OPTICAL FLOW VECTORS</span>
-                <input id="toggle-flow" type="checkbox" checked class="accent-primary-container w-4 h-4" />
-              </label>
-            </div>
-
-            <!-- Proximity Metric Box -->
-            <div class="p-4 bg-surface rounded-xl border border-outline-variant/20 space-y-2">
-              <div class="text-[10px] font-mono text-outline">CLOSEST PROXIMITY HAZARD</div>
-              <div id="closest-dist-value" class="text-xl font-bold font-mono text-primary">1.1m (Step / Threshold)
-              </div>
-              <div class="text-xs text-on-surface-variant">Edge AI executes micro-deceleration buffer automatically.
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ================= VIEW 6: NEURAL VOICE COMMAND SUITE ================= -->
+  <!-- ================= VIEW 5: NEURAL VOICE COMMAND SUITE (CENTERED) ================= -->
   <section id="view-voice" class="module-view hidden pt-24 pb-20">
     <div class="max-w-[1400px] mx-auto px-6 space-y-8">
 
       <div class="text-center max-w-3xl mx-auto space-y-3">
-        <span class="text-xs font-mono text-primary tracking-widest uppercase">NATURAL LANGUAGE PROCESSING // ACOUSTIC
-          CORE</span>
+        <span class="text-xs font-mono text-primary tracking-widest uppercase">NATURAL LANGUAGE PROCESSING // ACOUSTIC CORE</span>
         <h1 class="font-display text-4xl md:text-5xl font-bold text-on-surface">Conversational Voice Control</h1>
-        <p class="text-on-surface-variant text-base">State of the art intent parsing without pre-memorized rigid
-          commands.</p>
+        <p class="text-on-surface-variant text-base">State of the art intent parsing without pre-memorized rigid commands.</p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Single Centered Voice Control Hub -->
+      <div class="max-w-2xl mx-auto p-6 sm:p-8 rounded-3xl bg-surface-container border border-outline-variant/30 space-y-6 text-center shadow-2xl">
 
-        <!-- Left: Audio Waveform & Mic Activator -->
-        <div
-          class="lg:col-span-6 p-8 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-6 text-center">
+        <!-- Audio Waveform Visualizer -->
+        <canvas id="audio-waveform-canvas" width="450" height="120"
+          class="w-full h-[120px] rounded-2xl bg-surface border border-outline-variant/20 shadow-inner"></canvas>
 
-          <canvas id="audio-waveform-canvas" width="450" height="120"
-            class="w-full h-[120px] rounded-xl bg-surface border border-outline-variant/20"></canvas>
-
-          <!-- Large Mic Button -->
-          <div class="flex flex-col items-center gap-3">
-            <button id="voice-mic-trigger"
-              class="w-20 h-20 rounded-full bg-primary-container text-white flex items-center justify-center shadow-2xl hover:scale-105 transition-all glow-effect">
-              <span class="material-symbols-outlined text-[36px]">mic</span>
-            </button>
-            <div id="voice-status-text" class="font-mono text-xs text-outline uppercase font-bold">MIC READY • PRESS TO
-              SPEAK</div>
-          </div>
-
-          <!-- Live Transcript Output -->
-          <div
-            class="p-4 bg-surface rounded-xl border border-outline-variant/20 min-h-[70px] flex items-center justify-center text-center">
-            <div id="voice-live-transcript" class="font-display font-semibold text-lg text-on-surface">
-              "Click the mic or choose a command preset below"
-            </div>
-          </div>
-
-          <!-- Type input box for testing without mic -->
-          <div class="flex gap-2">
-            <input id="voice-text-input" type="text"
-              placeholder="Type a custom voice command (e.g., Take me to kitchen)..."
-              class="flex-1 bg-surface border border-outline-variant/30 rounded-xl px-4 py-2 text-sm text-on-surface focus:outline-none focus:border-primary" />
-            <button id="voice-text-submit"
-              class="bg-primary-container text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-inverse-primary transition-colors">Send</button>
-          </div>
-
-          <!-- Sample Command Chips -->
-          <div class="space-y-2 text-left pt-2">
-            <div class="text-xs font-mono text-outline">QUICK TEST PRESETS (CLICK TO EXECUTE):</div>
-            <div class="flex flex-wrap gap-2">
-              <button
-                class="sample-command-chip px-3 py-1.5 rounded-lg bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Take
-                me to the kitchen"</button>
-              <button
-                class="sample-command-chip px-3 py-1.5 rounded-lg bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Emergency
-                stop"</button>
-              <button
-                class="sample-command-chip px-3 py-1.5 rounded-lg bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Navigate
-                to charging dock"</button>
-              <button
-                class="sample-command-chip px-3 py-1.5 rounded-lg bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Report
-                system diagnostic status"</button>
-            </div>
-          </div>
-
+        <!-- Large Glowing Mic Button -->
+        <div class="flex flex-col items-center gap-3">
+          <button id="voice-mic-trigger"
+            class="w-20 h-20 rounded-full bg-primary-container text-white flex items-center justify-center shadow-2xl hover:scale-105 transition-all glow-effect cursor-pointer">
+            <span class="material-symbols-outlined text-[36px]">mic</span>
+          </button>
+          <div id="voice-status-text" class="font-mono text-xs text-outline uppercase font-bold">MIC READY • PRESS TO SPEAK</div>
         </div>
 
-        <!-- Right: Real-time Execution History Log -->
-        <div class="lg:col-span-6 p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
-          <div class="flex items-center justify-between border-b border-outline-variant/20 pb-3">
-            <span class="font-mono text-xs text-primary font-bold">INTENT EXECUTION LOG</span>
-            <span class="font-mono text-xs text-outline">REALTIME NLP KERNEL</span>
+        <!-- Live Transcript Output -->
+        <div
+          class="p-4 bg-surface rounded-2xl border border-outline-variant/20 min-h-[70px] flex items-center justify-center text-center shadow-inner">
+          <div id="voice-live-transcript" class="font-display font-semibold text-lg text-on-surface">
+            "Click the mic or choose a command preset below"
           </div>
+        </div>
 
-          <div id="voice-history-list" class="space-y-3 max-h-[480px] overflow-y-auto pr-1">
-            <div class="p-4 bg-surface border border-outline-variant/20 rounded-xl space-y-1">
-              <div class="flex items-center justify-between text-xs">
-                <span class="text-primary font-mono">12:00:15</span>
-                <span
-                  class="px-2 py-0.5 rounded bg-primary-container/20 text-primary text-[10px] font-semibold">BOOT</span>
-              </div>
-              <div class="font-semibold text-on-surface text-sm">"Voice recognition neural weights initialized"</div>
-              <div class="text-on-surface-variant text-xs">Acoustic beamforming isolation active on 4 channels.</div>
-            </div>
+        <!-- Text input box for keyboard testing -->
+        <div class="flex gap-2">
+          <input id="voice-text-input" type="text"
+            placeholder="Type a custom voice command (e.g., Take me to kitchen)..."
+            class="flex-1 bg-surface border border-outline-variant/30 rounded-xl px-4 py-2.5 text-sm text-on-surface focus:outline-none focus:border-primary" />
+          <button id="voice-text-submit"
+            class="bg-primary-container text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-inverse-primary transition-colors shadow">Send</button>
+        </div>
+
+        <!-- Quick Test Preset Chips -->
+        <div class="space-y-2 text-left pt-2 border-t border-outline-variant/20">
+          <div class="text-xs font-mono text-outline uppercase">Quick Test Presets (Click to Execute):</div>
+          <div class="flex flex-wrap gap-2">
+            <button
+              class="sample-command-chip px-3.5 py-1.5 rounded-xl bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Take me to the kitchen"</button>
+            <button
+              class="sample-command-chip px-3.5 py-1.5 rounded-xl bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Emergency stop"</button>
+            <button
+              class="sample-command-chip px-3.5 py-1.5 rounded-xl bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Navigate to charging dock"</button>
+            <button
+              class="sample-command-chip px-3.5 py-1.5 rounded-xl bg-surface border border-outline-variant/20 text-xs text-on-surface hover:border-primary transition-colors">"Report system diagnostic status"</button>
           </div>
         </div>
 
@@ -1409,78 +1302,91 @@
     </div>
   </section>
 
-  <!-- ================= VIEW 7: AI MULTI-SPECTRAL CAMERAS ================= -->
+  <!-- ================= VIEW 6: UNIFIED AI CAMERA & SPATIAL VISION SUITE ================= -->
   <section id="view-camera" class="module-view hidden pt-24 pb-20">
     <div class="max-w-[1500px] mx-auto px-6 space-y-8">
 
+      <!-- Header with Upper-Right Switcher -->
       <div
         class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
         <div>
-          <span class="text-xs font-mono text-primary tracking-widest uppercase">MULTI-SPECTRAL OPTICAL SENSOR
-            SUITE</span>
-          <h1 class="font-display text-3xl md:text-4xl font-bold text-on-surface">AI Camera System</h1>
+          <span class="text-xs font-mono text-primary tracking-widest uppercase">COMPUTER VISION & MULTI-SPECTRAL SENSING</span>
+          <h1 class="font-display text-3xl md:text-4xl font-bold text-on-surface">Camera</h1>
         </div>
 
-        <!-- 4-Way Mode Selector -->
+        <!-- Segmented Mode Switcher in Right Upper Corner -->
         <div
-          class="flex flex-wrap items-center gap-2 bg-surface-container p-1.5 rounded-xl border border-outline-variant/30 font-mono text-xs">
+          class="flex flex-wrap items-center gap-1.5 bg-surface-container p-1.5 rounded-xl border border-outline-variant/30 font-mono text-xs shadow-md">
+          <button data-cam-mode="ai_vision"
+            class="cam-mode-btn px-3.5 py-2 rounded-lg bg-primary-container text-white border border-primary transition-all font-bold shadow">
+            AI VISION (HUD)
+          </button>
           <button data-cam-mode="optical"
-            class="cam-mode-btn px-4 py-2 rounded-lg bg-primary-container text-white border border-primary transition-all font-bold">FRONT
-            AI OPTICAL</button>
+            class="cam-mode-btn px-3.5 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all font-bold">
+            FRONT OPTICAL
+          </button>
           <button data-cam-mode="depth"
-            class="cam-mode-btn px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all font-bold">LIDAR
-            DEPTH MAP</button>
-          <button data-cam-mode="infrared"
-            class="cam-mode-btn px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all font-bold">NIGHT
-            VISION IR</button>
+            class="cam-mode-btn px-3.5 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all font-bold">
+            LiDAR DEPTH
+          </button>
           <button data-cam-mode="rear"
-            class="cam-mode-btn px-4 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all font-bold">REAR
-            REVERSE CAM</button>
+            class="cam-mode-btn px-3.5 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-all font-bold">
+            REAR REVERSE
+          </button>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Live Camera Feed Canvas -->
-        <div class="lg:col-span-8 p-4 rounded-2xl bg-surface-container border border-outline-variant/30">
-          <div class="flex items-center justify-between px-2 pb-3 font-mono text-xs">
-            <span id="camera-mode-title" class="text-primary font-bold">FRONT AI OPTICAL</span>
-            <span class="text-emerald-400 font-bold">FEED: 1080p 60FPS</span>
+        <!-- Live Camera & AI Vision Feed Canvas -->
+        <div class="lg:col-span-8 p-4 rounded-2xl bg-surface-container border border-outline-variant/30 shadow-xl space-y-3">
+          <div class="flex items-center justify-between px-2 font-mono text-xs">
+            <span id="camera-mode-title" class="text-primary font-bold">AI VISION (HUD)</span>
+            <div id="cam-status-banner" class="px-3 py-1 rounded-full bg-primary-container/20 text-primary border border-primary/30 font-bold">
+              AI SPATIAL INFERENCE ACTIVE • 50 FPS
+            </div>
           </div>
           <canvas id="camera-feed-canvas" width="760" height="450"
-            class="w-full h-auto aspect-[76/45] rounded-xl border border-outline-variant/30 shadow-2xl"></canvas>
+            class="w-full h-auto aspect-[76/45] rounded-xl border border-outline-variant/30 shadow-2xl bg-surface"></canvas>
         </div>
 
-        <!-- Camera HUD Settings -->
+        <!-- Camera & AI HUD Overlay Toggles -->
         <div class="lg:col-span-4 space-y-6">
-          <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4">
-            <h3 class="font-display font-bold text-lg text-on-surface">Optical Filters & Overlays</h3>
+          <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4 shadow-xl">
+            <h3 class="font-display font-bold text-lg text-on-surface">Spatial HUD Overlays</h3>
 
             <div class="space-y-3 font-mono text-xs">
               <label
-                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer hover:border-primary/40 transition-colors">
+                <span>AI BOUNDING BOXES</span>
+                <input id="cam-toggle-boxes" type="checkbox" checked class="accent-primary-container w-4 h-4 cursor-pointer" />
+              </label>
+
+              <label
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer hover:border-primary/40 transition-colors">
+                <span>DISTANCE METRIC TAGS</span>
+                <input id="cam-toggle-dist" type="checkbox" checked class="accent-primary-container w-4 h-4 cursor-pointer" />
+              </label>
+
+              <label
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer hover:border-primary/40 transition-colors">
+                <span>OPTICAL FLOW VECTORS</span>
+                <input id="cam-toggle-flow" type="checkbox" checked class="accent-primary-container w-4 h-4 cursor-pointer" />
+              </label>
+
+              <label
+                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer hover:border-primary/40 transition-colors">
                 <span>LANE CLEARANCE GUIDANCE</span>
-                <input id="cam-toggle-guidance" type="checkbox" checked class="accent-primary-container w-4 h-4" />
-              </label>
-
-              <label
-                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
-                <span>SAFE DISTANCE ENVELOPE</span>
-                <input id="cam-toggle-envelope" type="checkbox" checked class="accent-primary-container w-4 h-4" />
-              </label>
-
-              <label
-                class="flex items-center justify-between p-3 bg-surface rounded-xl border border-outline-variant/20 cursor-pointer">
-                <span>SEMANTIC SEGMENTATION</span>
-                <input id="cam-toggle-seg" type="checkbox" class="accent-primary-container w-4 h-4" />
+                <input id="cam-toggle-guidance" type="checkbox" checked class="accent-primary-container w-4 h-4 cursor-pointer" />
               </label>
             </div>
 
-            <button id="cam-snapshot-btn"
-              class="w-full py-3 rounded-xl bg-surface hover:bg-surface-container-high border border-outline-variant/30 text-on-surface font-semibold text-sm flex items-center justify-center gap-2 transition-all">
-              <span class="material-symbols-outlined text-primary text-[20px]">photo_camera</span>
-              Capture High-Res Frame Snapshot
-            </button>
+            <!-- Closest Hazard Proximity Metric Box -->
+            <div class="p-4 bg-surface rounded-xl border border-outline-variant/20 space-y-2">
+              <div class="text-[10px] font-mono text-outline">CLOSEST PROXIMITY HAZARD</div>
+              <div id="closest-dist-value" class="text-xl font-bold font-mono text-primary">1.1m (Step / Threshold)</div>
+              <div class="text-xs text-on-surface-variant">Edge AI executes micro-deceleration buffer automatically.</div>
+            </div>
           </div>
         </div>
 
@@ -1848,6 +1754,53 @@
               </div>
               <span
                 class="px-2.5 py-1 rounded-md bg-emerald-500/15 text-emerald-400 font-bold text-[10px]">COMPLETED</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 5: Safety & Drive Calibrations (Matching Reference Image 2) -->
+        <div class="lg:col-span-12 p-6 sm:p-8 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-6 shadow-xl">
+          <!-- Card Header -->
+          <div class="flex items-center gap-2.5 border-b border-outline-variant/20 pb-3">
+            <span class="material-symbols-outlined text-sky-400 text-[26px]">shield</span>
+            <h3 class="font-display text-xl font-bold text-on-surface">Safety & Drive Calibrations</h3>
+          </div>
+
+          <div class="space-y-6 max-w-4xl">
+            <!-- 1. Critical Obstacle Auto-Brake Threshold -->
+            <div class="space-y-2">
+              <div class="text-xs sm:text-sm font-mono text-on-surface-variant flex items-center justify-between">
+                <span>Critical Obstacle Auto-Brake Threshold: <span id="calib-brake-val" class="text-rose-500 font-bold">0.50m</span></span>
+              </div>
+              <input id="calib-brake-slider" type="range" min="0.20" max="2.00" step="0.05" value="0.50"
+                class="w-full accent-sky-400 cursor-pointer h-2 bg-surface-container-highest rounded-lg" />
+            </div>
+
+            <!-- 2. Joystick Deadzone Tolerance -->
+            <div class="space-y-2">
+              <div class="text-xs sm:text-sm font-mono text-on-surface-variant flex items-center justify-between">
+                <span>Joystick Deadzone Tolerance (5% - 20%)</span>
+              </div>
+              <input id="calib-deadzone-slider" type="range" min="5" max="20" step="1" value="10"
+                class="w-full accent-sky-400 cursor-pointer h-2 bg-surface-container-highest rounded-lg" />
+            </div>
+
+            <!-- 3. Maximum Outdoor Speed Cap -->
+            <div class="space-y-2">
+              <div class="text-xs sm:text-sm font-mono text-on-surface-variant">
+                <span>Maximum Outdoor Speed Cap</span>
+              </div>
+              <div class="relative">
+                <select id="calib-speed-cap"
+                  class="w-full bg-surface border border-outline-variant/30 text-on-surface rounded-xl px-4 py-3 text-sm font-mono focus:outline-none focus:border-sky-400 cursor-pointer appearance-none">
+                  <option value="8.0" selected>8.0 km/h (Standard)</option>
+                  <option value="4.0">4.0 km/h (Indoor Safe)</option>
+                  <option value="6.0">6.0 km/h (Eco Cruise)</option>
+                  <option value="10.0">10.0 km/h (Sport Dynamic)</option>
+                  <option value="12.0">12.0 km/h (Unrestricted Maximum)</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none text-[20px]">expand_more</span>
+              </div>
             </div>
           </div>
         </div>
