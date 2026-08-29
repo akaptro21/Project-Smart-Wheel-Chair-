@@ -60,7 +60,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
-
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <body
   class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-white min-h-screen relative pb-10">
 
@@ -1977,6 +1977,19 @@
 
           <!-- Login & Profile Form -->
           <form id="login-form" class="space-y-4 font-mono text-xs">
+            <div id="g_id_onload"
+     data-client_id="477115030200-c771gt5un0k6e7lksg21emblqu237cm9.apps.googleusercontent.com"
+     data-callback="handleGoogleSignIn">
+</div>
+
+<div class="g_id_signin"
+     data-type="standard"
+     data-size="large"
+     data-theme="outline"
+     data-text="signin_with"
+     data-shape="rectangular"
+     data-logo_alignment="left">
+</div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
@@ -2248,6 +2261,15 @@
   <script src="assets/js/auth.js"></script>
   <script src="assets/js/battery-bms.js"></script>
   <script src="assets/js/app.js"></script>
+
+  <script>
+function handleGoogleSignIn(response) {
+    console.log("Google Sign-In successful!");
+    console.log("Google credential:", response.credential);
+
+    alert("Google Sign-In successful!");
+}
+</script>
 
 </body>
 
