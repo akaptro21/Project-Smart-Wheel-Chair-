@@ -810,7 +810,7 @@
             <div class="p-5 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-2 shadow-md">
               <div class="text-xs font-mono text-outline uppercase tracking-wider font-bold">NEAREST OBSTACLE</div>
               <div class="flex items-baseline gap-2">
-                <div id="kpi-obstacle" class="text-3xl sm:text-4xl font-display font-black text-amber-400">1.90 m</div>
+                <div id="kpi-obstacle" class="text-3xl sm:text-4xl font-display font-black text-amber-400"></div>
               </div>
               <div id="kpi-objects-count" class="text-xs font-mono text-on-surface-variant">4 Objects in 360° Envelope
               </div>
@@ -1412,11 +1412,68 @@
           <div class="flex items-center justify-between px-2 font-mono text-xs">
             <span id="camera-mode-title" class="text-primary font-bold">AI VISION (HUD)</span>
             <div id="cam-status-banner" class="px-3 py-1 rounded-full bg-primary-container/20 text-primary border border-primary/30 font-bold">
-              AI SPATIAL INFERENCE ACTIVE • 50 FPS
+              AI SPATIAL INFERENCE ACTIVE • YOLOv11
             </div>
           </div>
-          <canvas id="camera-feed-canvas" width="760" height="450"
-            class="w-full h-auto aspect-[76/45] rounded-xl border border-outline-variant/30 shadow-2xl bg-surface"></canvas>
+          <div id="camera-feed-stage" class="relative w-full aspect-[76/45] rounded-xl border border-outline-variant/30 shadow-2xl bg-black overflow-hidden">
+            <img id="esp32-camera-stream"
+              src="/yolo_stream"
+              alt="Live Camera & YOLO Detection Stream"
+              class="absolute inset-0 w-full h-full object-cover"
+              crossorigin="anonymous"
+              onerror="this.style.display='none'; document.getElementById('camera-stream-error').classList.remove('hidden');" />
+            <canvas id="camera-feed-canvas" width="760" height="450"
+              class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+            <div id="camera-stream-error" class="hidden absolute inset-0 flex items-center justify-center bg-black/80 text-center p-6">
+              <div class="space-y-2">
+                <div class="text-rose-400 font-mono font-bold text-sm">CAMERA / YOLO STREAM DISCONNECTED</div>
+                <div class="text-xs text-on-surface-variant max-w-md">
+                  Run <code class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-mono">python yolo_camera.py.py</code> in the YOLO_test directory to start live streaming with bounding boxes.
+                </div>
+                <button onclick="const img=document.getElementById('esp32-camera-stream'); img.src='/yolo_stream?t='+Date.now(); img.style.display='block'; document.getElementById('camera-stream-error').classList.add('hidden');"
+                  class="mt-3 px-4 py-1.5 rounded-lg bg-primary-container text-white font-mono text-xs font-bold hover:bg-inverse-primary transition-colors">
+                  Reconnect Stream
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Bottom Stream Sub-Controls -->
+          <div class="flex items-center justify-between px-2 pt-1 font-mono text-xs text-outline">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>YOLOv11 Bounding Boxes & Tracking</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span>RESOLUTION: 760x450</span>
+              <span>INFERENCE: ~30ms</span>
+            </div>
+          </div>
+
+          <!-- ESP32-CAM Dynamic IP & Auto-Discover Control Bar -->
+          <div class="p-3.5 rounded-xl bg-surface border border-outline-variant/20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 font-mono text-xs shadow">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[18px]">router</span>
+              <span class="text-on-surface font-bold">ESP32 IP:</span>
+              <input id="camera-ip-input" type="text" value="10.228.132.35" placeholder="e.g. 10.228.132.35"
+                class="px-3 py-1.5 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface font-mono text-xs w-36 sm:w-44 focus:border-primary focus:outline-none" />
+              <button id="camera-ip-set-btn"
+                class="px-3 py-1.5 rounded-lg bg-primary-container text-white font-bold hover:bg-inverse-primary transition-colors text-xs">
+                Apply IP
+              </button>
+            </div>
+            
+            <div class="flex items-center gap-2">
+              <span id="active-source-badge" class="px-2.5 py-1 rounded-lg bg-surface-container-high border border-outline-variant/30 text-sky-400 font-bold text-[11px] truncate max-w-[200px]">
+                ESP32-CAM (10.228.132.35)
+              </span>
+              <button id="camera-auto-scan-btn"
+                class="px-3 py-1.5 rounded-lg bg-surface-container border border-primary/40 text-primary font-bold hover:bg-primary-container/20 transition-colors flex items-center gap-1.5 text-xs">
+                <span class="material-symbols-outlined text-[16px]">radar</span>
+                <span>Auto-Discover</span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Camera & AI HUD Overlay Toggles -->
@@ -1453,8 +1510,22 @@
             <!-- Closest Hazard Proximity Metric Box -->
             <div class="p-4 bg-surface rounded-xl border border-outline-variant/20 space-y-2">
               <div class="text-[10px] font-mono text-outline">CLOSEST PROXIMITY HAZARD</div>
-              <div id="closest-dist-value" class="text-xl font-bold font-mono text-primary">1.1m (Step / Threshold)</div>
-              <div class="text-xs text-on-surface-variant">Edge AI executes micro-deceleration buffer automatically.</div>
+              <div id="closest-dist-value" class="text-xl font-bold font-mono text-primary">Path Clear (No Hazards)</div>
+              <div class="text-xs text-on-surface-variant">Edge AI calculates safe obstacle distance & deceleration buffer.</div>
+            </div>
+          </div>
+
+          <!-- Live YOLO Identified Objects Card -->
+          <div class="p-6 rounded-2xl bg-surface-container border border-outline-variant/30 space-y-4 shadow-xl">
+            <div class="flex items-center justify-between pb-2 border-b border-outline-variant/20">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary text-[18px]">view_in_ar</span>
+                <span class="font-display font-bold text-sm text-on-surface">YOLO Identified Objects</span>
+              </div>
+              <span id="yolo-live-badge" class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">STANDBY</span>
+            </div>
+            <div id="yolo-detected-objects-list" class="space-y-2 max-h-[160px] overflow-y-auto font-mono text-xs pr-1">
+              <div class="p-2.5 rounded-xl bg-surface text-outline text-center text-xs">Waiting for YOLO detector stream...</div>
             </div>
           </div>
         </div>
@@ -2251,8 +2322,20 @@
   </div>
 
   <!-- Subsystem JavaScript Modules -->
+  <script>
+    // Smart Ride network configuration (ESP32-CAM: 10.228.132.35)
+    window.SMART_RIDE_CONFIG = {
+      backendUrl: (window.location && window.location.origin && window.location.origin.startsWith('http')) ? window.location.origin : 'http://127.0.0.1:5000',
+      cameraUrl: 'http://10.228.132.35',
+      esp32StreamUrl: 'http://10.228.132.35/stream',
+      yoloStreamUrl: '/yolo_stream',
+      pollMs: 1000
+    };
+  </script>
+
   <script src="assets/js/fluid-gesture.js"></script>
   <script src="assets/js/scroll-anim.js"></script>
+  <script src="assets/js/network-bridge.js"></script>
   <script src="assets/js/dashboard.js"></script>
   <script src="assets/js/map-nav.js"></script>
   <script src="assets/js/object-detect.js"></script>
@@ -2261,15 +2344,67 @@
   <script src="assets/js/auth.js"></script>
   <script src="assets/js/battery-bms.js"></script>
   <script src="assets/js/app.js"></script>
-
   <script>
 function handleGoogleSignIn(response) {
     console.log("Google Sign-In successful!");
     console.log("Google credential:", response.credential);
-
     alert("Google Sign-In successful!");
 }
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    onValue
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyB-XYenWFtl9ibNSQ3HrsnPoiXw2PQPHnE",
+    authDomain: "smart-wheelchair-90826.firebaseapp.com",
+    databaseURL: "https://smart-wheelchair-90826-default-rtdb.firebaseio.com",
+    projectId: "smart-wheelchair-90826",
+    storageBucket: "smart-wheelchair-90826.firebasestorage.app",
+    messagingSenderId: "903411060283",
+    appId: "1:903411060283:web:a27f4ac87b3014b9bf961e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// Firebase path
+const distanceRef = ref(db, "wheelchair/distance");
+
+onValue(distanceRef, (snapshot) => {
+
+    const distance = snapshot.val();
+
+    console.log("Firebase distance:", distance);
+
+    // Main obstacle KPI
+    const obstacleElement =
+        document.getElementById("kpi-obstacle");
+
+    if (obstacleElement && distance !== null) {
+        obstacleElement.textContent =
+            Number(distance).toFixed(2) + " cm";
+    }
+
+    // Outdoor HUD
+    const hudElement =
+        document.getElementById("outdoor-hud-dist");
+
+    if (hudElement && distance !== null) {
+        hudElement.textContent =
+            Number(distance).toFixed(2) + " cm";
+    }
+});
+
+</script>
+
+
 
 </body>
 

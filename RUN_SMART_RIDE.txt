@@ -1,0 +1,35 @@
+============================================================
+SMART RIDE - FLASK BACKEND + YOLOv11 VISION SYSTEM
+============================================================
+
+STEP 1: Start the Flask Backend Server
+------------------------------------------------------------
+1. Open PowerShell in the 'Project-Smart-Wheel-Chair--main' directory.
+2. Run:
+      python server.py
+3. Open your browser at:
+      http://127.0.0.1:5000 (or http://localhost:5000)
+
+STEP 2: Start the YOLO Object Detection & Streamer
+------------------------------------------------------------
+1. Open a second PowerShell window in the 'YOLO_test' directory.
+2. Run:
+      python yolo_camera.py.py
+   (Note: If ESP32-CAM is not connected on Wi-Fi, it will
+    automatically fall back to your laptop webcam with YOLO boxes).
+
+STEP 3: View Live YOLO Camera in Dashboard
+------------------------------------------------------------
+- Open the Smart Ride Dashboard and navigate to the "Camera"
+  or "AI Camera" tab.
+- The stream will display live video with real-time YOLO bounding
+  boxes, class tags, confidence scores, distance metrics, and
+  proximity hazard warnings.
+
+ENDPOINTS REFERENCE:
+- Web Dashboard   : http://127.0.0.1:5000
+- YOLO Stream     : http://127.0.0.1:5000/yolo_stream
+- Detections API  : http://127.0.0.1:5000/detections
+- Telemetry Data  : http://127.0.0.1:5000/data
+- System Health   : http://127.0.0.1:5000/health
+============================================================
